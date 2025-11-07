@@ -1,0 +1,24 @@
+namespace WebApiNibu.Data.Entity;
+
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+[Table("Role")]
+public class Role
+{
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
+    public int IdRole { get; set; }
+
+    [Required]
+    [StringLength(80)]
+
+    public string Name { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(50)]
+
+    public string Department { get; set; } = string.Empty;
+}
