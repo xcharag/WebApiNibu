@@ -21,4 +21,6 @@ public class Role
     [StringLength(50)]
 
     public string Department { get; set; } = string.Empty;
+
+    public ICollection<Worker> Workers { get; set; } = new List<Worker>();
 }

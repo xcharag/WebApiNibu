@@ -15,4 +15,14 @@ public class Worker : Person
     [StringLength(120)]
 
     public string WorkEmail { set; get; } = string.Empty;
+
+    [Required]
+
+    public Role Role { set; get; }
+
+    [ForeignKey(nameof(Role))]
+
+    public int RoleId { set; get; } 
+    
+
 }

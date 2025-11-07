@@ -20,5 +20,8 @@ public class SchoolStudent : Person
 
     public bool IsPlayer { get; set; } = false;
 
+    public ICollection<Adult> Adults { get; set; } = new List<Adult>();
+
+    public ICollection<PreferencesStudent> PreferencesStudents { get; set; } = new List<PreferencesStudent>();
 
 }

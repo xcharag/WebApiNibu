@@ -4,18 +4,21 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("AdultType")]
-public class AdultType
+[Table("Country")]
+
+public class Country
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdAdultType { get; set; }
+    public int IdCountry { get; set; }
 
     [Required]
-    [StringLength(80)]
+    [StringLength(20)]
 
-    public string Name { get; set; } = string.Empty;
+    public string name { get; set; } = string.Empty;
 
-    public ICollections<Adult> Adults { get; set; } = new List<Adult>();
+    public ICollection<Person> People { get; set; } = new List<Person>();
+       
+
 }
