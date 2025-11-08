@@ -1,0 +1,30 @@
+namespace WebApiNibu.Data.Entity;
+
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+[Table("User")]
+
+public class User : BaseEntity
+{
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
+    public int IdUser { get; set; }
+
+    [Required]
+    [StringLength(12)]
+
+    public required string Name { get; set; }
+
+    [Required]
+    [StringLength(12)]
+
+    public required string Password { get; set; }
+
+    [StringLength(450)]
+
+    public string? ProfilePhoto { get; set; }
+
+}
