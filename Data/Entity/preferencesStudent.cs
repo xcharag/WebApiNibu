@@ -63,11 +63,12 @@ public class PreferencesStudent
 
     public WhatDepartment WhatDepartment { get; set; } = WhatDepartment.SantaCruz;
 
-    public SchoolStudent SchoolStudent { get; set; }
+    [Required]
+    public required SchoolStudent SchoolStudent { get; set; }
 
     public ICollection<AcademicPreference> AcademicPreferences { get; set; } = new List<AcademicPreference>();
 
     [ForeignKey(nameof(SchoolStudent))]
 
-    public int SchoolStudentId { get; set; }    
+    public int IdSchoolStudent { get; set; }    
 }

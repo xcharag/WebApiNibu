@@ -22,15 +22,17 @@ public class Adult : Person
 
     public string WorkEmail { get; set; } = string.Empty;
 
-    public SchoolStudent SchoolStudent { get; set; }
+    [Required]
+    public required SchoolStudent SchoolStudent { get; set; }
 
-    public AdultType AdultType { get; set; }
+    [Required]
+    public required AdultType AdultType { get; set; }
 
     [ForeignKey(nameof(SchoolStudent))]
     
-    public int SchoolStudentId { get; set; }
+    public int IdSchoolStudent { get; set; }
 
     [ForeignKey(nameof(AdultType))]
 
-    public int AdultTypeId { get; set; }
+    public int IdAdultType { get; set; }
 }

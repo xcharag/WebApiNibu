@@ -31,4 +31,8 @@ public class Contact
 
     public string? PersonEmail { get; set; }
 
+    [Required]
+
+    public required School School { get; set; }
+
 }

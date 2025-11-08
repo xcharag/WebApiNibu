@@ -43,6 +43,16 @@ public class Merch
     public Rarity Rarity { get; set; } = Rarity.Common;
 
     [Required]
-    public int MaxQuantity { get; set; } 
+    public int MaxQuantity { get; set; }
+
+    public ICollection<MerchObtention>? MerchObtentions { get; set; } = new List<MerchObtention>();
+
+    [Required]
+
+    public required MerchType MerchType { get; set; }
+
+    [Required]
+
+    public required int IdMerchType { get; set; }
 
 }

@@ -68,4 +68,10 @@ public class School
 
     public string? Segemento { get; set; }
 
+    [Required]
+
+    public ICollection<SchoolStudent> SchoolStudents { get; set; } = new List<SchoolStudent>();
+
+    public ICollection<Contact>? Contacts { get; set; } = new List<Contact>();
+
 }

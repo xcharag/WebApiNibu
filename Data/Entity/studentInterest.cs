@@ -16,6 +16,23 @@ public class StudentInterest
     [Required]
     [StringLength(450)]
 
-    public string Moment { get; set; } = string.Empty;
+    public string? Moment { get; set; } = string.Empty;
 
+    [Required]
+
+    public required SchoolStudent SchoolStudent { get; set; }
+
+    [Required]
+
+    public required InterestActivity InterestActivity { get; set; }
+
+    [Required]
+    [ForeignKey(nameof(SchoolStudent))]
+
+    public required int IdSchoolStudent { get; set; }
+
+    [Required]
+    [ForeignKey(nameof(InterestActivity))]
+
+    public required int IdInterestActivity { get; set; }
 }

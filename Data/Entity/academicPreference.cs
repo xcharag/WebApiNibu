@@ -12,22 +12,28 @@ public class AcademicPreference
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
     public int IdAcademicPreference { get; set; }
+    
+    [Required]
+    public required PreferencesStudent PreferencesStudent { get; set; }
 
-    public PreferencesStudent PreferencesStudent { get; set; }
+    [Required]
+    public required University Universitiy { get; set; }
+
+    [Required]
+    public required Carreer Carreer { get; set; }
+
 
     [ForeignKey(nameof(PreferencesStudent))]
 
-    public int PreferencesStudentId { get; set; }
+    public int IdPreferencesStudent { get; set; }
 
-    public University Universitiy { get; set; }
-
-    public Carreer Carreer { get; set; }
 
     [ForeignKey(nameof(Universitiy))]
 
-    public int UniversitiyId { get; set; }
+    public int IdUniversitiy { get; set; }
+
 
     [ForeignKey(nameof(Carreer))]
 
-    public int CarreerId { get; set; }
+    public int IdCarreer { get; set; }
 }

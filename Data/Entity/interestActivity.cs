@@ -26,4 +26,6 @@ public class InterestActivity
     [StringLength(450)]
 
     public string Icon { get; set; } = string.Empty;
+
+    public ICollection<StudentInterest>? StudentInterests { get; set; } = new List<StudentInterest>();
 }

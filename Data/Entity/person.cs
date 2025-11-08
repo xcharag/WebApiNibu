@@ -52,16 +52,18 @@ public abstract class Person
 
     public string Email { get; set; } = string.Empty;
 
-    public Country Country { get; set; }
+    [Required]
+    public required Country Country { get; set; }
 
-    public DocumentType DoucmentType { get; set; }
+    [Required]
+    public required DocumentType DoucmentType { get; set; }
 
     [ForeignKey(nameof(Country))]
 
-    public int CountryId { get; set; }
+    public int IdCountry { get; set; }
 
     [ForeignKey(nameof(DoucmentType))]
 
-    public int DocumentTypeId { get; set; }
+    public int IdDocumentType { get; set; }
 
 }

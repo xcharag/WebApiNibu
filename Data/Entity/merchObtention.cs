@@ -17,9 +17,19 @@ public class MerchObtention
 
     public string Reason { get; set; } = string.Empty;
 
-    public SchoolStudent SchoolStudent { get; set; }
+    [Required]
+    public required SchoolStudent SchoolStudent { get; set; }
 
-    [ForeignKey(nameof(SchoolStudent)]
+    [Required]
 
-    public int SchoolStudentId { get; set; }
+    public required Merch Merch { get; set; }
+
+    [ForeignKey(nameof(SchoolStudent))]
+
+    public int IdSchoolStudent { get; set; }
+
+    [ForeignKey(nameof(Merch))]
+
+    public int IdMerch { get; set; }
+
 }

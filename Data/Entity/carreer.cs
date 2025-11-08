@@ -30,5 +30,5 @@ public class Carreer
 
     public University? University { get ; set;}  
 
-    public ICollection<AcademicPreference>? AcademicPreferences { get; set; } = List<AcademicPreference>();
+    public ICollection<AcademicPreference>? AcademicPreferences { get; set; } = new List<AcademicPreference>();
 }

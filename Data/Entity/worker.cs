@@ -18,11 +18,11 @@ public class Worker : Person
 
     [Required]
 
-    public Role Role { set; get; }
+    public required Role Role { set; get; }
 
     [ForeignKey(nameof(Role))]
 
-    public int RoleId { set; get; } 
+    public int IdRole { set; get; } 
     
 
 }
