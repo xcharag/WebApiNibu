@@ -16,4 +16,10 @@ public class MerchObtention
     [StringLength(450)]
 
     public string Reason { get; set; } = string.Empty;
+
+    public SchoolStudent SchoolStudent { get; set; }
+
+    [ForeignKey(nameof(SchoolStudent)]
+
+    public int SchoolStudentId { get; set; }
 }

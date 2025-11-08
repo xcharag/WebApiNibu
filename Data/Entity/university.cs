@@ -36,4 +36,10 @@ public class University
     [StringLength(50)]
 
     public string NivelCompetencia { get; set; } = string.Empty;
+
+    public ICollection<AcademicPreference>? AcademicPreferences { get; set; } = List<AcademicPreference>();
+
+    public ICollection<Carreer>? Carreers { get; set; } = new List<Carreer>();
+
+
 }

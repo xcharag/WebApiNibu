@@ -24,4 +24,6 @@ public class SchoolStudent : Person
 
     public ICollection<PreferencesStudent> PreferencesStudents { get; set; } = new List<PreferencesStudent>();
 
+    public ICollection? <MerchObtention> MerchObtentions { get; set; } = new List<MerchObtention>();
+
 }

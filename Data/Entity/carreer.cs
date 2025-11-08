@@ -27,4 +27,8 @@ public class Carreer
     public int CodCarrRel { get; set; }
 
     public int OrdenEventos { get; set; }
+
+    public University? University { get ; set;}  
+
+    public ICollection<AcademicPreference>? AcademicPreferences { get; set; } = List<AcademicPreference>();
 }

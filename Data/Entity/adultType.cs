@@ -17,5 +17,5 @@ public class AdultType
 
     public string Name { get; set; } = string.Empty;
 
-    public ICollections<Adult> Adults { get; set; } = new List<Adult>();
+    public ICollection<Adult> Adults { get; set; } = new List<Adult>();
 }
