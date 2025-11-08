@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 [Table("DocumentType")]
 
-public class DocumentType
+public class DocumentType : BaseEntity
 {
 	[Key]
 	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]

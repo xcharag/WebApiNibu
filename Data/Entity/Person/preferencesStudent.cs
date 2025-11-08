@@ -40,7 +40,7 @@ public enum WhatDepartment
 
 [Table("PreferencesStudent")]
 
-public class PreferencesStudent
+public class PreferencesStudent : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

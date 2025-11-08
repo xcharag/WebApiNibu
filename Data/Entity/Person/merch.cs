@@ -13,7 +13,7 @@ public enum Rarity
 }
 
 [Table("Merch")]
-public class Merch
+public class Merch : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 [Table("InterestActivity")]
 
-public class InterestActivity
+public class InterestActivity : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

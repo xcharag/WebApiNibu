@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 [Table("Person")]
-public abstract class Person
+public abstract class Person : BaseEntity
 {
 
     [Key]
@@ -17,10 +17,9 @@ public abstract class Person
 
     public string FirstName { get; set; } = string.Empty;
 
-    [Required]
     [StringLength(50)]
 
-    public string MiddleName { get; set; } = string.Empty;
+    public string? MiddleName { get; set; } = string.Empty;
 
     [Required]
     [StringLength(50)]

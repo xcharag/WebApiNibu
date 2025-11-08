@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 [Table("University")]
 
-public class University
+public class University : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

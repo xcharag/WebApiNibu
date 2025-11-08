@@ -3,15 +3,14 @@ namespace WebApiNibu.Data.Entity;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Cryptography;
 
-[Table("MerchType")]
-public class MerchType
+[Table("AdultType")]
+public class AdultType : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdMerchType { get; set; }
+    public int IdAdultType { get; set; }
 
     [Required]
     [StringLength(80)]
@@ -19,7 +18,5 @@ public class MerchType
     public string Name { get; set; } = string.Empty;
 
     [Required]
-
-    public ICollection<Merch> Merches { get; set; } = new List<Merch>();
-
+    public ICollection<Adult> Adults { get; set; } = new List<Adult>();
 }

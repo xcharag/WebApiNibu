@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 
 [Table("School")]
 
-public class School
+public class School : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
