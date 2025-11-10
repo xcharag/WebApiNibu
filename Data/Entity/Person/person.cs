@@ -10,7 +10,7 @@ public abstract class Person : BaseEntity
 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int IdPersona { get; set; }
+    public int IdPerson { get; set; }
 
     [Required]
     [StringLength(50)]
@@ -56,6 +56,8 @@ public abstract class Person : BaseEntity
 
     [Required]
     public required DocumentType DoucmentType { get; set; }
+
+    public User? User { get; set; }
 
     [ForeignKey(nameof(Country))]
 

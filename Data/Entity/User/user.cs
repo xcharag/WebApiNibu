@@ -27,4 +27,12 @@ public class User : BaseEntity
 
     public string? ProfilePhoto { get; set; }
 
+    [Required]
+
+    public required Person Person { get; set; }
+
+    [ForeignKey(nameof(Person))]
+
+    public int  IdPerson { get; set; } 
+
 }
