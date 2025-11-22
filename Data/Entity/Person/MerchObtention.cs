@@ -1,6 +1,6 @@
 namespace WebApiNibu.Data.Entity.Person;
 
-using System.Collections.Generic;
+using FatherTable;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,12 +10,13 @@ public class MerchObtention : BaseEntity
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdMerchObtention { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [StringLength(450)]
-
     public string Reason { get; set; } = string.Empty;
+
+    [Required] public bool Claimed { get; set; } = false;
 
     [Required]
     public required SchoolStudent SchoolStudent { get; set; }

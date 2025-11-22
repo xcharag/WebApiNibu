@@ -7,21 +7,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("Worker")]
 public class Worker : PersonTable
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int WokerID { set; get; }
-
     [Required]
     [StringLength(120)]
-
     public string WorkEmail { set; get; } = string.Empty;
 
     [Required]
-
     public required Role Role { set; get; }
 
     [ForeignKey(nameof(Role))]
-
     public int IdRole { set; get; } 
     
 

@@ -1,5 +1,6 @@
 namespace WebApiNibu.Data.Entity.Person;
 
+using FatherTable;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,7 +12,7 @@ public class InterestActivity : BaseEntity
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdInterestActivity { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [StringLength(120)]

@@ -1,42 +1,9 @@
 namespace WebApiNibu.Data.Entity.Person;
 
+using FatherTable;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
-
-public enum LevelInformation
-{
-    FourthGrade = 0,
-
-    FifthGrade = 1,
-
-    SixthGrade = 2
-
-}
-
-public enum WhatDepartment
-{
-    Beni = 0,
-
-    Chuquisaca = 1,
-
-    Cochabamba = 2,
-
-    LaPaz = 3,
-
-    Oruro = 4,
-
-    Pando = 5,
-
-    Potosi = 6,
-
-    SantaCruz = 7,
-
-    Tarija = 8
-
-
-}
 
 [Table("PreferencesStudent")]
 
@@ -45,11 +12,11 @@ public class PreferencesStudent : BaseEntity
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdPreferencesStudent { get; set; }
+    public int Id { get; set; }
 
     [Required]
-
     public bool HaveVocationalTest { get; set; } = false;
+    public WhereHadTest WhereHadTest { get; set; } = WhereHadTest.School;
 
     [Required]
 
@@ -58,11 +25,7 @@ public class PreferencesStudent : BaseEntity
     [Required]
 
     public bool StudyAbroad { get; set; } = false;
-
-    [Required]
-
-    public WhatDepartment WhatDepartment { get; set; } = WhatDepartment.SantaCruz;
-
+    
     [Required]
     public required SchoolStudent SchoolStudent { get; set; }
 
@@ -71,4 +34,20 @@ public class PreferencesStudent : BaseEntity
     [ForeignKey(nameof(SchoolStudent))]
 
     public int IdSchoolStudent { get; set; }    
+}
+
+public enum LevelInformation
+{
+    FourthGrade = 0,
+    FifthGrade = 1,
+    SixthGrade = 2
+}
+
+public enum WhereHadTest
+{
+    School = 0,
+    Upsa = 1,
+    Private = 2,
+    OtherUniversity = 3,
+    Other = 4
 }

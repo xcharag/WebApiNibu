@@ -1,14 +1,13 @@
 namespace WebApiNibu.Data.Entity.UsersAndAccess;
 
-using System.Collections.Generic;
+using FatherTable;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 public enum InteractionType
 {
-    like = 0,
-
-    favorite = 1
+    Like = 0,
+    Favorite = 1
 }
 
 [Table("EventInteraction")]
@@ -17,7 +16,7 @@ public class EventInteraction : BaseEntity
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdEventInteraction { get; set; }
+    public int Id { get; set; }
 
     [Required]
     public required InteractionType InteractionType { get; set; }

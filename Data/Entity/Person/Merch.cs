@@ -1,5 +1,6 @@
 namespace WebApiNibu.Data.Entity.Person;
 
+using FatherTable;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,7 +19,7 @@ public class Merch : BaseEntity
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdMerch { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [StringLength(120)]

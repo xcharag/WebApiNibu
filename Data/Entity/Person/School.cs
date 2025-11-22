@@ -1,9 +1,9 @@
 namespace WebApiNibu.Data.Entity.Person;
 
+using FatherTable;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.Contracts;
 
 [Table("School")]
 
@@ -12,7 +12,7 @@ public class School : BaseEntity
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdSchool { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [StringLength(150)]

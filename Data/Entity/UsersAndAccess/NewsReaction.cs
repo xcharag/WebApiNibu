@@ -1,16 +1,16 @@
 namespace WebApiNibu.Data.Entity.UsersAndAccess;
 
-using System.Collections.Generic;
+using FatherTable;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("SelectedOption")]
+[Table("NewsReaction")]
 
-public class SelectedOption : BaseEntity
+public class NewsReaction : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdSelectedOption { get; set; }
+    public int Id { get; set; }
 
 }

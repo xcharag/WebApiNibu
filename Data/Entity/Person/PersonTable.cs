@@ -1,5 +1,6 @@
 namespace WebApiNibu.Data.Entity.Person;
 
+using FatherTable;
 using WebApiNibu.Data.Entity.UsersAndAccess;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -10,7 +11,7 @@ public abstract class PersonTable : BaseEntity
 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int IdPerson { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [StringLength(50)]

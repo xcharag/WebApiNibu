@@ -9,7 +9,7 @@ public class Adult : PersonTable
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdAdult { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [StringLength(30)]

@@ -1,6 +1,6 @@
 namespace WebApiNibu.Data.Entity.Person;
 
-using System.Collections.Generic;
+using FatherTable;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,7 +11,7 @@ public class AcademicPreference : BaseEntity
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdAcademicPreference { get; set; }
+    public int Id { get; set; }
     
     [Required]
     public required PreferencesStudent PreferencesStudent { get; set; }

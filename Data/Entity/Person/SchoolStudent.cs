@@ -7,17 +7,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("SchoolStudent")]
 public class SchoolStudent : PersonTable
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-
-    public int IdSchoolStudent { get; set; }
-
     [Required]
-
     public int SchoolGrade { get; set; }
 
     [Required]
-
     public bool IsPlayer { get; set; } = false;
 
     [Required]
@@ -32,12 +25,10 @@ public class SchoolStudent : PersonTable
     public ICollection<StudentInterest> StudentInterests { get; set; } = new List<StudentInterest>();
 
     [Required]
-
     public required School School { get; set; }
 
     [Required]
     [ForeignKey(nameof(School))]
-
     public required int IdSchool { get; set; }
 
 

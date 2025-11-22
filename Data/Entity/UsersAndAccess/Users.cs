@@ -1,8 +1,9 @@
-using WebApiNibu.Data.Entity.Person;
+
 
 namespace WebApiNibu.Data.Entity.UsersAndAccess;
 
-using System.Collections.Generic;
+using FatherTable;
+using Person;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,7 +14,7 @@ public class Users : BaseEntity
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdUser { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [StringLength(12)]
