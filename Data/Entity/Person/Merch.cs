@@ -5,14 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-public enum Rarity
-{
-    Common = 0,
-    Rare = 1,
-    Epic = 2,
-    Legendary = 3
-}
-
 [Table("Merch")]
 public class Merch : BaseEntity
 {
@@ -56,4 +48,12 @@ public class Merch : BaseEntity
 
     public required int IdMerchType { get; set; }
 
+}
+
+public enum Rarity
+{
+    Common = 0,
+    Rare = 1,
+    Epic = 2,
+    Legendary = 3
 }
