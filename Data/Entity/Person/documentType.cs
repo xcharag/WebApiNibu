@@ -1,4 +1,4 @@
-namespace WebApiNibu.Data.Entity;
+namespace WebApiNibu.Data.Entity.Person;
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,6 +18,6 @@ public class DocumentType : BaseEntity
 
 	public string Name { get; set; } = string.Empty;
 
-	public ICollection<Person> People { get; set; } = new List<Person>();
+	public ICollection<PersonTable> People { get; set; } = new List<PersonTable>();
 
 }

@@ -1,20 +1,16 @@
-namespace WebApiNibu.Data.Entity;
+namespace WebApiNibu.Data.Entity.UsersAndAccess;
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("NotifyTag")]
+[Table("NewsReaction")]
 
-public class NotifyTag : BaseEntity
+public class NewsReaction : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
-    public int IdNotifyTag { get; set; }
-
-    [Required]
-
-    public required int Priority { get; set; }
+    public int IdNewsReaction { get; set; }
 
 }

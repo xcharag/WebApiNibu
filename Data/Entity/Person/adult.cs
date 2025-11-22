@@ -1,11 +1,10 @@
-namespace WebApiNibu.Data.Entity;
+namespace WebApiNibu.Data.Entity.Person;
 
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 [Table("Adult")]
-public class Adult : Person
+public class Adult : PersonTable
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

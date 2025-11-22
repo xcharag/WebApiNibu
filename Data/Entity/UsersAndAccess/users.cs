@@ -1,12 +1,14 @@
-namespace WebApiNibu.Data.Entity;
+using WebApiNibu.Data.Entity.Person;
+
+namespace WebApiNibu.Data.Entity.UsersAndAccess;
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("User")]
+[Table("users")]
 
-public class User : BaseEntity
+public class Users : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -29,9 +31,9 @@ public class User : BaseEntity
 
     [Required]
 
-    public required Person Person { get; set; }
+    public required PersonTable PersonTable { get; set; }
 
-    [ForeignKey(nameof(Person))]
+    [ForeignKey(nameof(PersonTable))]
 
     public int  IdPerson { get; set; } 
 

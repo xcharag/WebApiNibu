@@ -1,11 +1,11 @@
-namespace WebApiNibu.Data.Entity;
+namespace WebApiNibu.Data.Entity.Person;
 
-using System.Collections.Generic;
+using WebApiNibu.Data.Entity.UsersAndAccess;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("Person")]
-public abstract class Person : BaseEntity
+[Table("personTable")]
+public abstract class PersonTable : BaseEntity
 {
 
     [Key]
@@ -57,7 +57,7 @@ public abstract class Person : BaseEntity
     [Required]
     public required DocumentType DoucmentType { get; set; }
 
-    public User? User { get; set; }
+    public Users? User { get; set; }
 
     [ForeignKey(nameof(Country))]
 

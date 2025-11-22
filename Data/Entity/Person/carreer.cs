@@ -1,4 +1,4 @@
-namespace WebApiNibu.Data.Entity;
+namespace WebApiNibu.Data.Entity.Person;
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,7 +22,7 @@ public class Carreer : BaseEntity
 
     public string? Description { get; set; }
     
-    public int AreaFormacionID { get; set; }
+    public int AreaFormacionId { get; set; }
 
     public int CodCarrRel { get; set; }
 
