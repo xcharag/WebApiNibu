@@ -1,9 +1,9 @@
-namespace WebApiNibu.Data.Entity.Person;
-
-using FatherTable;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebApiNibu.Data.Entity.FatherTable;
+using WebApiNibu.Data.Entity.Person;
+
+namespace WebApiNibu.Data.Entity.School;
 
 [Table("School")]
 

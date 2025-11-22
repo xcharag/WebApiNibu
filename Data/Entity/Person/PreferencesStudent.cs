@@ -16,14 +16,13 @@ public class PreferencesStudent : BaseEntity
 
     [Required]
     public bool HaveVocationalTest { get; set; } = false;
+    [Required]
     public WhereHadTest WhereHadTest { get; set; } = WhereHadTest.School;
 
     [Required]
-
-    public LevelInformation LevelInformation { get; set; } = LevelInformation.FourthGrade;
+    public LevelInformation LevelInformation { get; set; } = LevelInformation.Little;
 
     [Required]
-
     public bool StudyAbroad { get; set; } = false;
     
     [Required]
@@ -32,15 +31,14 @@ public class PreferencesStudent : BaseEntity
     public ICollection<AcademicPreference> AcademicPreferences { get; set; } = new List<AcademicPreference>();
 
     [ForeignKey(nameof(SchoolStudent))]
-
     public int IdSchoolStudent { get; set; }    
 }
 
 public enum LevelInformation
 {
-    FourthGrade = 0,
-    FifthGrade = 1,
-    SixthGrade = 2
+    Little = 0,
+    Moderately = 1,
+    Very = 2
 }
 
 public enum WhereHadTest

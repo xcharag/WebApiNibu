@@ -15,21 +15,18 @@ public class Carreer : BaseEntity
     public int Id { get; set; }
 
     [Required]
-    [StringLength(450)]
-
+    [StringLength(450)] 
     public string BannerImage { get; set; } = string.Empty;
 
     [StringLength(500)]
-
     public string? Description { get; set; }
     
-    public int AreaFormacionId { get; set; }
-
-    public int CodCarrRel { get; set; }
-
-    public int OrdenEventos { get; set; }
-
     public University? University { get ; set;}  
 
     public ICollection<AcademicPreference>? AcademicPreferences { get; set; } = new List<AcademicPreference>();
+    
+    // INTEGRACION
+    public int AreaFormacionId { get; set; } = 0;
+    public int CodCarrRel { get; set; } = 0;
+    public int OrdenEventos { get; set; } = 0;
 }

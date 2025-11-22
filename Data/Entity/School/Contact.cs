@@ -1,8 +1,8 @@
-namespace WebApiNibu.Data.Entity.Person;
-
-using FatherTable;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebApiNibu.Data.Entity.FatherTable;
+
+namespace WebApiNibu.Data.Entity.School;
 
 [Table("Contact")]
 

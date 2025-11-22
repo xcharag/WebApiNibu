@@ -12,6 +12,9 @@ public class SchoolStudent : PersonTable
 
     [Required]
     public bool IsPlayer { get; set; } = false;
+    
+    [Required]
+    public bool HasUpsaParents { get; set; } = false;
 
     [Required]
     public ICollection<Adult> Adults { get; set; } = new List<Adult>();
@@ -25,7 +28,7 @@ public class SchoolStudent : PersonTable
     public ICollection<StudentInterest> StudentInterests { get; set; } = new List<StudentInterest>();
 
     [Required]
-    public required School School { get; set; }
+    public required School.School School { get; set; }
 
     [Required]
     [ForeignKey(nameof(School))]
