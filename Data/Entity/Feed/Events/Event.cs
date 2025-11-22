@@ -30,6 +30,7 @@ public class Event : BaseEntity
     public DateTime EndDate { get; set; } = DateTime.Now;
     
     public ICollection<EventInteraction> EventInteractions { get; set; } = new List<EventInteraction>();
+    public ICollection<EventDetail> EventDetails { get; set; } = new List<EventDetail>();
     
     //INTEGRACION
     public int IdTipo { get; set; } = 0;
