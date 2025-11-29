@@ -19,4 +19,6 @@ public class Option : BaseEntity
     
     [Required] public int ParticipationId { get; set; }
     //TODO IMPORTANT: Add Participation Entity and relation with Option
+    
+    public ICollection<SelectedOption>? SelectedOptions { get; set; }
 }

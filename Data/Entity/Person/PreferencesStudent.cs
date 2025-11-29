@@ -1,3 +1,5 @@
+using WebApiNibu.Data.Enum;
+
 namespace WebApiNibu.Data.Entity.Person;
 
 using FatherTable;
@@ -32,20 +34,4 @@ public class PreferencesStudent : BaseEntity
 
     [ForeignKey(nameof(SchoolStudent))]
     public int IdSchoolStudent { get; set; }    
-}
-
-public enum LevelInformation
-{
-    Little = 0,
-    Moderately = 1,
-    Very = 2
-}
-
-public enum WhereHadTest
-{
-    School = 0,
-    Upsa = 1,
-    Private = 2,
-    OtherUniversity = 3,
-    Other = 4
 }

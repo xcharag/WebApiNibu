@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebApiNibu.Data.Entity.FatherTable;
+using WebApiNibu.Data.Entity.Tags;
 
 namespace WebApiNibu.Data.Entity.Feed.Events;
 
@@ -31,6 +32,7 @@ public class Event : BaseEntity
     
     public ICollection<EventInteraction> EventInteractions { get; set; } = new List<EventInteraction>();
     public ICollection<EventDetail> EventDetails { get; set; } = new List<EventDetail>();
+    public ICollection<EventTag> EventTags { get; set; } = new List<EventTag>();
     
     //INTEGRACION
     public int IdTipo { get; set; } = 0;

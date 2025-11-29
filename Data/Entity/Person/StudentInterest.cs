@@ -1,3 +1,5 @@
+using WebApiNibu.Data.Enum;
+
 namespace WebApiNibu.Data.Entity.Person;
 
 using FatherTable;
@@ -32,10 +34,4 @@ public class StudentInterest : BaseEntity
     [Required]
     [ForeignKey(nameof(InterestActivity))]
     public required int IdInterestActivity { get; set; }
-}
-
-public enum MomentSelected
-{
-    InPerson = 0,
-    App = 1,
 }

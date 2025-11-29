@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebApiNibu.Data.Entity.FatherTable;
+using WebApiNibu.Data.Enum;
 
 namespace WebApiNibu.Data.Entity.Feed.News;
 
@@ -12,20 +13,9 @@ public class NewsDetail : BaseEntity
     public int Id { get; set; }
     
     [Required] public int BlockNumber { get; set; } = 0;
-    [Required] public EventDetailType Type { get; set; } = EventDetailType.Text;
+    [Required] public NewsDetailType Type { get; set; } = NewsDetailType.Text;
     [Required] public string Content { get; set; } = string.Empty;
     [Required] public int NewsId { get; set; }
     public required News News { get; set; }
 }
 
-public enum EventDetailType
-{
-    Text = 0,
-    ImageNoCap = 1,
-    ImageWithCap = 2,
-    VideoNoCap = 3,
-    VideoWithCap = 4,
-    AudioNoCap = 5,
-    AudioWithCap = 6,
-    File = 7
-}

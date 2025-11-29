@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebApiNibu.Data.Entity.FatherTable;
+using WebApiNibu.Data.Enum;
 
 namespace WebApiNibu.Data.Entity.Feed.Events;
 
@@ -18,14 +19,3 @@ public class EventDetail : BaseEntity
     public required Event Event { get; set; }
 }
 
-public enum EventDetailType
-{
-    Text = 0,
-    ImageNoCap = 1,
-    ImageWithCap = 2,
-    VideoNoCap = 3,
-    VideoWithCap = 4,
-    AudioNoCap = 5,
-    AudioWithCap = 6,
-    File = 7
-}

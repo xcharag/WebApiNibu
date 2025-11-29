@@ -25,4 +25,7 @@ public class Tag : BaseEntity
     public string Group { get; set; } = string.Empty;
     
     public ICollection<NotifyTag> NotifyTags { get; set; } = new List<NotifyTag>();
+    public ICollection<NewsTag> NewsTags { get; set; } = new List<NewsTag>();
+    public ICollection<PollTag> PollTags { get; set; } = new List<PollTag>();
+    public ICollection<EventTag> EventTags { get; set; } = new List<EventTag>();
 }

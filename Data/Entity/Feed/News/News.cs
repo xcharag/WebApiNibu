@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebApiNibu.Data.Entity.FatherTable;
+using WebApiNibu.Data.Entity.Tags;
 
 namespace WebApiNibu.Data.Entity.Feed.News;
 
@@ -20,4 +21,5 @@ public class News : BaseEntity
     
     public ICollection<NewsDetail> NewsDetails { get; set; } = new List<NewsDetail>();
     public ICollection<NewsReaction> NewsReactions { get; set; } = new List<NewsReaction>();
+    public ICollection<NewsTag> NewsTags { get; set; } = new List<NewsTag>();
 }

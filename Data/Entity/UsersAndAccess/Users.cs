@@ -1,6 +1,8 @@
 
 
 using WebApiNibu.Data.Entity.Feed.Events;
+using WebApiNibu.Data.Entity.Feed.News;
+using WebApiNibu.Data.Entity.Feed.Polls;
 
 namespace WebApiNibu.Data.Entity.UsersAndAccess;
 
@@ -34,5 +36,6 @@ public class Users : BaseEntity
     public int  IdPerson { get; set; } 
     
     public ICollection<EventInteraction> EventInteracts { get; set; } = new List<EventInteraction>();
-
+    public ICollection<NewsReaction> NewsReactions { get; set; } = new List<NewsReaction>();
+    public ICollection<SelectedOption> SelectedOptions { get; set; } = new List<SelectedOption>();
 }

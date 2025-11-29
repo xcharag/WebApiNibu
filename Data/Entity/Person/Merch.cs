@@ -1,3 +1,5 @@
+using WebApiNibu.Data.Enum;
+
 namespace WebApiNibu.Data.Entity.Person;
 
 using FatherTable;
@@ -48,12 +50,4 @@ public class Merch : BaseEntity
 
     public required int IdMerchType { get; set; }
 
-}
-
-public enum Rarity
-{
-    Common = 0,
-    Rare = 1,
-    Epic = 2,
-    Legendary = 3
 }
