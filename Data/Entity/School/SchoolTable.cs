@@ -1,13 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebApiNibu.Data.Entity.CopaUpsa;
 using WebApiNibu.Data.Entity.FatherTable;
 using WebApiNibu.Data.Entity.Person;
 
 namespace WebApiNibu.Data.Entity.School;
 
-[Table("School")]
+[Table("SchoolTable")]
 
-public class School : BaseEntity
+public class SchoolTable : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -73,5 +74,7 @@ public class School : BaseEntity
     public ICollection<SchoolStudent> SchoolStudents { get; set; } = new List<SchoolStudent>();
 
     public ICollection<Contact>? Contacts { get; set; } = new List<Contact>();
+    
+    public ICollection<Participation> Participations { get; set; } = new List<Participation>();
 
 }

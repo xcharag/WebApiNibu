@@ -28,10 +28,10 @@ public class SchoolStudent : PersonTable
     public ICollection<StudentInterest> StudentInterests { get; set; } = new List<StudentInterest>();
 
     [Required]
-    public required School.School School { get; set; }
+    public required School.SchoolTable SchoolTable { get; set; }
 
     [Required]
-    [ForeignKey(nameof(School))]
+    [ForeignKey(nameof(SchoolTable))]
     public required int IdSchool { get; set; }
 
 

@@ -1,21 +1,23 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebApiNibu.Data.Entity.FatherTable;
-using WebApiNibu.Data.Enum;
 
 namespace WebApiNibu.Data.Entity.CopaUpsa;
 
-public class TournamentParent : BaseEntity
+public class Sport : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     
-    [StringLength(200)]
+    [Required]
+    [StringLength(100)]
     public string Name { get; set; } = string.Empty;
+    
     [StringLength(450)]
     public string? Description { get; set; } = string.Empty;
-    public Category Category { get; set; }
+    
+    public string Icon { get; set; } = string.Empty;
     
     public ICollection<Tournament> Tournaments { get; set; } = new List<Tournament>();
 }

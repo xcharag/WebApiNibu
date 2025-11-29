@@ -33,6 +33,6 @@ public class Contact : BaseEntity
 
     [Required]
 
-    public required School School { get; set; }
+    public required SchoolTable SchoolTable { get; set; }
 
 }
