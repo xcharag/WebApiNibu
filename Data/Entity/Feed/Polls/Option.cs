@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebApiNibu.Data.Entity.CopaUpsa;
 using WebApiNibu.Data.Entity.FatherTable;
 
 namespace WebApiNibu.Data.Entity.Feed.Polls;
@@ -18,7 +19,7 @@ public class Option : BaseEntity
     public required Poll Poll { get; set; }
     
     [Required] public int ParticipationId { get; set; }
-    //TODO IMPORTANT: Add Participation Entity and relation with Option
+    public required Participation Participation { get; set; }
     
     public ICollection<SelectedOption>? SelectedOptions { get; set; }
 }

@@ -1,24 +1,28 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebApiNibu.Data.Entity.FatherTable;
+using WebApiNibu.Data.Enum;
 
 namespace WebApiNibu.Data.Entity.CopaUpsa;
 
-public class MatchStatus : BaseEntity
+public class Statistic : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     
     [Required]
-    [StringLength(20)]
+    [MaxLength(200)]
     public string Name { get; set; } = string.Empty;
     
     [MaxLength(450)]
-    public string? Description { get; set; }
+    public string? Description { get; set; } = string.Empty;
     
-    [MaxLength(20)]
-    public string Color { get; set; } = string.Empty;
+    public StatisticType StatisticType { get; set; }
     
-    ICollection<Match> Matches { get; set; } = new List<Match>();
+    [Required]
+    public int SportId { get; set; }
+    public required Sport Sport { get; set; }
+    
+    ICollection<StatisticEvent> StatisticEvents { get; set; } = new List<StatisticEvent>();
 }

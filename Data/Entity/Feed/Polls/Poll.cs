@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebApiNibu.Data.Entity.CopaUpsa;
 using WebApiNibu.Data.Entity.FatherTable;
 using WebApiNibu.Data.Entity.Tags;
 
@@ -19,7 +20,7 @@ public class Poll : BaseEntity
     
     [Required]
     public int TournamentId { get; set; }
-    //TODO IMPLEMENT TOURNAMENT ENTITY RELATION
+    public required Tournament Tournament { get; set; }
     
     public ICollection<Option> Options { get; set; } = new List<Option>();
     public ICollection<PollTag>? PollTags { get; set; } = new List<PollTag>();
