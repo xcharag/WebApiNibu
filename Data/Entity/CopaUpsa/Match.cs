@@ -42,5 +42,5 @@ public class Match : BaseEntity
     public int MatchStatusId { get; set; }
     public required MatchStatus MatchStatus { get; set; }
     
-    ICollection<Roster> Rosters { get; set; } = new List<Roster>();
+    public ICollection<Roster> Rosters { get; set; } = new List<Roster>();
 }

@@ -24,5 +24,5 @@ public class Statistic : BaseEntity
     public int SportId { get; set; }
     public required Sport Sport { get; set; }
     
-    ICollection<StatisticEvent> StatisticEvents { get; set; } = new List<StatisticEvent>();
+    public ICollection<StatisticEvent> StatisticEvents { get; set; } = new List<StatisticEvent>();
 }

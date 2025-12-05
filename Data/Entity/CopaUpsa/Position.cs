@@ -20,5 +20,5 @@ public class Position : BaseEntity
     public int CoordX { get; set; }
     public int CoordY { get; set; }
     
-    ICollection<Roster> Rosters { get; set; } = new List<Roster>();
+    public ICollection<Roster> Rosters { get; set; } = new List<Roster>();
 }

@@ -23,5 +23,5 @@ public class Roster : BaseEntity
     public int PositionId { get; set; }
     public required Position Position { get; set; }
     
-    ICollection<StatisticEvent> StatisticEvents { get; set; } = new List<StatisticEvent>();
+    public ICollection<StatisticEvent> StatisticEvents { get; set; } = new List<StatisticEvent>();
 }

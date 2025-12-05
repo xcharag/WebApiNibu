@@ -31,6 +31,6 @@ public class Participation : BaseEntity
     public int SchoolId { get; set; }
     public required SchoolTable SchoolTable { get; set; }
     
-    ICollection<Match> Matches { get; set; } = new List<Match>();
-    ICollection<Option> Options { get; set; } = new List<Option>();
+    public ICollection<Match> Matches { get; set; } = new List<Match>();
+    public ICollection<Option> Options { get; set; } = new List<Option>();
 }

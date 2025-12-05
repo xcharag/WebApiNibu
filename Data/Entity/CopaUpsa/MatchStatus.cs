@@ -20,5 +20,5 @@ public class MatchStatus : BaseEntity
     [MaxLength(20)]
     public string Color { get; set; } = string.Empty;
     
-    ICollection<Match> Matches { get; set; } = new List<Match>();
+    public ICollection<Match> Matches { get; set; } = new List<Match>();
 }
