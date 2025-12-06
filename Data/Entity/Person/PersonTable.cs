@@ -38,8 +38,6 @@ public abstract class PersonTable : BaseEntity
     public string DocumentNumber { get; set; } = string.Empty;
 
     [Required]
-    [Column(TypeName = "datetime2")]
-
     public DateTime BirthDate { get; set; }
 
     [Required]

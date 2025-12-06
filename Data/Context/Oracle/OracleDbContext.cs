@@ -83,11 +83,18 @@ public class OracleDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         // Configure TPH (Table Per Hierarchy) for PersonTable inheritance
+        // All person types share the same table with a discriminator column
         modelBuilder.Entity<PersonTable>()
+            .ToTable("personTable")
             .HasDiscriminator<string>("PersonType")
             .HasValue<Adult>("Adult")
             .HasValue<Worker>("Worker")
             .HasValue<SchoolStudent>("SchoolStudent");
+
+        // Explicitly map child entities to the same table
+        modelBuilder.Entity<Adult>().ToTable("personTable");
+        modelBuilder.Entity<Worker>().ToTable("personTable");
+        modelBuilder.Entity<SchoolStudent>().ToTable("personTable");
 
         // === INDEXES FOR PERFORMANCE ===
 
@@ -99,16 +106,7 @@ public class OracleDbContext : DbContext
         modelBuilder.Entity<Users>()
             .HasIndex(u => u.IdPerson)
             .HasDatabaseName("IX_Users_IdPerson");
-
-        // PersonTable indexes
-        modelBuilder.Entity<PersonTable>()
-            .HasIndex(p => p.Email)
-            .IsUnique()
-            .HasDatabaseName("IX_PersonTable_Email");
-
-        modelBuilder.Entity<PersonTable>()
-            .HasIndex(p => p.DocumentNumber)
-            .HasDatabaseName("IX_PersonTable_DocumentNumber");
+        
 
         // Event indexes
         modelBuilder.Entity<Event>()
@@ -347,24 +345,5 @@ public class OracleDbContext : DbContext
         modelBuilder.Entity<Match>()
             .Property(m => m.DetailPointB)
             .HasPrecision(18, 4);
-
-        // BaseEntity default values
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-        {
-            if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
-            {
-                modelBuilder.Entity(entityType.ClrType)
-                    .Property<DateTime>("CreatedAt")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                modelBuilder.Entity(entityType.ClrType)
-                    .Property<DateTime>("UpdatedAt")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
-
-                modelBuilder.Entity(entityType.ClrType)
-                    .Property<bool>("Active")
-                    .HasDefaultValue(true);
-            }
-        }
     }
 }

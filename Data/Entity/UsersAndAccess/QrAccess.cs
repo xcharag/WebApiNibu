@@ -18,8 +18,6 @@ public class QrAccess : BaseEntity
     public string? Reason { get; set; }
 
     [Required]
-    [Column(TypeName = "datetime2")]
-
     public required DateTime ExpirationDate { get; set; }
 
     [Required]
