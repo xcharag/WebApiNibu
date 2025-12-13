@@ -51,10 +51,10 @@ public abstract class PersonTable : BaseEntity
     public string Email { get; set; } = string.Empty;
 
     [Required]
-    public required Country Country { get; set; }
+    public Country? Country { get; set; }
 
     [Required]
-    public required DocumentType DoucmentType { get; set; }
+    public DocumentType? DoucmentType { get; set; }
 
     public Users? User { get; set; }
 

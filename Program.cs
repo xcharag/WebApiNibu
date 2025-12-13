@@ -1,10 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Abstraction;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// Register generic CRUD service for all entities
+builder.Services.AddScoped(typeof(IBaseCrud<>), typeof(BaseCrudImplementation<>));
 
 // Configure DbContext with MySQL/Oracle
 var connectionString = builder.Configuration.GetConnectionString("OracleConnection");

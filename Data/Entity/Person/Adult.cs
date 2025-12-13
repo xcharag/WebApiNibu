@@ -6,11 +6,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("Adult")]
 public class Adult : PersonTable
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-
-    public int Id { get; set; }
-
     [Required]
     [StringLength(30)]
 

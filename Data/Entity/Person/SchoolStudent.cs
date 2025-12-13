@@ -27,8 +27,7 @@ public class SchoolStudent : PersonTable
     [Required]
     public ICollection<StudentInterest> StudentInterests { get; set; } = new List<StudentInterest>();
 
-    [Required]
-    public required School.SchoolTable SchoolTable { get; set; }
+    public WebApiNibu.Data.Entity.School.SchoolTable? SchoolTable { get; set; }
 
     [Required]
     [ForeignKey(nameof(SchoolTable))]
