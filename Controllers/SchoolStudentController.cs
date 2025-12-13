@@ -3,6 +3,8 @@ using WebApiNibu.Abstraction;
 using WebApiNibu.Data.Entity.Person;
 using WebApiNibu.Data.Dto;
 using System.Linq;
+using WebApiNibu.Data.Context.Oracle;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApiNibu.Controllers;
 
@@ -11,10 +13,12 @@ namespace WebApiNibu.Controllers;
 public class SchoolStudentController : ControllerBase
 {
     private readonly IBaseCrud<SchoolStudent> _service;
+    private readonly OracleDbContext _db;
 
-    public SchoolStudentController(IBaseCrud<SchoolStudent> service)
+    public SchoolStudentController(IBaseCrud<SchoolStudent> service, OracleDbContext db)
     {
         _service = service;
+        _db = db;
     }
 
     // GET: api/SchoolStudent
@@ -38,6 +42,12 @@ public class SchoolStudentController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<SchoolStudentReadDto>> Create([FromBody] SchoolStudentCreateDto dto, CancellationToken ct)
     {
+        var fkErrors = await ValidateFksAsync(dto.IdCountry, dto.IdDocumentType, dto.IdSchool, ct);
+        if (fkErrors.Count > 0)
+        {
+            return BadRequest(new { message = "Invalid foreign keys", errors = fkErrors });
+        }
+
         var entity = MapFromCreateDto(dto);
         var created = await _service.CreateAsync(entity, ct);
         var readDto = MapToReadDto(created);
@@ -48,6 +58,12 @@ public class SchoolStudentController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] SchoolStudentUpdateDto dto, CancellationToken ct)
     {
+        var fkErrors = await ValidateFksAsync(dto.IdCountry, dto.IdDocumentType, dto.IdSchool, ct);
+        if (fkErrors.Count > 0)
+        {
+            return BadRequest(new { message = "Invalid foreign keys", errors = fkErrors });
+        }
+
         var updated = await _service.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);
         return updated ? NoContent() : NotFound();
     }
@@ -58,6 +74,24 @@ public class SchoolStudentController : ControllerBase
     {
         var deleted = await _service.DeleteAsync(id, soft, ct);
         return deleted ? NoContent() : NotFound();
+    }
+
+    private async Task<List<string>> ValidateFksAsync(int idCountry, int idDocumentType, int idSchool, CancellationToken ct)
+    {
+        var errors = new List<string>();
+        if (!await _db.Countries.AnyAsync(c => c.Id == idCountry, ct))
+        {
+            errors.Add($"IdCountry ({idCountry}) not found");
+        }
+        if (!await _db.DocumentTypes.AnyAsync(d => d.Id == idDocumentType, ct))
+        {
+            errors.Add($"IdDocumentType ({idDocumentType}) not found");
+        }
+        if (!await _db.Schools.AnyAsync(s => s.Id == idSchool, ct))
+        {
+            errors.Add($"IdSchool ({idSchool}) not found");
+        }
+        return errors;
     }
 
     private static SchoolStudentReadDto MapToReadDto(SchoolStudent s) => new()

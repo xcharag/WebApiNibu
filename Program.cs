@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+// Enable endpoint discovery for OpenAPI
+builder.Services.AddEndpointsApiExplorer();
 
 // Register generic CRUD service for all entities
 builder.Services.AddScoped(typeof(IBaseCrud<>), typeof(BaseCrudImplementation<>));
@@ -32,19 +34,33 @@ builder.Services.AddDbContext<OracleDbContext>(options =>
     }
 });
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Built-in OpenAPI document (optional alongside Swashbuckle)
 builder.Services.AddOpenApi();
+
+// Swashbuckle: Swagger generator
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 // Auto-apply pending migrations
 await ApplyMigrationsAsync(app);
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Expose the OpenAPI spec regardless of environment (minimal API doc)
+app.MapOpenApi();
+
+// Swashbuckle: Enable Swagger middleware and UI
+app.UseSwagger(c =>
 {
-    app.MapOpenApi();
-}
+    // Serve at /swagger/v1/swagger.json by default
+});
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApiNibu v1");
+    c.RoutePrefix = "swagger"; // UI at /swagger
+});
+
+// Optional: redirect root to Swagger UI for quick discovery
+app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.UseHttpsRedirection();
 
