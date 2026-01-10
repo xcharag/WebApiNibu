@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using WebApiNibu.Abstraction;
 using WebApiNibu.Data.Entity.Person;
 using WebApiNibu.Data.Dto;
-using System.Linq;
 using WebApiNibu.Data.Context.Oracle;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,22 +9,13 @@ namespace WebApiNibu.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SchoolStudentController : ControllerBase
+public class SchoolStudentController(IBaseCrud<SchoolStudent> service, OracleDbContext db) : ControllerBase
 {
-    private readonly IBaseCrud<SchoolStudent> _service;
-    private readonly OracleDbContext _db;
-
-    public SchoolStudentController(IBaseCrud<SchoolStudent> service, OracleDbContext db)
-    {
-        _service = service;
-        _db = db;
-    }
-
     // GET: api/SchoolStudent
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SchoolStudentReadDto>>> GetAll(CancellationToken ct)
     {
-        var items = await _service.GetAllAsync(true, ct);
+        var items = await service.GetAllAsync(true, ct);
         var dtos = items.Select(MapToReadDto).ToList();
         return Ok(dtos);
     }
@@ -34,7 +24,7 @@ public class SchoolStudentController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<SchoolStudentReadDto>> GetById(int id, CancellationToken ct)
     {
-        var item = await _service.GetByIdAsync(id, true, ct);
+        var item = await service.GetByIdAsync(id, true, ct);
         return item is null ? NotFound() : Ok(MapToReadDto(item));
     }
 
@@ -49,7 +39,7 @@ public class SchoolStudentController : ControllerBase
         }
 
         var entity = MapFromCreateDto(dto);
-        var created = await _service.CreateAsync(entity, ct);
+        var created = await service.CreateAsync(entity, ct);
         var readDto = MapToReadDto(created);
         return CreatedAtAction(nameof(GetById), new { id = readDto.Id }, readDto);
     }
@@ -64,7 +54,7 @@ public class SchoolStudentController : ControllerBase
             return BadRequest(new { message = "Invalid foreign keys", errors = fkErrors });
         }
 
-        var updated = await _service.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);
+        var updated = await service.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);
         return updated ? NoContent() : NotFound();
     }
 
@@ -72,22 +62,22 @@ public class SchoolStudentController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
-        var deleted = await _service.DeleteAsync(id, soft, ct);
+        var deleted = await service.DeleteAsync(id, soft, ct);
         return deleted ? NoContent() : NotFound();
     }
 
     private async Task<List<string>> ValidateFksAsync(int idCountry, int idDocumentType, int idSchool, CancellationToken ct)
     {
         var errors = new List<string>();
-        if (!await _db.Countries.AnyAsync(c => c.Id == idCountry, ct))
+        if (!await db.Countries.AnyAsync(c => c.Id == idCountry, ct))
         {
             errors.Add($"IdCountry ({idCountry}) not found");
         }
-        if (!await _db.DocumentTypes.AnyAsync(d => d.Id == idDocumentType, ct))
+        if (!await db.DocumentTypes.AnyAsync(d => d.Id == idDocumentType, ct))
         {
             errors.Add($"IdDocumentType ({idDocumentType}) not found");
         }
-        if (!await _db.Schools.AnyAsync(s => s.Id == idSchool, ct))
+        if (!await db.Schools.AnyAsync(s => s.Id == idSchool, ct))
         {
             errors.Add($"IdSchool ({idSchool}) not found");
         }

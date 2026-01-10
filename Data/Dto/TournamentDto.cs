@@ -1,6 +1,6 @@
 namespace WebApiNibu.Data.Dto;
 
-public class Test
+public class TournamentDto
 {
     
 }
