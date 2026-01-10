@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Context.Oracle;
 using WebApiNibu.Abstraction;
+using WebApiNibu.Services.Interface;
+using WebApiNibu.Services.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,11 @@ builder.Services.AddEndpointsApiExplorer();
 
 // Register generic CRUD service for all entities
 builder.Services.AddScoped(typeof(IBaseCrud<>), typeof(BaseCrudImplementation<>));
+
+// CQRS-style domain services
+builder.Services.AddScoped<ISchoolStudent, SchoolStudentImplementation>();
+builder.Services.AddScoped<ISchoolTable, SchoolTableImplementation>();
+builder.Services.AddScoped<IContact, ContactImplementation>();
 
 // Configure DbContext with MySQL/Oracle
 var connectionString = builder.Configuration.GetConnectionString("OracleConnection");

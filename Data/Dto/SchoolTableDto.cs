@@ -21,8 +21,8 @@ public class SchoolTableReadDto
     public int IdColegio { get; set; }
     public int KaRectorada { get; set; }
     public string? Segemento { get; set; }
-
     public List<ContactReadDto> Contacts { get; set; } = new();
+    public List<SchoolStudentInSchoolReadDto>? SchoolStudents { get; set; } = new();
 }
 
 public class SchoolTableCreateDto
@@ -44,8 +44,6 @@ public class SchoolTableCreateDto
     public int IdColegio { get; set; }
     public int KaRectorada { get; set; }
     public string? Segemento { get; set; }
-
-    // Optional: create contacts alongside the school
     public List<ContactCreateDto> Contacts { get; set; } = new();
 }
 
@@ -93,4 +91,27 @@ public class ContactUpdateDto
     public string PersonRole { get; set; } = string.Empty;
     public string? PersonPhoneNumber { get; set; }
     public string? PersonEmail { get; set; }
+}
+
+public class SchoolStudentInSchoolReadDto
+{
+    public int Id { get; init; }
+
+    // These come from PersonTable
+    public string FirstName { get; set; } = string.Empty;
+    public string? MiddleName { get; set; }
+    public string PaternalSurname { get; set; } = string.Empty;
+    public string MaternalSurname { get; set; } = string.Empty;
+    public string DocumentNumber { get; set; } = string.Empty;
+    public DateTime BirthDate { get; set; }
+    public string PhoneNumber { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+
+    public int IdCountry { get; set; }
+    public int IdDocumentType { get; set; }
+
+    // SchoolStudent-specific
+    public int SchoolGrade { get; set; }
+    public bool IsPlayer { get; set; }
+    public bool HasUpsaParents { get; set; }
 }
