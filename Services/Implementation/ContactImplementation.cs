@@ -33,11 +33,11 @@ public class ContactImplementation(IBaseCrud<Contact> crud, OracleDbContext db) 
         return item is null ? null : MapToReadDto(item);
     }
 
-    public async Task<ContactReadDto> CreateAsync(CreateContactCommand command, CancellationToken ct = default)
+    public async Task<Result<ContactReadDto>> CreateAsync(CreateContactCommand command, CancellationToken ct = default)
     {
         if (!await db.Schools.AnyAsync(s => s.Id == command.SchoolId, ct))
         {
-            throw new DomainValidationException("Invalid foreign keys", new[] { $"SchoolId ({command.SchoolId}) not found" });
+            return Result<ContactReadDto>.Fail("Invalid foreign keys", new[] { $"SchoolId ({command.SchoolId}) not found" });
         }
 
         var schoolProxy = new SchoolTable { Id = command.SchoolId, Active = true };
@@ -54,11 +54,12 @@ public class ContactImplementation(IBaseCrud<Contact> crud, OracleDbContext db) 
         };
 
         var created = await crud.CreateAsync(entity, ct);
-        return MapToReadDto(created);
+        return Result<ContactReadDto>.Ok(MapToReadDto(created));
     }
 
-    public Task<bool> UpdateAsync(int id, UpdateContactCommand command, CancellationToken ct = default)
-        => crud.UpdateAsync(id, entity =>
+    public async Task<Result> UpdateAsync(int id, UpdateContactCommand command, CancellationToken ct = default)
+    {
+        var updated = await crud.UpdateAsync(id, entity =>
         {
             entity.PersonName = command.PersonName;
             entity.PersonRole = command.PersonRole;
@@ -66,8 +67,14 @@ public class ContactImplementation(IBaseCrud<Contact> crud, OracleDbContext db) 
             entity.PersonEmail = command.PersonEmail;
         }, ct);
 
-    public Task<bool> DeleteAsync(int id, bool softDelete = true, CancellationToken ct = default)
-        => crud.DeleteAsync(id, softDelete, ct);
+        return updated ? Result.Ok() : Result.Fail("Not found", new[] { $"Contact (Id={id}) not found" });
+    }
+
+    public async Task<Result> DeleteAsync(int id, bool softDelete = true, CancellationToken ct = default)
+    {
+        var deleted = await crud.DeleteAsync(id, softDelete, ct);
+        return deleted ? Result.Ok() : Result.Fail("Not found", new[] { $"Contact (Id={id}) not found" });
+    }
 
     private static ContactReadDto MapToReadDto(Contact c) => new()
     {

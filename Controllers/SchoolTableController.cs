@@ -29,9 +29,13 @@ public class SchoolTableController(ISchoolTable service) : ControllerBase
 
     // POST: api/SchoolTable
     [HttpPost]
-    public async Task<ActionResult<SchoolTableReadDto>> Create([FromBody] CreateSchoolTableCommand command, CancellationToken ct)
+    public async Task<IActionResult> Create([FromBody] CreateSchoolTableCommand command, CancellationToken ct)
     {
-        var created = await service.CreateAsync(command, ct);
+        var result = await service.CreateAsync(command, ct);
+        if (!result.IsSuccess)
+            return BadRequest(new { message = result.Message, errors = result.Errors });
+
+        var created = result.Value!;
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
@@ -39,15 +43,22 @@ public class SchoolTableController(ISchoolTable service) : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateSchoolTableCommand command, CancellationToken ct)
     {
-        var updated = await service.UpdateAsync(id, command, ct);
-        return updated ? NoContent() : NotFound();
+        var result = await service.UpdateAsync(id, command, ct);
+        if (result.IsSuccess) return NoContent();
+
+        if (string.Equals(result.Message, "Not found", StringComparison.OrdinalIgnoreCase))
+            return NotFound(new { message = result.Message, errors = result.Errors });
+
+        return BadRequest(new { message = result.Message, errors = result.Errors });
     }
 
     // DELETE: api/SchoolTable/{id}
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
-        var deleted = await service.DeleteAsync(id, soft, ct);
-        return deleted ? NoContent() : NotFound();
+        var result = await service.DeleteAsync(id, soft, ct);
+        if (result.IsSuccess) return NoContent();
+
+        return NotFound(new { message = result.Message, errors = result.Errors });
     }
 }

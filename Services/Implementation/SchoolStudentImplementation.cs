@@ -45,34 +45,38 @@ public class SchoolStudentImplementation(IBaseCrud<SchoolStudent> crud, OracleDb
         return item is null ? null : MapToReadDto(item);
     }
 
-    public async Task<SchoolStudentReadDto> CreateAsync(CreateSchoolStudentCommand command, CancellationToken ct = default)
+    public async Task<Result<SchoolStudentReadDto>> CreateAsync(CreateSchoolStudentCommand command, CancellationToken ct = default)
     {
         var dto = command.ToDto();
         var fkErrors = await ValidateFksAsync(dto.IdCountry, dto.IdDocumentType, dto.IdSchool, ct);
         if (fkErrors.Count > 0)
         {
-            throw new DomainValidationException("Invalid foreign keys", fkErrors);
+            return Result<SchoolStudentReadDto>.Fail("Invalid foreign keys", fkErrors);
         }
 
         var entity = MapFromCreateDto(dto);
         var created = await crud.CreateAsync(entity, ct);
-        return MapToReadDto(created);
+        return Result<SchoolStudentReadDto>.Ok(MapToReadDto(created));
     }
 
-    public async Task<bool> UpdateAsync(int id, UpdateSchoolStudentCommand command, CancellationToken ct = default)
+    public async Task<Result> UpdateAsync(int id, UpdateSchoolStudentCommand command, CancellationToken ct = default)
     {
         var dto = command.ToDto();
         var fkErrors = await ValidateFksAsync(dto.IdCountry, dto.IdDocumentType, dto.IdSchool, ct);
         if (fkErrors.Count > 0)
         {
-            throw new DomainValidationException("Invalid foreign keys", fkErrors);
+            return Result.Fail("Invalid foreign keys", fkErrors);
         }
 
-        return await crud.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);
+        var updated = await crud.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);
+        return updated ? Result.Ok() : Result.Fail("Not found", new[] { $"SchoolStudent (Id={id}) not found" });
     }
 
-    public Task<bool> DeleteAsync(int id, bool softDelete = true, CancellationToken ct = default)
-        => crud.DeleteAsync(id, softDelete, ct);
+    public async Task<Result> DeleteAsync(int id, bool softDelete = true, CancellationToken ct = default)
+    {
+        var deleted = await crud.DeleteAsync(id, softDelete, ct);
+        return deleted ? Result.Ok() : Result.Fail("Not found", new[] { $"SchoolStudent (Id={id}) not found" });
+    }
 
     private async Task<List<string>> ValidateFksAsync(int idCountry, int idDocumentType, int idSchool, CancellationToken ct)
     {

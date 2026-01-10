@@ -369,11 +369,62 @@ But for most real endpoints in this project, prefer the CQRS approach above so:
 
 ---
 
-## Next step (optional): avoid exceptions entirely
+## Next step (optional): avoid exceptions entirely (Result<T>)
 
-If you want *even cleaner CQRS* (no exceptions for validation), we can introduce:
+This repo now supports an even cleaner CQRS style where **commands return a `Result`** instead of throwing exceptions.
 
-- `Result<T>` with `IsSuccess`, `Errors`, `Value`
+### What you get
 
-Then controllers would return consistent HTTP responses without try/catch.
+- No `try/catch` in controllers for validation.
+- A consistent response shape for failures:
 
+```json
+{ "message": "Invalid foreign keys", "errors": ["..."] }
+```
+
+### Result types
+
+Defined in:
+
+- `Services/Interface/Common/Result.cs`
+
+```csharp
+public record Result { bool IsSuccess; string? Message; IReadOnlyList<string> Errors; }
+public record Result<T> : Result { T? Value; }
+```
+
+### Interface pattern
+
+Write-side methods return `Result`/`Result<T>`:
+
+```csharp
+Task<Result<MyReadDto>> CreateAsync(CreateMyCommand cmd, CancellationToken ct = default);
+Task<Result> UpdateAsync(int id, UpdateMyCommand cmd, CancellationToken ct = default);
+Task<Result> DeleteAsync(int id, bool softDelete = true, CancellationToken ct = default);
+```
+
+### Service implementation pattern
+
+Instead of throwing, return failures:
+
+```csharp
+if (!await db.Schools.AnyAsync(s => s.Id == cmd.SchoolId, ct))
+    return Result<MyReadDto>.Fail("Invalid foreign keys", new[] { $"SchoolId ({cmd.SchoolId}) not found" });
+```
+
+### Controller pattern (no exceptions)
+
+```csharp
+var result = await service.CreateAsync(command, ct);
+if (!result.IsSuccess)
+    return BadRequest(new { message = result.Message, errors = result.Errors });
+
+return CreatedAtAction(nameof(GetById), new { id = result.Value!.Id }, result.Value);
+```
+
+For update/delete, the repo uses the convention:
+
+- `Message == "Not found"` → return `404`
+- anything else → return `400`
+
+If you want a more explicit approach, we can add an enum (e.g. `ResultErrorType.NotFound/Validation/Conflict`).

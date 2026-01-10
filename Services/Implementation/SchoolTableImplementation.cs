@@ -6,6 +6,7 @@ using WebApiNibu.Data.Entity.Person;
 using WebApiNibu.Data.Entity.School;
 using WebApiNibu.Services.Interface;
 using WebApiNibu.Services.Interface.Commands;
+using WebApiNibu.Services.Interface.Common;
 using WebApiNibu.Services.Interface.Queries;
 
 namespace WebApiNibu.Services.Implementation;
@@ -39,7 +40,8 @@ public class SchoolTableImplementation(IBaseCrud<SchoolTable> crud, OracleDbCont
         return item is null ? null : MapToReadDto(item);
     }
 
-    public async Task<SchoolTableReadDto> CreateAsync(SchoolTableCreateDto dto, CancellationToken ct = default)
+    // This private helper is used by the command overload to keep the core logic in one place.
+    private async Task<SchoolTableReadDto> CreateInternalAsync(SchoolTableCreateDto dto, CancellationToken ct)
     {
         var entity = MapFromCreateDto(dto);
 
@@ -66,7 +68,6 @@ public class SchoolTableImplementation(IBaseCrud<SchoolTable> crud, OracleDbCont
 
         await tx.CommitAsync(ct);
 
-        // Return fresh read model with relationships
         var read = await db.Schools.AsNoTracking()
             .Include(s => s.Contacts)
             .Include(s => s.SchoolStudents)
@@ -75,17 +76,25 @@ public class SchoolTableImplementation(IBaseCrud<SchoolTable> crud, OracleDbCont
         return MapToReadDto(read);
     }
 
-    public Task<SchoolTableReadDto> CreateAsync(CreateSchoolTableCommand command, CancellationToken ct = default)
-        => CreateAsync(command.ToDto(), ct);
+    // Delete the old CreateAsync(SchoolTableCreateDto) result wrapper and use internal helper.
+    public async Task<Result<SchoolTableReadDto>> CreateAsync(CreateSchoolTableCommand command, CancellationToken ct = default)
+    {
+        var readDto = await CreateInternalAsync(command.ToDto(), ct);
+        return Result<SchoolTableReadDto>.Ok(readDto);
+    }
 
-    public Task<bool> UpdateAsync(int id, SchoolTableUpdateDto dto, CancellationToken ct = default)
-        => crud.UpdateAsync(id, entity => ApplyUpdateDto(entity, dto), ct);
+    // Update returning Result (not bool)
+    public async Task<Result> UpdateAsync(int id, UpdateSchoolTableCommand command, CancellationToken ct = default)
+    {
+        var updated = await crud.UpdateAsync(id, entity => ApplyUpdateDto(entity, command.ToDto()), ct);
+        return updated ? Result.Ok() : Result.Fail("Not found", new[] { $"SchoolTable (Id={id}) not found" });
+    }
 
-    public Task<bool> UpdateAsync(int id, UpdateSchoolTableCommand command, CancellationToken ct = default)
-        => UpdateAsync(id, command.ToDto(), ct);
-
-    public Task<bool> DeleteAsync(int id, bool softDelete = true, CancellationToken ct = default)
-        => crud.DeleteAsync(id, softDelete, ct);
+    public async Task<Result> DeleteAsync(int id, bool softDelete = true, CancellationToken ct = default)
+    {
+        var deleted = await crud.DeleteAsync(id, softDelete, ct);
+        return deleted ? Result.Ok() : Result.Fail("Not found", new[] { $"SchoolTable (Id={id}) not found" });
+    }
 
     private static SchoolTableReadDto MapToReadDto(SchoolTable s) => new()
     {
