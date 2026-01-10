@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApiNibu.Data.Dto;
 using WebApiNibu.Services.Interface;
+using WebApiNibu.Services.Interface.Commands;
 using WebApiNibu.Services.Interface.Queries;
 
 namespace WebApiNibu.Controllers;
@@ -12,10 +13,7 @@ public class SchoolTableController(ISchoolTable service) : ControllerBase
     // GET: api/SchoolTable
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SchoolTableReadDto>>> GetAll([FromQuery] SchoolTableQuery query, CancellationToken ct)
-    {
-        var items = await service.QueryAsync(query, ct);
-        return Ok(items);
-    }
+        => Ok(await service.QueryAsync(query, ct));
 
     // GET: api/SchoolTable/{id}
     [HttpGet("{id:int}")]
@@ -31,17 +29,17 @@ public class SchoolTableController(ISchoolTable service) : ControllerBase
 
     // POST: api/SchoolTable
     [HttpPost]
-    public async Task<ActionResult<SchoolTableReadDto>> Create([FromBody] SchoolTableCreateDto dto, CancellationToken ct)
+    public async Task<ActionResult<SchoolTableReadDto>> Create([FromBody] CreateSchoolTableCommand command, CancellationToken ct)
     {
-        var created = await service.CreateAsync(dto, ct);
+        var created = await service.CreateAsync(command, ct);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
     // PUT: api/SchoolTable/{id}
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] SchoolTableUpdateDto dto, CancellationToken ct)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateSchoolTableCommand command, CancellationToken ct)
     {
-        var updated = await service.UpdateAsync(id, dto, ct);
+        var updated = await service.UpdateAsync(id, command, ct);
         return updated ? NoContent() : NotFound();
     }
 

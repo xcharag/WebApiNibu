@@ -4,6 +4,8 @@ using WebApiNibu.Data.Context.Oracle;
 using WebApiNibu.Data.Dto;
 using WebApiNibu.Data.Entity.Person;
 using WebApiNibu.Services.Interface;
+using WebApiNibu.Services.Interface.Commands;
+using WebApiNibu.Services.Interface.Common;
 using WebApiNibu.Services.Interface.Queries;
 
 namespace WebApiNibu.Services.Implementation;
@@ -43,12 +45,13 @@ public class SchoolStudentImplementation(IBaseCrud<SchoolStudent> crud, OracleDb
         return item is null ? null : MapToReadDto(item);
     }
 
-    public async Task<SchoolStudentReadDto> CreateAsync(SchoolStudentCreateDto dto, CancellationToken ct = default)
+    public async Task<SchoolStudentReadDto> CreateAsync(CreateSchoolStudentCommand command, CancellationToken ct = default)
     {
+        var dto = command.ToDto();
         var fkErrors = await ValidateFksAsync(dto.IdCountry, dto.IdDocumentType, dto.IdSchool, ct);
         if (fkErrors.Count > 0)
         {
-            throw new InvalidOperationException($"Invalid foreign keys: {string.Join("; ", fkErrors)}");
+            throw new DomainValidationException("Invalid foreign keys", fkErrors);
         }
 
         var entity = MapFromCreateDto(dto);
@@ -56,12 +59,13 @@ public class SchoolStudentImplementation(IBaseCrud<SchoolStudent> crud, OracleDb
         return MapToReadDto(created);
     }
 
-    public async Task<bool> UpdateAsync(int id, SchoolStudentUpdateDto dto, CancellationToken ct = default)
+    public async Task<bool> UpdateAsync(int id, UpdateSchoolStudentCommand command, CancellationToken ct = default)
     {
+        var dto = command.ToDto();
         var fkErrors = await ValidateFksAsync(dto.IdCountry, dto.IdDocumentType, dto.IdSchool, ct);
         if (fkErrors.Count > 0)
         {
-            throw new InvalidOperationException($"Invalid foreign keys: {string.Join("; ", fkErrors)}");
+            throw new DomainValidationException("Invalid foreign keys", fkErrors);
         }
 
         return await crud.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);

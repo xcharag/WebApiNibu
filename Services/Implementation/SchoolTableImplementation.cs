@@ -5,6 +5,7 @@ using WebApiNibu.Data.Dto;
 using WebApiNibu.Data.Entity.Person;
 using WebApiNibu.Data.Entity.School;
 using WebApiNibu.Services.Interface;
+using WebApiNibu.Services.Interface.Commands;
 using WebApiNibu.Services.Interface.Queries;
 
 namespace WebApiNibu.Services.Implementation;
@@ -74,8 +75,14 @@ public class SchoolTableImplementation(IBaseCrud<SchoolTable> crud, OracleDbCont
         return MapToReadDto(read);
     }
 
+    public Task<SchoolTableReadDto> CreateAsync(CreateSchoolTableCommand command, CancellationToken ct = default)
+        => CreateAsync(command.ToDto(), ct);
+
     public Task<bool> UpdateAsync(int id, SchoolTableUpdateDto dto, CancellationToken ct = default)
         => crud.UpdateAsync(id, entity => ApplyUpdateDto(entity, dto), ct);
+
+    public Task<bool> UpdateAsync(int id, UpdateSchoolTableCommand command, CancellationToken ct = default)
+        => UpdateAsync(id, command.ToDto(), ct);
 
     public Task<bool> DeleteAsync(int id, bool softDelete = true, CancellationToken ct = default)
         => crud.DeleteAsync(id, softDelete, ct);

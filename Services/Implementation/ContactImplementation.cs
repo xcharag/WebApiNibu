@@ -4,6 +4,8 @@ using WebApiNibu.Data.Context.Oracle;
 using WebApiNibu.Data.Dto;
 using WebApiNibu.Data.Entity.School;
 using WebApiNibu.Services.Interface;
+using WebApiNibu.Services.Interface.Commands;
+using WebApiNibu.Services.Interface.Common;
 using WebApiNibu.Services.Interface.Queries;
 
 namespace WebApiNibu.Services.Implementation;
@@ -31,22 +33,22 @@ public class ContactImplementation(IBaseCrud<Contact> crud, OracleDbContext db) 
         return item is null ? null : MapToReadDto(item);
     }
 
-    public async Task<ContactReadDto> CreateAsync(int schoolId, ContactCreateDto dto, CancellationToken ct = default)
+    public async Task<ContactReadDto> CreateAsync(CreateContactCommand command, CancellationToken ct = default)
     {
-        if (!await db.Schools.AnyAsync(s => s.Id == schoolId, ct))
+        if (!await db.Schools.AnyAsync(s => s.Id == command.SchoolId, ct))
         {
-            throw new InvalidOperationException($"School (Id={schoolId}) not found");
+            throw new DomainValidationException("Invalid foreign keys", new[] { $"SchoolId ({command.SchoolId}) not found" });
         }
 
-        var schoolProxy = new SchoolTable { Id = schoolId, Active = true };
+        var schoolProxy = new SchoolTable { Id = command.SchoolId, Active = true };
         db.Attach(schoolProxy);
 
         var entity = new Contact
         {
-            PersonName = dto.PersonName,
-            PersonRole = dto.PersonRole,
-            PersonPhoneNumber = dto.PersonPhoneNumber,
-            PersonEmail = dto.PersonEmail,
+            PersonName = command.PersonName,
+            PersonRole = command.PersonRole,
+            PersonPhoneNumber = command.PersonPhoneNumber,
+            PersonEmail = command.PersonEmail,
             SchoolTable = schoolProxy,
             Active = true
         };
@@ -55,19 +57,17 @@ public class ContactImplementation(IBaseCrud<Contact> crud, OracleDbContext db) 
         return MapToReadDto(created);
     }
 
-    public Task<bool> UpdateAsync(int id, ContactUpdateDto dto, CancellationToken ct = default)
-        => crud.UpdateAsync(id, entity => ApplyUpdateDto(entity, dto), ct);
+    public Task<bool> UpdateAsync(int id, UpdateContactCommand command, CancellationToken ct = default)
+        => crud.UpdateAsync(id, entity =>
+        {
+            entity.PersonName = command.PersonName;
+            entity.PersonRole = command.PersonRole;
+            entity.PersonPhoneNumber = command.PersonPhoneNumber;
+            entity.PersonEmail = command.PersonEmail;
+        }, ct);
 
     public Task<bool> DeleteAsync(int id, bool softDelete = true, CancellationToken ct = default)
         => crud.DeleteAsync(id, softDelete, ct);
-
-    private static void ApplyUpdateDto(Contact target, ContactUpdateDto dto)
-    {
-        target.PersonName = dto.PersonName;
-        target.PersonRole = dto.PersonRole;
-        target.PersonPhoneNumber = dto.PersonPhoneNumber;
-        target.PersonEmail = dto.PersonEmail;
-    }
 
     private static ContactReadDto MapToReadDto(Contact c) => new()
     {

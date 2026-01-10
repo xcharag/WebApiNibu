@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApiNibu.Data.Dto;
 using WebApiNibu.Services.Interface;
+using WebApiNibu.Services.Interface.Commands;
+using WebApiNibu.Services.Interface.Common;
 using WebApiNibu.Services.Interface.Queries;
 
 namespace WebApiNibu.Controllers;
@@ -12,10 +14,7 @@ public class SchoolStudentController(ISchoolStudent service) : ControllerBase
     // GET: api/SchoolStudent
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SchoolStudentReadDto>>> GetAll([FromQuery] SchoolStudentQuery query, CancellationToken ct)
-    {
-        var items = await service.QueryAsync(query, ct);
-        return Ok(items);
-    }
+        => Ok(await service.QueryAsync(query, ct));
 
     // GET: api/SchoolStudent/{id}
     [HttpGet("{id:int}")]
@@ -27,31 +26,31 @@ public class SchoolStudentController(ISchoolStudent service) : ControllerBase
 
     // POST: api/SchoolStudent
     [HttpPost]
-    public async Task<ActionResult<SchoolStudentReadDto>> Create([FromBody] SchoolStudentCreateDto dto, CancellationToken ct)
+    public async Task<ActionResult<SchoolStudentReadDto>> Create([FromBody] CreateSchoolStudentCommand command, CancellationToken ct)
     {
         try
         {
-            var created = await service.CreateAsync(dto, ct);
+            var created = await service.CreateAsync(command, ct);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
-        catch (InvalidOperationException ex)
+        catch (DomainValidationException ex)
         {
-            return BadRequest(new { message = ex.Message });
+            return BadRequest(new { message = ex.Message, errors = ex.Errors });
         }
     }
 
     // PUT: api/SchoolStudent/{id}
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] SchoolStudentUpdateDto dto, CancellationToken ct)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateSchoolStudentCommand command, CancellationToken ct)
     {
         try
         {
-            var updated = await service.UpdateAsync(id, dto, ct);
+            var updated = await service.UpdateAsync(id, command, ct);
             return updated ? NoContent() : NotFound();
         }
-        catch (InvalidOperationException ex)
+        catch (DomainValidationException ex)
         {
-            return BadRequest(new { message = ex.Message });
+            return BadRequest(new { message = ex.Message, errors = ex.Errors });
         }
     }
 
