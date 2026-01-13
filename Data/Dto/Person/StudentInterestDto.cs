@@ -1,4 +1,4 @@
-namespace WebApiNibu.Data.Dto;
+namespace WebApiNibu.Data.Dto.Person;
 
 public enum MomentSelected
 {

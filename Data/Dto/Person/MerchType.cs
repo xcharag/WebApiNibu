@@ -1,4 +1,4 @@
-namespace WebApiNibu.Data.Dto;
+namespace WebApiNibu.Data.Dto.Person;
 
 public class MerchTypeReadDto
 {
@@ -11,11 +11,11 @@ public class MerchTypeReadDto
 
 public class MerchTypeCreateDto
 {
-    public string name {get;set;} = string.Empty;
+    public string Name {get;set;} = string.Empty;
 }
 
 public class MerchTypeUpdateDto
 {
-    public string name {get;set;} = string.Empty;
+    public string Name {get;set;} = string.Empty;
 }
 

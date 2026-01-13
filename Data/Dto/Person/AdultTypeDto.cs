@@ -1,6 +1,6 @@
-namespace WebApiNibu.Data.Dto;
+namespace WebApiNibu.Data.Dto.Person;
 
-public class AdultTypeIdReadDto
+public class AdultTypeReadDto
 {
     public int Id {get;set;}
 

@@ -1,4 +1,4 @@
-namespace WebApiNibu.Data.Dto;
+namespace WebApiNibu.Data.Dto.Person;
 
 // DTO returned to consumers
 public class SchoolStudentReadDto

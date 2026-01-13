@@ -1,4 +1,4 @@
-namespace WebApiNibu.Data.Dto;
+namespace WebApiNibu.Data.Dto.Person;
 
 public class UniversityReadDto
 {
@@ -36,5 +36,15 @@ public class UniversityCreateDto
 
 public class UniversityUpdateDto
 {
-    
+    public string Name {get;set;} = string.Empty;
+
+    public string Sigla {get;set;} = string.Empty;
+
+    public string Dpto {get;set;} =  string.Empty;
+
+    public int IdEventos {get;set;}
+
+    public int OrdenEventos {get;set;}
+
+    public string NivelCompetencia {get;set;} = string.Empty;
 }

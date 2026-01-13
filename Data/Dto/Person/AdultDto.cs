@@ -1,4 +1,4 @@
-namespace WebApiNibu.Dto;
+namespace WebApiNibu.Data.Dto.Person;
 
 public class AdultReadDto
 {
@@ -10,7 +10,7 @@ public class AdultReadDto
 
     // Foreign Keys
 
-    public int AdultTypeID {get;set;}
+    public int AdultTypeId {get;set;}
 
     public int SchoolStudentId {get;set;}
 
@@ -24,7 +24,7 @@ public class AdultCreateDto
 
     //Foreign Keys
 
-    public int AdultTypeID {get;set;}
+    public int AdultTypeId {get;set;}
 
     public int SchoolStudentId {get;set;}
 
@@ -39,7 +39,7 @@ public class AdultUpdateDto
 
     //Foreign Keys
 
-    public int AdultTypeID {get;set;}
+    public int AdultTypeId {get;set;}
 
     public int SchoolStudentId {get;set;}
 

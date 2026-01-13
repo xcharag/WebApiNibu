@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApiNibu.Abstraction;
 using WebApiNibu.Data.Entity.Person;
-using WebApiNibu.Data.Dto;
+using WebApiNibu.Data.Dto.Person;
 using System.Linq;
 using WebApiNibu.Data.Context.Oracle;
 using Microsoft.EntityFrameworkCore;
