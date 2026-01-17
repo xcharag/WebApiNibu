@@ -17,7 +17,9 @@ public class Sport : BaseEntity
     [StringLength(450)]
     public string? Description { get; set; } = string.Empty;
     
+    [StringLength(450)]
     public string Icon { get; set; } = string.Empty;
     
     public ICollection<Tournament> Tournaments { get; set; } = new List<Tournament>();
+    public ICollection<Statistic> Statistics { get; set; } = new List<Statistic>();
 }

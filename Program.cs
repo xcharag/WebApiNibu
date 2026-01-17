@@ -18,6 +18,7 @@ builder.Services.AddScoped(typeof(IBaseCrud<>), typeof(BaseCrudImplementation<>)
 builder.Services.AddScoped<ISchoolStudent, SchoolStudentImplementation>();
 builder.Services.AddScoped<ISchoolTable, SchoolTableImplementation>();
 builder.Services.AddScoped<IContact, ContactImplementation>();
+builder.Services.AddScoped<ISport, SportImplementation>();
 
 // Configure DbContext with MySQL/Oracle
 var connectionString = builder.Configuration.GetConnectionString("OracleConnection");
