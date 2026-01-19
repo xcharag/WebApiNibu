@@ -15,6 +15,10 @@ public class Carreer : BaseEntity
     public int Id { get; set; }
 
     [Required]
+    [StringLength(200)]
+    public string Name { get; set; } = string.Empty;
+
+    [Required]
     [StringLength(450)] 
     public string BannerImage { get; set; } = string.Empty;
 
