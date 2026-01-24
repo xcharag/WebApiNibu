@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Context.Oracle;
 using WebApiNibu.Abstraction;
-using WebApiNibu.Services.Contract;
-using WebApiNibu.Services.Implementation;
+using WebApiNibu.Services.Contract.Person;
+using WebApiNibu.Services.Implementation.Person;
 
 var builder = WebApplication.CreateBuilder(args);
 

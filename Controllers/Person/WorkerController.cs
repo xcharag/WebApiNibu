@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
-using WebApiNibu.Services.Contract;
+using WebApiNibu.Services.Contract.Person;
 
 namespace WebApiNibu.Controllers.Person;
 
