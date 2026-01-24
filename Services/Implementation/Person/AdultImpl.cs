@@ -8,16 +8,11 @@ using WebApiNibu.Services.Implementation.Person.Adult;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class AdultImpl : IAdult
+public class AdultImpl(IBaseCrud<Data.Entity.Person.Adult> baseCrud, OracleDbContext db)
+    : IAdult
 {
-    private readonly AdultQueries _queries;
-    private readonly AdultCommands _commands;
-
-    public AdultImpl(IBaseCrud<Data.Entity.Person.Adult> baseCrud, OracleDbContext db)
-    {
-        _queries = new AdultQueries(db);
-        _commands = new AdultCommands(baseCrud, db);
-    }
+    private readonly AdultQueries _queries = new(db);
+    private readonly AdultCommands _commands = new(baseCrud, db);
 
     // Queries
     public Task<Result<PagedResult<AdultReadDto>>> GetAllAsync(AdultFilter filter, PaginationParams pagination, CancellationToken ct) 

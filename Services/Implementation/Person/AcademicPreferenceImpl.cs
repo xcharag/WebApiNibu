@@ -8,16 +8,11 @@ using WebApiNibu.Services.Implementation.Person.AcademicPreference;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class AcademicPreferenceImpl : IAcademicPreference
+public class AcademicPreferenceImpl(IBaseCrud<Data.Entity.Person.AcademicPreference> baseCrud, OracleDbContext db)
+    : IAcademicPreference
 {
-    private readonly AcademicPreferenceQueries _queries;
-    private readonly AcademicPreferenceCommands _commands;
-
-    public AcademicPreferenceImpl(IBaseCrud<Data.Entity.Person.AcademicPreference> baseCrud, OracleDbContext db)
-    {
-        _queries = new AcademicPreferenceQueries(db);
-        _commands = new AcademicPreferenceCommands(baseCrud, db);
-    }
+    private readonly AcademicPreferenceQueries _queries = new(db);
+    private readonly AcademicPreferenceCommands _commands = new(baseCrud, db);
 
     // ─────────────────────────────── Queries ───────────────────────────────
 

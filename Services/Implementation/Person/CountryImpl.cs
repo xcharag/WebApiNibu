@@ -8,16 +8,11 @@ using WebApiNibu.Services.Implementation.Person.Country;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class CountryImpl : ICountry
+public class CountryImpl(IBaseCrud<Data.Entity.Person.Country> baseCrud, OracleDbContext db)
+    : ICountry
 {
-    private readonly CountryQueries _queries;
-    private readonly CountryCommands _commands;
-
-    public CountryImpl(IBaseCrud<Data.Entity.Person.Country> baseCrud, OracleDbContext db)
-    {
-        _queries = new CountryQueries(db);
-        _commands = new CountryCommands(baseCrud);
-    }
+    private readonly CountryQueries _queries = new(db);
+    private readonly CountryCommands _commands = new(baseCrud);
 
     // Queries
     public Task<Result<PagedResult<CountryReadDto>>> GetAllAsync(CountryFilter filter, PaginationParams pagination, CancellationToken ct)

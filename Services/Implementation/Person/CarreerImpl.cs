@@ -8,16 +8,11 @@ using WebApiNibu.Services.Implementation.Person.Carreer;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class CarreerImpl : ICarreer
+public class CarreerImpl(IBaseCrud<Data.Entity.Person.Carreer> baseCrud, OracleDbContext db)
+    : ICarreer
 {
-    private readonly CarreerQueries _queries;
-    private readonly CarreerCommands _commands;
-
-    public CarreerImpl(IBaseCrud<Data.Entity.Person.Carreer> baseCrud, OracleDbContext db)
-    {
-        _queries = new CarreerQueries(db);
-        _commands = new CarreerCommands(baseCrud);
-    }
+    private readonly CarreerQueries _queries = new(db);
+    private readonly CarreerCommands _commands = new(baseCrud);
 
     // Queries
     public Task<Result<PagedResult<CarreerReadDto>>> GetAllAsync(CarreerFilter filter, PaginationParams pagination, CancellationToken ct)

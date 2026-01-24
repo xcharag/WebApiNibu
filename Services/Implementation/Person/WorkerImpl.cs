@@ -8,16 +8,11 @@ using WebApiNibu.Services.Implementation.Person.Worker;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class WorkerImpl : IWorker
+public class WorkerImpl(IBaseCrud<Data.Entity.Person.Worker> baseCrud, OracleDbContext db)
+    : IWorker
 {
-    private readonly WorkerQueries _queries;
-    private readonly WorkerCommands _commands;
-
-    public WorkerImpl(IBaseCrud<Data.Entity.Person.Worker> baseCrud, OracleDbContext db)
-    {
-        _queries = new WorkerQueries(db);
-        _commands = new WorkerCommands(baseCrud, db);
-    }
+    private readonly WorkerQueries _queries = new(db);
+    private readonly WorkerCommands _commands = new(baseCrud, db);
 
     public Task<Result<PagedResult<WorkerReadDto>>> GetAllAsync(WorkerFilter filter, PaginationParams pagination, CancellationToken ct)
         => _queries.GetAllAsync(filter, pagination, ct);

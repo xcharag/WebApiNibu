@@ -8,16 +8,11 @@ using WebApiNibu.Services.Implementation.Person.MerchObtention;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class MerchObtentionImpl : IMerchObtention
+public class MerchObtentionImpl(IBaseCrud<Data.Entity.Person.MerchObtention> baseCrud, OracleDbContext db)
+    : IMerchObtention
 {
-    private readonly MerchObtentionQueries _queries;
-    private readonly MerchObtentionCommands _commands;
-
-    public MerchObtentionImpl(IBaseCrud<Data.Entity.Person.MerchObtention> baseCrud, OracleDbContext db)
-    {
-        _queries = new MerchObtentionQueries(db);
-        _commands = new MerchObtentionCommands(baseCrud, db);
-    }
+    private readonly MerchObtentionQueries _queries = new(db);
+    private readonly MerchObtentionCommands _commands = new(baseCrud, db);
 
     public Task<Result<PagedResult<MerchObtentionReadDto>>> GetAllAsync(MerchObtentionFilter filter, PaginationParams pagination, CancellationToken ct)
         => _queries.GetAllAsync(filter, pagination, ct);

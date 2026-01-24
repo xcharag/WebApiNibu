@@ -8,16 +8,11 @@ using WebApiNibu.Services.Implementation.Person.PreferencesStudent;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class PreferencesStudentImpl : IPreferencesStudent
+public class PreferencesStudentImpl(IBaseCrud<Data.Entity.Person.PreferencesStudent> baseCrud, OracleDbContext db)
+    : IPreferencesStudent
 {
-    private readonly PreferencesStudentQueries _queries;
-    private readonly PreferencesStudentCommands _commands;
-
-    public PreferencesStudentImpl(IBaseCrud<Data.Entity.Person.PreferencesStudent> baseCrud, OracleDbContext db)
-    {
-        _queries = new PreferencesStudentQueries(db);
-        _commands = new PreferencesStudentCommands(baseCrud, db);
-    }
+    private readonly PreferencesStudentQueries _queries = new(db);
+    private readonly PreferencesStudentCommands _commands = new(baseCrud, db);
 
     public Task<Result<PagedResult<PreferencesStudentReadDto>>> GetAllAsync(PreferencesStudentFilter filter, PaginationParams pagination, CancellationToken ct)
         => _queries.GetAllAsync(filter, pagination, ct);

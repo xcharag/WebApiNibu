@@ -8,16 +8,11 @@ using WebApiNibu.Services.Implementation.Person.InterestActivity;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class InterestActivityImpl : IInterestActivity
+public class InterestActivityImpl(IBaseCrud<Data.Entity.Person.InterestActivity> baseCrud, OracleDbContext db)
+    : IInterestActivity
 {
-    private readonly InterestActivityQueries _queries;
-    private readonly InterestActivityCommands _commands;
-
-    public InterestActivityImpl(IBaseCrud<Data.Entity.Person.InterestActivity> baseCrud, OracleDbContext db)
-    {
-        _queries = new InterestActivityQueries(db);
-        _commands = new InterestActivityCommands(baseCrud);
-    }
+    private readonly InterestActivityQueries _queries = new(db);
+    private readonly InterestActivityCommands _commands = new(baseCrud);
 
     // Queries
     public Task<Result<PagedResult<InterestActivitieReadDto>>> GetAllAsync(InterestActivityFilter filter, PaginationParams pagination, CancellationToken ct)

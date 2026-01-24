@@ -8,16 +8,11 @@ using WebApiNibu.Services.Implementation.Person.DocumentType;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class DocumentTypeImpl : IDocumentType
+public class DocumentTypeImpl(IBaseCrud<Data.Entity.Person.DocumentType> baseCrud, OracleDbContext db)
+    : IDocumentType
 {
-    private readonly DocumentTypeQueries _queries;
-    private readonly DocumentTypeCommands _commands;
-
-    public DocumentTypeImpl(IBaseCrud<Data.Entity.Person.DocumentType> baseCrud, OracleDbContext db)
-    {
-        _queries = new DocumentTypeQueries(db);
-        _commands = new DocumentTypeCommands(baseCrud);
-    }
+    private readonly DocumentTypeQueries _queries = new(db);
+    private readonly DocumentTypeCommands _commands = new(baseCrud);
 
     // Queries
     public Task<Result<PagedResult<DocumentTypeReadDto>>> GetAllAsync(DocumentTypeFilter filter, PaginationParams pagination, CancellationToken ct)

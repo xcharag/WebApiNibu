@@ -8,16 +8,11 @@ using WebApiNibu.Services.Implementation.Person.Role;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class RoleImpl : IRole
+public class RoleImpl(IBaseCrud<Data.Entity.Person.Role> baseCrud, OracleDbContext db)
+    : IRole
 {
-    private readonly RoleQueries _queries;
-    private readonly RoleCommands _commands;
-
-    public RoleImpl(IBaseCrud<Data.Entity.Person.Role> baseCrud, OracleDbContext db)
-    {
-        _queries = new RoleQueries(db);
-        _commands = new RoleCommands(baseCrud);
-    }
+    private readonly RoleQueries _queries = new(db);
+    private readonly RoleCommands _commands = new(baseCrud);
 
     public Task<Result<PagedResult<RoleReadDto>>> GetAllAsync(RoleFilter filter, PaginationParams pagination, CancellationToken ct)
         => _queries.GetAllAsync(filter, pagination, ct);

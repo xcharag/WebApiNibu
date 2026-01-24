@@ -8,16 +8,11 @@ using WebApiNibu.Services.Implementation.Person.SchoolStudent;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class SchoolStudentImpl : ISchoolStudent
+public class SchoolStudentImpl(IBaseCrud<Data.Entity.Person.SchoolStudent> baseCrud, OracleDbContext db)
+    : ISchoolStudent
 {
-    private readonly SchoolStudentQueries _queries;
-    private readonly SchoolStudentCommands _commands;
-
-    public SchoolStudentImpl(IBaseCrud<Data.Entity.Person.SchoolStudent> baseCrud, OracleDbContext db)
-    {
-        _queries = new SchoolStudentQueries(db);
-        _commands = new SchoolStudentCommands(baseCrud, db);
-    }
+    private readonly SchoolStudentQueries _queries = new(db);
+    private readonly SchoolStudentCommands _commands = new(baseCrud, db);
 
     public Task<Result<PagedResult<SchoolStudentReadDto>>> GetAllAsync(SchoolStudentFilter filter, PaginationParams pagination, CancellationToken ct)
         => _queries.GetAllAsync(filter, pagination, ct);
