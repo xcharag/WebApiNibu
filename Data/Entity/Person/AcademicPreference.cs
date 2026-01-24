@@ -4,7 +4,7 @@ using FatherTable;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("AcademicPreference")]
+[Table("AcademicPreferenceImpl")]
 
 public class AcademicPreference : BaseEntity
 {

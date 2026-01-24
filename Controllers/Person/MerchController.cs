@@ -1,114 +1,61 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
 using WebApiNibu.Data.Dto.Person;
-using WebApiNibu.Data.Entity.Person;
+using WebApiNibu.Data.Dto.Person.Filters;
+using WebApiNibu.Services.Contract;
 
 namespace WebApiNibu.Controllers.Person;
 
 [ApiController]
 [Route("api/[controller]")]
-public class MerchController(IBaseCrud<Merch> service, OracleDbContext db) : ControllerBase
+public class MerchController(IMerch service) : ControllerBase
 {
     // GET: api/Merch
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MerchReadDto>>> GetAll(CancellationToken ct)
+    public async Task<IActionResult> GetAll(CancellationToken ct)
     {
-        var items = await service.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto).ToList();
-        return Ok(dtos);
+        var result = await service.GetAllAsync(ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
     // GET: api/Merch/{id}
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<MerchReadDto>> GetById(int id, CancellationToken ct)
+    public async Task<IActionResult> GetById(int id, CancellationToken ct)
     {
-        var item = await service.GetByIdAsync(id, true, ct);
-        return item is null ? NotFound() : Ok(MapToReadDto(item));
+        var result = await service.GetByIdAsync(id, ct);
+        return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors);
+    }
+
+    // GET: api/Merch/filter
+    [HttpGet("filter")]
+    public async Task<IActionResult> GetFiltered([FromQuery] MerchFilter filter, CancellationToken ct)
+    {
+        var result = await service.GetFilteredAsync(filter, ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
     // POST: api/Merch
     [HttpPost]
-    public async Task<ActionResult<MerchReadDto>> Create([FromBody] MerchCreateDto dto, CancellationToken ct)
+    public async Task<IActionResult> Create([FromBody] MerchCreateDto dto, CancellationToken ct)
     {
-        var fkErrors = await ValidateFksAsync(dto.MerchTypeId, ct);
-        if (fkErrors.Count > 0)
-        {
-            return BadRequest(new { message = "Invalid foreign keys", errors = fkErrors });
-        }
-
-        var entity = MapFromCreateDto(dto);
-        var created = await service.CreateAsync(entity, ct);
-        var readDto = MapToReadDto(created);
-        return CreatedAtAction(nameof(GetById), new { id = readDto.Id }, readDto);
+        var result = await service.CreateAsync(dto, ct);
+        return result.IsSuccess
+            ? CreatedAtAction(nameof(GetById), new { id = result.Value!.Id }, result.Value)
+            : BadRequest(result.Errors);
     }
 
     // PUT: api/Merch/{id}
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] MerchUpdateDto dto, CancellationToken ct)
     {
-        var fkErrors = await ValidateFksAsync(dto.MerchTypeId, ct);
-        if (fkErrors.Count > 0)
-        {
-            return BadRequest(new { message = "Invalid foreign keys", errors = fkErrors });
-        }
-
-        var updated = await service.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);
-        return updated ? NoContent() : NotFound();
+        var result = await service.UpdateAsync(id, dto, ct);
+        return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 
     // DELETE: api/Merch/{id}
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
-        var deleted = await service.DeleteAsync(id, soft, ct);
-        return deleted ? NoContent() : NotFound();
-    }
-
-    private async Task<List<string>> ValidateFksAsync(int merchTypeId, CancellationToken ct)
-    {
-        var errors = new List<string>();
-        if (!await db.MerchTypes.AnyAsync(mt => mt.Id == merchTypeId, ct))
-        {
-            errors.Add($"MerchTypeId ({merchTypeId}) not found");
-        }
-        return errors;
-    }
-
-    private static MerchReadDto MapToReadDto(Merch merch) => new()
-    {
-        Id = merch.Id,
-        Name = merch.Name,
-        Description = merch.Description,
-        Icon = merch.Icon ?? string.Empty,
-        Image = merch.Image ?? string.Empty,
-        Rarity = (WebApiNibu.Data.Dto.Person.Rarity)merch.Rarity,
-        MaxQuantity = merch.MaxQuantity,
-        MerchTypeId = merch.IdMerchType
-    };
-
-    private static Merch MapFromCreateDto(MerchCreateDto dto) => new()
-    {
-        Name = dto.Name,
-        Description = dto.Description ?? string.Empty,
-        Icon = dto.Icon,
-        Image = dto.Image,
-        Rarity = (WebApiNibu.Data.Enum.Rarity)dto.Rarity,
-        MaxQuantity = dto.MaxQuantity,
-        IdMerchType = dto.MerchTypeId,
-        Active = true,
-        MerchType = null!
-    };
-
-    private static void ApplyUpdateDto(Merch target, MerchUpdateDto dto)
-    {
-        target.Name = dto.Name;
-        target.Description = dto.Description ?? string.Empty;
-        target.Icon = dto.Icon;
-        target.Image = dto.Image;
-        target.Rarity = (WebApiNibu.Data.Enum.Rarity)dto.Rarity;
-        target.MaxQuantity = dto.MaxQuantity;
-        target.IdMerchType = dto.MerchTypeId;
+        var result = await service.DeleteAsync(id, soft, ct);
+        return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 }
