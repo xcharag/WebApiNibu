@@ -13,11 +13,16 @@ public class UniversityImpl(IBaseCrud<University> baseCrud, OracleDbContext db) 
 {
     // ─────────────────────────────── Queries ───────────────────────────────
 
-    public async Task<Result<IEnumerable<UniversityReadDto>>> GetAllAsync(CancellationToken ct)
+    public async Task<Result<PagedResult<UniversityReadDto>>> GetAllAsync(UniversityFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var items = await baseCrud.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<UniversityReadDto>>.Success(dtos);
+        var query = db.Universities.AsQueryable();
+        query = ApplyFilters(query, filter);
+        var totalCount = await query.CountAsync(ct);
+        var items = await query.Skip((pagination.PageNumber - 1) * pagination.PageSize).Take(pagination.PageSize).ToListAsync(ct);
+        return Result<PagedResult<UniversityReadDto>>.Success(new PagedResult<UniversityReadDto>
+        {
+            Items = items.Select(MapToReadDto), PageNumber = pagination.PageNumber, PageSize = pagination.PageSize, TotalCount = totalCount
+        });
     }
 
     public async Task<Result<UniversityReadDto>> GetByIdAsync(int id, CancellationToken ct)
@@ -28,21 +33,11 @@ public class UniversityImpl(IBaseCrud<University> baseCrud, OracleDbContext db) 
             : Result<UniversityReadDto>.Success(MapToReadDto(item));
     }
 
-    public async Task<Result<IEnumerable<UniversityReadDto>>> GetFilteredAsync(UniversityFilter filter, CancellationToken ct)
-    {
-        var query = db.Universities.AsQueryable();
-        query = ApplyFilters(query, filter);
-        var items = await query.ToListAsync(ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<UniversityReadDto>>.Success(dtos);
-    }
-
     // ─────────────────────────────── Commands ───────────────────────────────
 
     public async Task<Result<UniversityReadDto>> CreateAsync(UniversityCreateDto dto, CancellationToken ct)
     {
-        var entity = MapFromCreateDto(dto);
-        var created = await baseCrud.CreateAsync(entity, ct);
+        var created = await baseCrud.CreateAsync(MapFromCreateDto(dto), ct);
         return Result<UniversityReadDto>.Success(MapToReadDto(created));
     }
 

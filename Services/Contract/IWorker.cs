@@ -7,9 +7,8 @@ namespace WebApiNibu.Services.Contract;
 public interface IWorker
 {
     // Queries
-    Task<Result<IEnumerable<WorkerReadDto>>> GetAllAsync(CancellationToken ct);
+    Task<Result<PagedResult<WorkerReadDto>>> GetAllAsync(WorkerFilter filter, PaginationParams pagination, CancellationToken ct);
     Task<Result<WorkerReadDto>> GetByIdAsync(int id, CancellationToken ct);
-    Task<Result<IEnumerable<WorkerReadDto>>> GetFilteredAsync(WorkerFilter filter, CancellationToken ct);
 
     // Commands
     Task<Result<WorkerReadDto>> CreateAsync(WorkerCreateDto dto, CancellationToken ct);

@@ -7,9 +7,8 @@ namespace WebApiNibu.Services.Contract;
 public interface IAdultType
 {
     // Queries
-    Task<Result<IEnumerable<AdultTypeReadDto>>> GetAllAsync(CancellationToken ct);
+    Task<Result<PagedResult<AdultTypeReadDto>>> GetAllAsync(AdultTypeFilter filter, PaginationParams pagination, CancellationToken ct);
     Task<Result<AdultTypeReadDto>> GetByIdAsync(int id, CancellationToken ct);
-    Task<Result<IEnumerable<AdultTypeReadDto>>> GetFilteredAsync(AdultTypeFilter filter, CancellationToken ct);
 
     // Commands
     Task<Result<AdultTypeReadDto>> CreateAsync(AdultTypeCreateDto dto, CancellationToken ct);

@@ -13,11 +13,24 @@ public class MerchImpl(IBaseCrud<Merch> baseCrud, OracleDbContext db) : IMerch
 {
     // ─────────────────────────────── Queries ───────────────────────────────
 
-    public async Task<Result<IEnumerable<MerchReadDto>>> GetAllAsync(CancellationToken ct)
+    public async Task<Result<PagedResult<MerchReadDto>>> GetAllAsync(MerchFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var items = await baseCrud.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<MerchReadDto>>.Success(dtos);
+        var query = db.Merchs.AsQueryable();
+        query = ApplyFilters(query, filter);
+        
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToListAsync(ct);
+
+        return Result<PagedResult<MerchReadDto>>.Success(new PagedResult<MerchReadDto>
+        {
+            Items = items.Select(MapToReadDto),
+            PageNumber = pagination.PageNumber,
+            PageSize = pagination.PageSize,
+            TotalCount = totalCount
+        });
     }
 
     public async Task<Result<MerchReadDto>> GetByIdAsync(int id, CancellationToken ct)
@@ -26,15 +39,6 @@ public class MerchImpl(IBaseCrud<Merch> baseCrud, OracleDbContext db) : IMerch
         return item is null
             ? Result<MerchReadDto>.Failure($"Merch with id {id} not found")
             : Result<MerchReadDto>.Success(MapToReadDto(item));
-    }
-
-    public async Task<Result<IEnumerable<MerchReadDto>>> GetFilteredAsync(MerchFilter filter, CancellationToken ct)
-    {
-        var query = db.Merchs.AsQueryable();
-        query = ApplyFilters(query, filter);
-        var items = await query.ToListAsync(ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<MerchReadDto>>.Success(dtos);
     }
 
     // ─────────────────────────────── Commands ───────────────────────────────

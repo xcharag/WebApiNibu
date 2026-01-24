@@ -13,11 +13,16 @@ public class WorkerImpl(IBaseCrud<Worker> baseCrud, OracleDbContext db) : IWorke
 {
     // ─────────────────────────────── Queries ───────────────────────────────
 
-    public async Task<Result<IEnumerable<WorkerReadDto>>> GetAllAsync(CancellationToken ct)
+    public async Task<Result<PagedResult<WorkerReadDto>>> GetAllAsync(WorkerFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var items = await baseCrud.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<WorkerReadDto>>.Success(dtos);
+        var query = db.Workers.AsQueryable();
+        query = ApplyFilters(query, filter);
+        var totalCount = await query.CountAsync(ct);
+        var items = await query.Skip((pagination.PageNumber - 1) * pagination.PageSize).Take(pagination.PageSize).ToListAsync(ct);
+        return Result<PagedResult<WorkerReadDto>>.Success(new PagedResult<WorkerReadDto>
+        {
+            Items = items.Select(MapToReadDto), PageNumber = pagination.PageNumber, PageSize = pagination.PageSize, TotalCount = totalCount
+        });
     }
 
     public async Task<Result<WorkerReadDto>> GetByIdAsync(int id, CancellationToken ct)
@@ -26,15 +31,6 @@ public class WorkerImpl(IBaseCrud<Worker> baseCrud, OracleDbContext db) : IWorke
         return item is null
             ? Result<WorkerReadDto>.Failure($"Worker with id {id} not found")
             : Result<WorkerReadDto>.Success(MapToReadDto(item));
-    }
-
-    public async Task<Result<IEnumerable<WorkerReadDto>>> GetFilteredAsync(WorkerFilter filter, CancellationToken ct)
-    {
-        var query = db.Workers.AsQueryable();
-        query = ApplyFilters(query, filter);
-        var items = await query.ToListAsync(ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<WorkerReadDto>>.Success(dtos);
     }
 
     // ─────────────────────────────── Commands ───────────────────────────────

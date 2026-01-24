@@ -7,9 +7,8 @@ namespace WebApiNibu.Services.Contract;
 public interface IStudentInterest
 {
     // Queries
-    Task<Result<IEnumerable<StudentInterestReadDto>>> GetAllAsync(CancellationToken ct);
+    Task<Result<PagedResult<StudentInterestReadDto>>> GetAllAsync(StudentInterestFilter filter, PaginationParams pagination, CancellationToken ct);
     Task<Result<StudentInterestReadDto>> GetByIdAsync(int id, CancellationToken ct);
-    Task<Result<IEnumerable<StudentInterestReadDto>>> GetFilteredAsync(StudentInterestFilter filter, CancellationToken ct);
 
     // Commands
     Task<Result<StudentInterestReadDto>> CreateAsync(StudentInterestCreateDto dto, CancellationToken ct);

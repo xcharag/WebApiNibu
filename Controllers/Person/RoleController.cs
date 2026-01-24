@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
+using WebApiNibu.Helpers;
 using WebApiNibu.Services.Contract;
 
 namespace WebApiNibu.Controllers.Person;
@@ -11,9 +12,12 @@ public class RoleController(IRole service) : ControllerBase
 {
     // GET: api/Role
     [HttpGet]
-    public async Task<IActionResult> GetAll(CancellationToken ct)
+    public async Task<IActionResult> GetAll(
+        [FromQuery] RoleFilter filter,
+        [FromQuery] PaginationParams pagination,
+        CancellationToken ct)
     {
-        var result = await service.GetAllAsync(ct);
+        var result = await service.GetAllAsync(filter, pagination, ct);
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
@@ -23,14 +27,6 @@ public class RoleController(IRole service) : ControllerBase
     {
         var result = await service.GetByIdAsync(id, ct);
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors);
-    }
-
-    // GET: api/Role/filter
-    [HttpGet("filter")]
-    public async Task<IActionResult> GetFiltered([FromQuery] RoleFilter filter, CancellationToken ct)
-    {
-        var result = await service.GetFilteredAsync(filter, ct);
-        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
     // POST: api/Role

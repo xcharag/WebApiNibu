@@ -13,11 +13,24 @@ public class DocumentTypeImpl(IBaseCrud<DocumentType> baseCrud, OracleDbContext 
 {
     // ─────────────────────────────── Queries ───────────────────────────────
 
-    public async Task<Result<IEnumerable<DocumentTypeReadDto>>> GetAllAsync(CancellationToken ct)
+    public async Task<Result<PagedResult<DocumentTypeReadDto>>> GetAllAsync(DocumentTypeFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var items = await baseCrud.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<DocumentTypeReadDto>>.Success(dtos);
+        var query = db.DocumentTypes.AsQueryable();
+        query = ApplyFilters(query, filter);
+        
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToListAsync(ct);
+
+        return Result<PagedResult<DocumentTypeReadDto>>.Success(new PagedResult<DocumentTypeReadDto>
+        {
+            Items = items.Select(MapToReadDto),
+            PageNumber = pagination.PageNumber,
+            PageSize = pagination.PageSize,
+            TotalCount = totalCount
+        });
     }
 
     public async Task<Result<DocumentTypeReadDto>> GetByIdAsync(int id, CancellationToken ct)
@@ -26,15 +39,6 @@ public class DocumentTypeImpl(IBaseCrud<DocumentType> baseCrud, OracleDbContext 
         return item is null
             ? Result<DocumentTypeReadDto>.Failure($"DocumentType with id {id} not found")
             : Result<DocumentTypeReadDto>.Success(MapToReadDto(item));
-    }
-
-    public async Task<Result<IEnumerable<DocumentTypeReadDto>>> GetFilteredAsync(DocumentTypeFilter filter, CancellationToken ct)
-    {
-        var query = db.DocumentTypes.AsQueryable();
-        query = ApplyFilters(query, filter);
-        var items = await query.ToListAsync(ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<DocumentTypeReadDto>>.Success(dtos);
     }
 
     // ─────────────────────────────── Commands ───────────────────────────────

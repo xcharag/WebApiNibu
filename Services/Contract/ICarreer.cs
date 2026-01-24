@@ -7,9 +7,8 @@ namespace WebApiNibu.Services.Contract;
 public interface ICarreer
 {
     // Queries
-    Task<Result<IEnumerable<CarreerReadDto>>> GetAllAsync(CancellationToken ct);
+    Task<Result<PagedResult<CarreerReadDto>>> GetAllAsync(CarreerFilter filter, PaginationParams pagination, CancellationToken ct);
     Task<Result<CarreerReadDto>> GetByIdAsync(int id, CancellationToken ct);
-    Task<Result<IEnumerable<CarreerReadDto>>> GetFilteredAsync(CarreerFilter filter, CancellationToken ct);
 
     // Commands
     Task<Result<CarreerReadDto>> CreateAsync(CarreerCreateDto dto, CancellationToken ct);

@@ -7,9 +7,8 @@ namespace WebApiNibu.Services.Contract;
 public interface IMerchType
 {
     // Queries
-    Task<Result<IEnumerable<MerchTypeReadDto>>> GetAllAsync(CancellationToken ct);
+    Task<Result<PagedResult<MerchTypeReadDto>>> GetAllAsync(MerchTypeFilter filter, PaginationParams pagination, CancellationToken ct);
     Task<Result<MerchTypeReadDto>> GetByIdAsync(int id, CancellationToken ct);
-    Task<Result<IEnumerable<MerchTypeReadDto>>> GetFilteredAsync(MerchTypeFilter filter, CancellationToken ct);
 
     // Commands
     Task<Result<MerchTypeReadDto>> CreateAsync(MerchTypeCreateDto dto, CancellationToken ct);

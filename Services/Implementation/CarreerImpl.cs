@@ -13,11 +13,24 @@ public class CarreerImpl(IBaseCrud<Carreer> baseCrud, OracleDbContext db) : ICar
 {
     // ─────────────────────────────── Queries ───────────────────────────────
 
-    public async Task<Result<IEnumerable<CarreerReadDto>>> GetAllAsync(CancellationToken ct)
+    public async Task<Result<PagedResult<CarreerReadDto>>> GetAllAsync(CarreerFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var items = await baseCrud.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<CarreerReadDto>>.Success(dtos);
+        var query = db.Carreers.AsQueryable();
+        query = ApplyFilters(query, filter);
+        
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToListAsync(ct);
+
+        return Result<PagedResult<CarreerReadDto>>.Success(new PagedResult<CarreerReadDto>
+        {
+            Items = items.Select(MapToReadDto),
+            PageNumber = pagination.PageNumber,
+            PageSize = pagination.PageSize,
+            TotalCount = totalCount
+        });
     }
 
     public async Task<Result<CarreerReadDto>> GetByIdAsync(int id, CancellationToken ct)
@@ -26,15 +39,6 @@ public class CarreerImpl(IBaseCrud<Carreer> baseCrud, OracleDbContext db) : ICar
         return item is null
             ? Result<CarreerReadDto>.Failure($"Carreer with id {id} not found")
             : Result<CarreerReadDto>.Success(MapToReadDto(item));
-    }
-
-    public async Task<Result<IEnumerable<CarreerReadDto>>> GetFilteredAsync(CarreerFilter filter, CancellationToken ct)
-    {
-        var query = db.Carreers.AsQueryable();
-        query = ApplyFilters(query, filter);
-        var items = await query.ToListAsync(ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<CarreerReadDto>>.Success(dtos);
     }
 
     // ─────────────────────────────── Commands ───────────────────────────────
@@ -80,35 +84,21 @@ public class CarreerImpl(IBaseCrud<Carreer> baseCrud, OracleDbContext db) : ICar
 
     // ─────────────────────────────── Mapping ───────────────────────────────
 
-    private static CarreerReadDto MapToReadDto(Carreer carreer) => new()
+    private static CarreerReadDto MapToReadDto(Carreer c) => new()
     {
-        Id = carreer.Id,
-        Name = carreer.Name,
-        BannerImage = carreer.BannerImage,
-        Description = carreer.Description,
-        AreaFormacionId = carreer.AreaFormacionId,
-        CodCarrRel = carreer.CodCarrRel,
-        OrdenEventos = carreer.OrdenEventos
+        Id = c.Id, Name = c.Name, BannerImage = c.BannerImage, Description = c.Description,
+        AreaFormacionId = c.AreaFormacionId, CodCarrRel = c.CodCarrRel, OrdenEventos = c.OrdenEventos
     };
 
     private static Carreer MapFromCreateDto(CarreerCreateDto dto) => new()
     {
-        Name = dto.Name,
-        BannerImage = dto.BannerImage ?? string.Empty,
-        Description = dto.Description,
-        AreaFormacionId = dto.AreaFormacionId,
-        CodCarrRel = dto.CodCarrRel,
-        OrdenEventos = dto.OrdenEventos,
-        Active = true
+        Name = dto.Name, BannerImage = dto.BannerImage ?? string.Empty, Description = dto.Description,
+        AreaFormacionId = dto.AreaFormacionId, CodCarrRel = dto.CodCarrRel, OrdenEventos = dto.OrdenEventos, Active = true
     };
 
-    private static void ApplyUpdateDto(Carreer target, CarreerUpdateDto dto)
+    private static void ApplyUpdateDto(Carreer t, CarreerUpdateDto dto)
     {
-        target.Name = dto.Name;
-        target.BannerImage = dto.BannerImage ?? string.Empty;
-        target.Description = dto.Description;
-        target.AreaFormacionId = dto.AreaFormacionId;
-        target.CodCarrRel = dto.CodCarrRel;
-        target.OrdenEventos = dto.OrdenEventos;
+        t.Name = dto.Name; t.BannerImage = dto.BannerImage ?? string.Empty; t.Description = dto.Description;
+        t.AreaFormacionId = dto.AreaFormacionId; t.CodCarrRel = dto.CodCarrRel; t.OrdenEventos = dto.OrdenEventos;
     }
 }

@@ -7,9 +7,8 @@ namespace WebApiNibu.Services.Contract;
 public interface IRole
 {
     // Queries
-    Task<Result<IEnumerable<RoleReadDto>>> GetAllAsync(CancellationToken ct);
+    Task<Result<PagedResult<RoleReadDto>>> GetAllAsync(RoleFilter filter, PaginationParams pagination, CancellationToken ct);
     Task<Result<RoleReadDto>> GetByIdAsync(int id, CancellationToken ct);
-    Task<Result<IEnumerable<RoleReadDto>>> GetFilteredAsync(RoleFilter filter, CancellationToken ct);
 
     // Commands
     Task<Result<RoleReadDto>> CreateAsync(RoleCreateDto dto, CancellationToken ct);

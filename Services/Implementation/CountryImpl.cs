@@ -13,11 +13,24 @@ public class CountryImpl(IBaseCrud<Country> baseCrud, OracleDbContext db) : ICou
 {
     // ─────────────────────────────── Queries ───────────────────────────────
 
-    public async Task<Result<IEnumerable<CountryReadDto>>> GetAllAsync(CancellationToken ct)
+    public async Task<Result<PagedResult<CountryReadDto>>> GetAllAsync(CountryFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var items = await baseCrud.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<CountryReadDto>>.Success(dtos);
+        var query = db.Countries.AsQueryable();
+        query = ApplyFilters(query, filter);
+        
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToListAsync(ct);
+
+        return Result<PagedResult<CountryReadDto>>.Success(new PagedResult<CountryReadDto>
+        {
+            Items = items.Select(MapToReadDto),
+            PageNumber = pagination.PageNumber,
+            PageSize = pagination.PageSize,
+            TotalCount = totalCount
+        });
     }
 
     public async Task<Result<CountryReadDto>> GetByIdAsync(int id, CancellationToken ct)
@@ -28,14 +41,6 @@ public class CountryImpl(IBaseCrud<Country> baseCrud, OracleDbContext db) : ICou
             : Result<CountryReadDto>.Success(MapToReadDto(item));
     }
 
-    public async Task<Result<IEnumerable<CountryReadDto>>> GetFilteredAsync(CountryFilter filter, CancellationToken ct)
-    {
-        var query = db.Countries.AsQueryable();
-        query = ApplyFilters(query, filter);
-        var items = await query.ToListAsync(ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<CountryReadDto>>.Success(dtos);
-    }
 
     // ─────────────────────────────── Commands ───────────────────────────────
 

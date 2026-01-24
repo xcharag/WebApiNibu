@@ -13,11 +13,16 @@ public class MerchTypeImpl(IBaseCrud<MerchType> baseCrud, OracleDbContext db) : 
 {
     // ─────────────────────────────── Queries ───────────────────────────────
 
-    public async Task<Result<IEnumerable<MerchTypeReadDto>>> GetAllAsync(CancellationToken ct)
+    public async Task<Result<PagedResult<MerchTypeReadDto>>> GetAllAsync(MerchTypeFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var items = await baseCrud.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<MerchTypeReadDto>>.Success(dtos);
+        var query = db.MerchTypes.AsQueryable();
+        query = ApplyFilters(query, filter);
+        var totalCount = await query.CountAsync(ct);
+        var items = await query.Skip((pagination.PageNumber - 1) * pagination.PageSize).Take(pagination.PageSize).ToListAsync(ct);
+        return Result<PagedResult<MerchTypeReadDto>>.Success(new PagedResult<MerchTypeReadDto>
+        {
+            Items = items.Select(MapToReadDto), PageNumber = pagination.PageNumber, PageSize = pagination.PageSize, TotalCount = totalCount
+        });
     }
 
     public async Task<Result<MerchTypeReadDto>> GetByIdAsync(int id, CancellationToken ct)
@@ -28,21 +33,11 @@ public class MerchTypeImpl(IBaseCrud<MerchType> baseCrud, OracleDbContext db) : 
             : Result<MerchTypeReadDto>.Success(MapToReadDto(item));
     }
 
-    public async Task<Result<IEnumerable<MerchTypeReadDto>>> GetFilteredAsync(MerchTypeFilter filter, CancellationToken ct)
-    {
-        var query = db.MerchTypes.AsQueryable();
-        query = ApplyFilters(query, filter);
-        var items = await query.ToListAsync(ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<MerchTypeReadDto>>.Success(dtos);
-    }
-
     // ─────────────────────────────── Commands ───────────────────────────────
 
     public async Task<Result<MerchTypeReadDto>> CreateAsync(MerchTypeCreateDto dto, CancellationToken ct)
     {
-        var entity = MapFromCreateDto(dto);
-        var created = await baseCrud.CreateAsync(entity, ct);
+        var created = await baseCrud.CreateAsync(MapFromCreateDto(dto), ct);
         return Result<MerchTypeReadDto>.Success(MapToReadDto(created));
     }
 

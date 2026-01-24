@@ -13,11 +13,16 @@ public class SchoolStudentImpl(IBaseCrud<SchoolStudent> baseCrud, OracleDbContex
 {
     // ─────────────────────────────── Queries ───────────────────────────────
 
-    public async Task<Result<IEnumerable<SchoolStudentReadDto>>> GetAllAsync(CancellationToken ct)
+    public async Task<Result<PagedResult<SchoolStudentReadDto>>> GetAllAsync(SchoolStudentFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var items = await baseCrud.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<SchoolStudentReadDto>>.Success(dtos);
+        var query = db.SchoolStudents.AsQueryable();
+        query = ApplyFilters(query, filter);
+        var totalCount = await query.CountAsync(ct);
+        var items = await query.Skip((pagination.PageNumber - 1) * pagination.PageSize).Take(pagination.PageSize).ToListAsync(ct);
+        return Result<PagedResult<SchoolStudentReadDto>>.Success(new PagedResult<SchoolStudentReadDto>
+        {
+            Items = items.Select(MapToReadDto), PageNumber = pagination.PageNumber, PageSize = pagination.PageSize, TotalCount = totalCount
+        });
     }
 
     public async Task<Result<SchoolStudentReadDto>> GetByIdAsync(int id, CancellationToken ct)
@@ -26,15 +31,6 @@ public class SchoolStudentImpl(IBaseCrud<SchoolStudent> baseCrud, OracleDbContex
         return item is null
             ? Result<SchoolStudentReadDto>.Failure($"SchoolStudent with id {id} not found")
             : Result<SchoolStudentReadDto>.Success(MapToReadDto(item));
-    }
-
-    public async Task<Result<IEnumerable<SchoolStudentReadDto>>> GetFilteredAsync(SchoolStudentFilter filter, CancellationToken ct)
-    {
-        var query = db.SchoolStudents.AsQueryable();
-        query = ApplyFilters(query, filter);
-        var items = await query.ToListAsync(ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<SchoolStudentReadDto>>.Success(dtos);
     }
 
     // ─────────────────────────────── Commands ───────────────────────────────
@@ -111,9 +107,6 @@ public class SchoolStudentImpl(IBaseCrud<SchoolStudent> baseCrud, OracleDbContex
 
         if (filter.IdSchool.HasValue)
             query = query.Where(x => x.IdSchool == filter.IdSchool.Value);
-
-        if (!string.IsNullOrWhiteSpace(filter.SchoolGrade))
-            query = query.Where(x => x.SchoolGrade.ToString() == filter.SchoolGrade);
 
         if (filter.IsPlayer.HasValue)
             query = query.Where(x => x.IsPlayer == filter.IsPlayer.Value);

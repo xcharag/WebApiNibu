@@ -13,11 +13,24 @@ public class AdultTypeImpl(IBaseCrud<AdultType> baseCrud, OracleDbContext db) : 
 {
     // ─────────────────────────────── Queries ───────────────────────────────
 
-    public async Task<Result<IEnumerable<AdultTypeReadDto>>> GetAllAsync(CancellationToken ct)
+    public async Task<Result<PagedResult<AdultTypeReadDto>>> GetAllAsync(AdultTypeFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var items = await baseCrud.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<AdultTypeReadDto>>.Success(dtos);
+        var query = db.AdultTypes.AsQueryable();
+        query = ApplyFilters(query, filter);
+        
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToListAsync(ct);
+
+        return Result<PagedResult<AdultTypeReadDto>>.Success(new PagedResult<AdultTypeReadDto>
+        {
+            Items = items.Select(MapToReadDto),
+            PageNumber = pagination.PageNumber,
+            PageSize = pagination.PageSize,
+            TotalCount = totalCount
+        });
     }
 
     public async Task<Result<AdultTypeReadDto>> GetByIdAsync(int id, CancellationToken ct)
@@ -28,14 +41,6 @@ public class AdultTypeImpl(IBaseCrud<AdultType> baseCrud, OracleDbContext db) : 
             : Result<AdultTypeReadDto>.Success(MapToReadDto(item));
     }
 
-    public async Task<Result<IEnumerable<AdultTypeReadDto>>> GetFilteredAsync(AdultTypeFilter filter, CancellationToken ct)
-    {
-        var query = db.AdultTypes.AsQueryable();
-        query = ApplyFilters(query, filter);
-        var items = await query.ToListAsync(ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<AdultTypeReadDto>>.Success(dtos);
-    }
 
     // ─────────────────────────────── Commands ───────────────────────────────
 

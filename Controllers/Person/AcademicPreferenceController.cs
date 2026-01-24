@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
+using WebApiNibu.Helpers;
 using WebApiNibu.Services.Contract;
 
 namespace WebApiNibu.Controllers.Person;
@@ -9,13 +10,18 @@ namespace WebApiNibu.Controllers.Person;
 [Route("api/[controller]")]
 public class AcademicPreferenceController(IAcademicPreference service) : ControllerBase
 {
+    // GET: api/AcademicPreference
     [HttpGet]
-    public async Task<IActionResult> GetAll(CancellationToken ct)
+    public async Task<IActionResult> GetAll(
+        [FromQuery] AcademicPreferenceFilter filter,
+        [FromQuery] PaginationParams pagination,
+        CancellationToken ct)
     {
-        var result = await service.GetAllAsync(ct);
+        var result = await service.GetAllAsync(filter, pagination, ct);
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
+    // GET: api/AcademicPreference/{id}
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id, CancellationToken ct)
     {
@@ -23,13 +29,7 @@ public class AcademicPreferenceController(IAcademicPreference service) : Control
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors);
     }
 
-    [HttpGet("filter")]
-    public async Task<IActionResult> GetFiltered([FromQuery] AcademicPreferenceFilter filter, CancellationToken ct)
-    {
-        var result = await service.GetFilteredAsync(filter, ct);
-        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
-    }
-
+    // POST: api/AcademicPreference
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] AcademicPreferenceCreateDto dto, CancellationToken ct)
     {
@@ -39,6 +39,7 @@ public class AcademicPreferenceController(IAcademicPreference service) : Control
             : BadRequest(result.Errors);
     }
 
+    // PUT: api/AcademicPreference/{id}
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] AcademicPreferenceUpdateDto dto, CancellationToken ct)
     {
@@ -46,6 +47,7 @@ public class AcademicPreferenceController(IAcademicPreference service) : Control
         return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 
+    // DELETE: api/AcademicPreference/{id}
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {

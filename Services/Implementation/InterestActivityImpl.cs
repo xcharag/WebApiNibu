@@ -13,11 +13,24 @@ public class InterestActivityImpl(IBaseCrud<InterestActivity> baseCrud, OracleDb
 {
     // ─────────────────────────────── Queries ───────────────────────────────
 
-    public async Task<Result<IEnumerable<InterestActivitieReadDto>>> GetAllAsync(CancellationToken ct)
+    public async Task<Result<PagedResult<InterestActivitieReadDto>>> GetAllAsync(InterestActivityFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var items = await baseCrud.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<InterestActivitieReadDto>>.Success(dtos);
+        var query = db.InterestActivities.AsQueryable();
+        query = ApplyFilters(query, filter);
+        
+        var totalCount = await query.CountAsync(ct);
+        var items = await query
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToListAsync(ct);
+
+        return Result<PagedResult<InterestActivitieReadDto>>.Success(new PagedResult<InterestActivitieReadDto>
+        {
+            Items = items.Select(MapToReadDto),
+            PageNumber = pagination.PageNumber,
+            PageSize = pagination.PageSize,
+            TotalCount = totalCount
+        });
     }
 
     public async Task<Result<InterestActivitieReadDto>> GetByIdAsync(int id, CancellationToken ct)
@@ -26,15 +39,6 @@ public class InterestActivityImpl(IBaseCrud<InterestActivity> baseCrud, OracleDb
         return item is null
             ? Result<InterestActivitieReadDto>.Failure($"InterestActivity with id {id} not found")
             : Result<InterestActivitieReadDto>.Success(MapToReadDto(item));
-    }
-
-    public async Task<Result<IEnumerable<InterestActivitieReadDto>>> GetFilteredAsync(InterestActivityFilter filter, CancellationToken ct)
-    {
-        var query = db.InterestActivities.AsQueryable();
-        query = ApplyFilters(query, filter);
-        var items = await query.ToListAsync(ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<InterestActivitieReadDto>>.Success(dtos);
     }
 
     // ─────────────────────────────── Commands ───────────────────────────────

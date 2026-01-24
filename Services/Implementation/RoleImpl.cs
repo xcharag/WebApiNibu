@@ -13,11 +13,16 @@ public class RoleImpl(IBaseCrud<Role> baseCrud, OracleDbContext db) : IRole
 {
     // ─────────────────────────────── Queries ───────────────────────────────
 
-    public async Task<Result<IEnumerable<RoleReadDto>>> GetAllAsync(CancellationToken ct)
+    public async Task<Result<PagedResult<RoleReadDto>>> GetAllAsync(RoleFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var items = await baseCrud.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<RoleReadDto>>.Success(dtos);
+        var query = db.Roles.AsQueryable();
+        query = ApplyFilters(query, filter);
+        var totalCount = await query.CountAsync(ct);
+        var items = await query.Skip((pagination.PageNumber - 1) * pagination.PageSize).Take(pagination.PageSize).ToListAsync(ct);
+        return Result<PagedResult<RoleReadDto>>.Success(new PagedResult<RoleReadDto>
+        {
+            Items = items.Select(MapToReadDto), PageNumber = pagination.PageNumber, PageSize = pagination.PageSize, TotalCount = totalCount
+        });
     }
 
     public async Task<Result<RoleReadDto>> GetByIdAsync(int id, CancellationToken ct)
@@ -28,21 +33,11 @@ public class RoleImpl(IBaseCrud<Role> baseCrud, OracleDbContext db) : IRole
             : Result<RoleReadDto>.Success(MapToReadDto(item));
     }
 
-    public async Task<Result<IEnumerable<RoleReadDto>>> GetFilteredAsync(RoleFilter filter, CancellationToken ct)
-    {
-        var query = db.Roles.AsQueryable();
-        query = ApplyFilters(query, filter);
-        var items = await query.ToListAsync(ct);
-        var dtos = items.Select(MapToReadDto);
-        return Result<IEnumerable<RoleReadDto>>.Success(dtos);
-    }
-
     // ─────────────────────────────── Commands ───────────────────────────────
 
     public async Task<Result<RoleReadDto>> CreateAsync(RoleCreateDto dto, CancellationToken ct)
     {
-        var entity = MapFromCreateDto(dto);
-        var created = await baseCrud.CreateAsync(entity, ct);
+        var created = await baseCrud.CreateAsync(MapFromCreateDto(dto), ct);
         return Result<RoleReadDto>.Success(MapToReadDto(created));
     }
 
