@@ -1,27 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using WebApiNibu.Abstraction;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Entity.Person;
 
-namespace WebApiNibu.Controllers;
+namespace WebApiNibu.Controllers.Person;
 
 [ApiController]
 [Route("api/[controller]")]
-public class InterestActivityController : ControllerBase
+public class InterestActivityController(IBaseCrud<InterestActivity> service) : ControllerBase
 {
-    private readonly IBaseCrud<InterestActivity> _service;
-
-    public InterestActivityController(IBaseCrud<InterestActivity> service)
-    {
-        _service = service;
-    }
-
     // GET: api/InterestActivity
     [HttpGet]
     public async Task<ActionResult<IEnumerable<InterestActivitieReadDto>>> GetAll(CancellationToken ct)
     {
-        var items = await _service.GetAllAsync(true, ct);
+        var items = await service.GetAllAsync(true, ct);
         var dtos = items.Select(MapToReadDto).ToList();
         return Ok(dtos);
     }
@@ -30,7 +22,7 @@ public class InterestActivityController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<InterestActivitieReadDto>> GetById(int id, CancellationToken ct)
     {
-        var item = await _service.GetByIdAsync(id, true, ct);
+        var item = await service.GetByIdAsync(id, true, ct);
         return item is null ? NotFound() : Ok(MapToReadDto(item));
     }
 
@@ -39,7 +31,7 @@ public class InterestActivityController : ControllerBase
     public async Task<ActionResult<InterestActivitieReadDto>> Create([FromBody] InterestActivitieCreateDto dto, CancellationToken ct)
     {
         var entity = MapFromCreateDto(dto);
-        var created = await _service.CreateAsync(entity, ct);
+        var created = await service.CreateAsync(entity, ct);
         var readDto = MapToReadDto(created);
         return CreatedAtAction(nameof(GetById), new { id = readDto.Id }, readDto);
     }
@@ -48,7 +40,7 @@ public class InterestActivityController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] InterestActivitieUpdateDto dto, CancellationToken ct)
     {
-        var updated = await _service.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);
+        var updated = await service.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);
         return updated ? NoContent() : NotFound();
     }
 
@@ -56,7 +48,7 @@ public class InterestActivityController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
-        var deleted = await _service.DeleteAsync(id, soft, ct);
+        var deleted = await service.DeleteAsync(id, soft, ct);
         return deleted ? NoContent() : NotFound();
     }
 
