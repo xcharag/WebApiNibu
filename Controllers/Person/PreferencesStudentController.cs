@@ -1,116 +1,57 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
 using WebApiNibu.Data.Dto.Person;
-using WebApiNibu.Data.Entity.Person;
+using WebApiNibu.Data.Dto.Person.Filters;
+using WebApiNibu.Helpers;
+using WebApiNibu.Services.Contract.Person;
 
 namespace WebApiNibu.Controllers.Person;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PreferencesStudentController(IBaseCrud<PreferencesStudent> service, OracleDbContext db) : ControllerBase
+public class PreferencesStudentController(IPreferencesStudent service) : ControllerBase
 {
     // GET: api/PreferencesStudent
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<PreferencesStudentReadDto>>> GetAll(CancellationToken ct)
+    public async Task<IActionResult> GetAll(
+        [FromQuery] PreferencesStudentFilter filter,
+        [FromQuery] PaginationParams pagination,
+        CancellationToken ct)
     {
-        var items = await service.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto).ToList();
-        return Ok(dtos);
+        var result = await service.GetAllAsync(filter, pagination, ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
     // GET: api/PreferencesStudent/{id}
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<PreferencesStudentReadDto>> GetById(int id, CancellationToken ct)
+    public async Task<IActionResult> GetById(int id, CancellationToken ct)
     {
-        var item = await service.GetByIdAsync(id, true, ct);
-        return item is null ? NotFound() : Ok(MapToReadDto(item));
+        var result = await service.GetByIdAsync(id, ct);
+        return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors);
     }
 
     // POST: api/PreferencesStudent
     [HttpPost]
-    public async Task<ActionResult<PreferencesStudentReadDto>> Create([FromBody] PreferencesStudentCreateDto dto, CancellationToken ct)
+    public async Task<IActionResult> Create([FromBody] PreferencesStudentCreateDto dto, CancellationToken ct)
     {
-        var fkErrors = await ValidateFksAsync(dto.SchoolStudentId, ct);
-        if (fkErrors.Count > 0)
-        {
-            return BadRequest(new { message = "Invalid foreign keys", errors = fkErrors });
-        }
-
-        var entity = MapFromCreateDto(dto);
-        var created = await service.CreateAsync(entity, ct);
-        var readDto = MapToReadDto(created);
-        return CreatedAtAction(nameof(GetById), new { id = readDto.Id }, readDto);
+        var result = await service.CreateAsync(dto, ct);
+        return result.IsSuccess
+            ? CreatedAtAction(nameof(GetById), new { id = result.Value!.Id }, result.Value)
+            : BadRequest(result.Errors);
     }
 
     // PUT: api/PreferencesStudent/{id}
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] PreferencesStudentUpdateDto dto, CancellationToken ct)
     {
-        var fkErrors = await ValidateFksAsync(dto.SchoolStudentId, ct);
-        if (fkErrors.Count > 0)
-        {
-            return BadRequest(new { message = "Invalid foreign keys", errors = fkErrors });
-        }
-
-        var updated = await service.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);
-        return updated ? NoContent() : NotFound();
+        var result = await service.UpdateAsync(id, dto, ct);
+        return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 
     // DELETE: api/PreferencesStudent/{id}
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
-        var deleted = await service.DeleteAsync(id, soft, ct);
-        return deleted ? NoContent() : NotFound();
-    }
-
-    private async Task<List<string>> ValidateFksAsync(int schoolStudentId, CancellationToken ct)
-    {
-        var errors = new List<string>();
-        if (!await db.SchoolStudents.AnyAsync(s => s.Id == schoolStudentId, ct))
-        {
-            errors.Add($"SchoolStudentId ({schoolStudentId}) not found");
-        }
-        return errors;
-    }
-
-    private static PreferencesStudentReadDto MapToReadDto(PreferencesStudent preferences) => new()
-    {
-        Id = preferences.Id,
-        HaveVocationalTest = preferences.HaveVocationalTest,
-        StudyAbroad = preferences.StudyAbroad,
-        WhereHadTest = (WebApiNibu.Data.Dto.Person.WhereHadTest?)preferences.WhereHadTest,
-        LevelInformation = (WebApiNibu.Data.Dto.Person.LevelInformation?)preferences.LevelInformation,
-        SchoolStudentId = preferences.IdSchoolStudent
-    };
-
-    private static PreferencesStudent MapFromCreateDto(PreferencesStudentCreateDto dto) => new()
-    {
-        HaveVocationalTest = dto.HaveVocationalTest,
-        StudyAbroad = dto.StudyAbroad,
-        WhereHadTest = dto.WhereHadTest.HasValue
-            ? (WebApiNibu.Data.Enum.WhereHadTest)dto.WhereHadTest.Value
-            : WebApiNibu.Data.Enum.WhereHadTest.School,
-        LevelInformation = dto.LevelInformation.HasValue
-            ? (WebApiNibu.Data.Enum.LevelInformation)dto.LevelInformation.Value
-            : WebApiNibu.Data.Enum.LevelInformation.Little,
-        IdSchoolStudent = dto.SchoolStudentId,
-        Active = true,
-        SchoolStudent = null!
-    };
-
-    private static void ApplyUpdateDto(PreferencesStudent target, PreferencesStudentUpdateDto dto)
-    {
-        target.HaveVocationalTest = dto.HaveVocationalTest;
-        target.StudyAbroad = dto.StudyAbroad;
-        target.WhereHadTest = dto.WhereHadTest.HasValue
-            ? (WebApiNibu.Data.Enum.WhereHadTest)dto.WhereHadTest.Value
-            : target.WhereHadTest;
-        target.LevelInformation = dto.LevelInformation.HasValue
-            ? (WebApiNibu.Data.Enum.LevelInformation)dto.LevelInformation.Value
-            : target.LevelInformation;
-        target.IdSchoolStudent = dto.SchoolStudentId;
+        var result = await service.DeleteAsync(id, soft, ct);
+        return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 }

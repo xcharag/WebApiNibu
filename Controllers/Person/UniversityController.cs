@@ -1,86 +1,57 @@
 using Microsoft.AspNetCore.Mvc;
-using WebApiNibu.Abstraction;
 using WebApiNibu.Data.Dto.Person;
-using WebApiNibu.Data.Entity.Person;
+using WebApiNibu.Data.Dto.Person.Filters;
+using WebApiNibu.Helpers;
+using WebApiNibu.Services.Contract.Person;
 
 namespace WebApiNibu.Controllers.Person;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UniversityController(IBaseCrud<University> service) : ControllerBase
+public class UniversityController(IUniversity service) : ControllerBase
 {
     // GET: api/University
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UniversityReadDto>>> GetAll(CancellationToken ct)
+    public async Task<IActionResult> GetAll(
+        [FromQuery] UniversityFilter filter,
+        [FromQuery] PaginationParams pagination,
+        CancellationToken ct)
     {
-        var items = await service.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto).ToList();
-        return Ok(dtos);
+        var result = await service.GetAllAsync(filter, pagination, ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
     // GET: api/University/{id}
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<UniversityReadDto>> GetById(int id, CancellationToken ct)
+    public async Task<IActionResult> GetById(int id, CancellationToken ct)
     {
-        var item = await service.GetByIdAsync(id, true, ct);
-        return item is null ? NotFound() : Ok(MapToReadDto(item));
+        var result = await service.GetByIdAsync(id, ct);
+        return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors);
     }
 
     // POST: api/University
     [HttpPost]
-    public async Task<ActionResult<UniversityReadDto>> Create([FromBody] UniversityCreateDto dto, CancellationToken ct)
+    public async Task<IActionResult> Create([FromBody] UniversityCreateDto dto, CancellationToken ct)
     {
-        var entity = MapFromCreateDto(dto);
-        var created = await service.CreateAsync(entity, ct);
-        var readDto = MapToReadDto(created);
-        return CreatedAtAction(nameof(GetById), new { id = readDto.Id }, readDto);
+        var result = await service.CreateAsync(dto, ct);
+        return result.IsSuccess
+            ? CreatedAtAction(nameof(GetById), new { id = result.Value!.Id }, result.Value)
+            : BadRequest(result.Errors);
     }
 
     // PUT: api/University/{id}
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UniversityUpdateDto dto, CancellationToken ct)
     {
-        var updated = await service.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);
-        return updated ? NoContent() : NotFound();
+        var result = await service.UpdateAsync(id, dto, ct);
+        return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 
     // DELETE: api/University/{id}
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
-        var deleted = await service.DeleteAsync(id, soft, ct);
-        return deleted ? NoContent() : NotFound();
-    }
-
-    private static UniversityReadDto MapToReadDto(University university) => new()
-    {
-        Id = university.Id,
-        Name = university.Name,
-        Sigla = university.Sigla ?? string.Empty,
-        Dpto = university.Dpto ?? string.Empty,
-        IdEventos = university.IdEventos ?? 0,
-        OrdenEventos = university.OrdenEventos ?? 0,
-        NivelCompetencia = university.NivelCompetencia ?? string.Empty
-    };
-
-    private static University MapFromCreateDto(UniversityCreateDto dto) => new()
-    {
-        Name = dto.Name,
-        Sigla = dto.Sigla,
-        Dpto = dto.Dpto,
-        IdEventos = dto.IdEventos,
-        OrdenEventos = dto.OrdenEventos,
-        NivelCompetencia = dto.NivelCompetencia,
-        Active = true
-    };
-
-    private static void ApplyUpdateDto(University target, UniversityUpdateDto dto)
-    {
-        target.Name = dto.Name;
-        target.Sigla = dto.Sigla;
-        target.Dpto = dto.Dpto;
-        target.IdEventos = dto.IdEventos;
-        target.OrdenEventos = dto.OrdenEventos;
-        target.NivelCompetencia = dto.NivelCompetencia;
+        var result = await service.DeleteAsync(id, soft, ct);
+        return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 }

@@ -1034,7 +1034,7 @@ namespace WebApiNibu.Data.Context.Oracle.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "AcademicPreference",
+                name: "AcademicPreferenceImpl",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -1408,17 +1408,17 @@ namespace WebApiNibu.Data.Context.Oracle.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_AcademicPreference_IdCarreer",
-                table: "AcademicPreference",
+                table: "AcademicPreferenceImpl",
                 column: "IdCarreer");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AcademicPreference_IdPreferencesStudent",
-                table: "AcademicPreference",
+                table: "AcademicPreferenceImpl",
                 column: "IdPreferencesStudent");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AcademicPreference_IdUniversitiy",
-                table: "AcademicPreference",
+                table: "AcademicPreferenceImpl",
                 column: "IdUniversitiy");
 
             migrationBuilder.CreateIndex(
@@ -1702,7 +1702,7 @@ namespace WebApiNibu.Data.Context.Oracle.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AcademicPreference");
+                name: "AcademicPreferenceImpl");
 
             migrationBuilder.DropTable(
                 name: "Contact");

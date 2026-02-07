@@ -1,110 +1,57 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
 using WebApiNibu.Data.Dto.Person;
-using WebApiNibu.Data.Entity.Person;
+using WebApiNibu.Data.Dto.Person.Filters;
+using WebApiNibu.Helpers;
+using WebApiNibu.Services.Contract.Person;
 
 namespace WebApiNibu.Controllers.Person;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AdultController(IBaseCrud<Adult> service, OracleDbContext db) : ControllerBase
+public class AdultController(IAdult service) : ControllerBase
 {
     // GET: api/Adult
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AdultReadDto>>> GetAll(CancellationToken ct)
+    public async Task<IActionResult> GetAll(
+        [FromQuery] AdultFilter filter,
+        [FromQuery] PaginationParams pagination,
+        CancellationToken ct)
     {
-        var items = await service.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto).ToList();
-        return Ok(dtos);
+        var result = await service.GetAllAsync(filter, pagination, ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
     // GET: api/Adult/{id}
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<AdultReadDto>> GetById(int id, CancellationToken ct)
+    public async Task<IActionResult> GetById(int id, CancellationToken ct)
     {
-        var item = await service.GetByIdAsync(id, true, ct);
-        return item is null ? NotFound() : Ok(MapToReadDto(item));
+        var result = await service.GetByIdAsync(id, ct);
+        return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors);
     }
 
     // POST: api/Adult
     [HttpPost]
-    public async Task<ActionResult<AdultReadDto>> Create([FromBody] AdultCreateDto dto, CancellationToken ct)
+    public async Task<IActionResult> Create([FromBody] AdultCreateDto dto, CancellationToken ct)
     {
-        var fkErrors = await ValidateFksAsync(dto.AdultTypeId, dto.SchoolStudentId, ct);
-        if (fkErrors.Count > 0)
-        {
-            return BadRequest(new { message = "Invalid foreign keys", errors = fkErrors });
-        }
-
-        var entity = MapFromCreateDto(dto);
-        var created = await service.CreateAsync(entity, ct);
-        var readDto = MapToReadDto(created);
-        return CreatedAtAction(nameof(GetById), new { id = readDto.Id }, readDto);
+        var result = await service.CreateAsync(dto, ct);
+        return result.IsSuccess
+            ? CreatedAtAction(nameof(GetById), new { id = result.Value!.Id }, result.Value)
+            : BadRequest(result.Errors);
     }
 
     // PUT: api/Adult/{id}
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] AdultUpdateDto dto, CancellationToken ct)
     {
-        var fkErrors = await ValidateFksAsync(dto.AdultTypeId, dto.SchoolStudentId, ct);
-        if (fkErrors.Count > 0)
-        {
-            return BadRequest(new { message = "Invalid foreign keys", errors = fkErrors });
-        }
-
-        var updated = await service.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);
-        return updated ? NoContent() : NotFound();
+        var result = await service.UpdateAsync(id, dto, ct);
+        return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 
     // DELETE: api/Adult/{id}
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
-        var deleted = await service.DeleteAsync(id, soft, ct);
-        return deleted ? NoContent() : NotFound();
-    }
-
-    private async Task<List<string>> ValidateFksAsync(int adultTypeId, int schoolStudentId, CancellationToken ct)
-    {
-        var errors = new List<string>();
-        if (!await db.AdultTypes.AnyAsync(a => a.Id == adultTypeId, ct))
-        {
-            errors.Add($"AdultTypeId ({adultTypeId}) not found");
-        }
-        if (!await db.SchoolStudents.AnyAsync(s => s.Id == schoolStudentId, ct))
-        {
-            errors.Add($"SchoolStudentId ({schoolStudentId}) not found");
-        }
-        return errors;
-    }
-
-    private static AdultReadDto MapToReadDto(Adult adult) => new()
-    {
-        Id = adult.Id,
-        WorkPhoneNumber = adult.WorkPhoneNumber,
-        WorkEmail = adult.WorkEmail,
-        AdultTypeId = adult.IdAdultType,
-        SchoolStudentId = adult.IdSchoolStudent
-    };
-
-    private static Adult MapFromCreateDto(AdultCreateDto dto) => new()
-    {
-        WorkPhoneNumber = dto.WorkPhoneNumber,
-        WorkEmail = dto.WorkEmail,
-        IdAdultType = dto.AdultTypeId,
-        IdSchoolStudent = dto.SchoolStudentId,
-        Active = true,
-        AdultType = null!,
-        SchoolStudent = null!
-    };
-
-    private static void ApplyUpdateDto(Adult target, AdultUpdateDto dto)
-    {
-        target.WorkPhoneNumber = dto.WorkPhoneNumber;
-        target.WorkEmail = dto.WorkEmail;
-        target.IdAdultType = dto.AdultTypeId;
-        target.IdSchoolStudent = dto.SchoolStudentId;
+        var result = await service.DeleteAsync(id, soft, ct);
+        return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 }

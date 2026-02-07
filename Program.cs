@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Context.Oracle;
 using WebApiNibu.Abstraction;
+using WebApiNibu.Services.Contract.Person;
+using WebApiNibu.Services.Implementation.Person;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,24 @@ builder.Services.AddEndpointsApiExplorer();
 
 // Register generic CRUD service for all entities
 builder.Services.AddScoped(typeof(IBaseCrud<>), typeof(BaseCrudImplementation<>));
+
+// Register Contract/Implementation services
+builder.Services.AddScoped<IAcademicPreference, AcademicPreferenceImpl>();
+builder.Services.AddScoped<IAdult, AdultImpl>();
+builder.Services.AddScoped<IAdultType, AdultTypeImpl>();
+builder.Services.AddScoped<ICarreer, CarreerImpl>();
+builder.Services.AddScoped<ICountry, CountryImpl>();
+builder.Services.AddScoped<IDocumentType, DocumentTypeImpl>();
+builder.Services.AddScoped<IInterestActivity, InterestActivityImpl>();
+builder.Services.AddScoped<IMerch, MerchImpl>();
+builder.Services.AddScoped<IMerchType, MerchTypeImpl>();
+builder.Services.AddScoped<IMerchObtention, MerchObtentionImpl>();
+builder.Services.AddScoped<IPreferencesStudent, PreferencesStudentImpl>();
+builder.Services.AddScoped<IRole, RoleImpl>();
+builder.Services.AddScoped<ISchoolStudent, SchoolStudentImpl>();
+builder.Services.AddScoped<IStudentInterest, StudentInterestImpl>();
+builder.Services.AddScoped<IUniversity, UniversityImpl>();
+builder.Services.AddScoped<IWorker, WorkerImpl>();
 
 // Configure DbContext with MySQL/Oracle
 var connectionString = builder.Configuration.GetConnectionString("OracleConnection");

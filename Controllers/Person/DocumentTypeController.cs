@@ -1,71 +1,57 @@
 using Microsoft.AspNetCore.Mvc;
-using WebApiNibu.Abstraction;
 using WebApiNibu.Data.Dto.Person;
-using WebApiNibu.Data.Entity.Person;
+using WebApiNibu.Data.Dto.Person.Filters;
+using WebApiNibu.Helpers;
+using WebApiNibu.Services.Contract.Person;
 
 namespace WebApiNibu.Controllers.Person;
 
 [ApiController]
 [Route("api/[controller]")]
-public class DocumentTypeController(IBaseCrud<DocumentType> service) : ControllerBase
+public class DocumentTypeController(IDocumentType service) : ControllerBase
 {
     // GET: api/DocumentType
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<DocumentTypeReadDto>>> GetAll(CancellationToken ct)
+    public async Task<IActionResult> GetAll(
+        [FromQuery] DocumentTypeFilter filter,
+        [FromQuery] PaginationParams pagination,
+        CancellationToken ct)
     {
-        var items = await service.GetAllAsync(true, ct);
-        var dtos = items.Select(MapToReadDto).ToList();
-        return Ok(dtos);
+        var result = await service.GetAllAsync(filter, pagination, ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
     }
 
     // GET: api/DocumentType/{id}
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<DocumentTypeReadDto>> GetById(int id, CancellationToken ct)
+    public async Task<IActionResult> GetById(int id, CancellationToken ct)
     {
-        var item = await service.GetByIdAsync(id, true, ct);
-        return item is null ? NotFound() : Ok(MapToReadDto(item));
+        var result = await service.GetByIdAsync(id, ct);
+        return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors);
     }
 
     // POST: api/DocumentType
     [HttpPost]
-    public async Task<ActionResult<DocumentTypeReadDto>> Create([FromBody] DocumentTypeCreateDto dto, CancellationToken ct)
+    public async Task<IActionResult> Create([FromBody] DocumentTypeCreateDto dto, CancellationToken ct)
     {
-        var entity = MapFromCreateDto(dto);
-        var created = await service.CreateAsync(entity, ct);
-        var readDto = MapToReadDto(created);
-        return CreatedAtAction(nameof(GetById), new { id = readDto.Id }, readDto);
+        var result = await service.CreateAsync(dto, ct);
+        return result.IsSuccess
+            ? CreatedAtAction(nameof(GetById), new { id = result.Value!.Id }, result.Value)
+            : BadRequest(result.Errors);
     }
 
     // PUT: api/DocumentType/{id}
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] DocumentTypeUpdateDto dto, CancellationToken ct)
     {
-        var updated = await service.UpdateAsync(id, e => ApplyUpdateDto(e, dto), ct);
-        return updated ? NoContent() : NotFound();
+        var result = await service.UpdateAsync(id, dto, ct);
+        return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 
     // DELETE: api/DocumentType/{id}
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
-        var deleted = await service.DeleteAsync(id, soft, ct);
-        return deleted ? NoContent() : NotFound();
-    }
-
-    private static DocumentTypeReadDto MapToReadDto(DocumentType documentType) => new()
-    {
-        Id = documentType.Id,
-        Name = documentType.Name
-    };
-
-    private static DocumentType MapFromCreateDto(DocumentTypeCreateDto dto) => new()
-    {
-        Name = dto.Name,
-        Active = true
-    };
-
-    private static void ApplyUpdateDto(DocumentType target, DocumentTypeUpdateDto dto)
-    {
-        target.Name = dto.Name;
+        var result = await service.DeleteAsync(id, soft, ct);
+        return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 }

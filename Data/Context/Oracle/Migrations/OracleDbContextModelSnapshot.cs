@@ -1027,7 +1027,7 @@ namespace WebApiNibu.Data.Context.Oracle.Migrations
                     b.ToTable("SelectedOption");
                 });
 
-            modelBuilder.Entity("WebApiNibu.Data.Entity.Person.AcademicPreference", b =>
+            modelBuilder.Entity("WebApiNibu.Data.Entity.Person.AcademicPreferenceImpl", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1067,7 +1067,7 @@ namespace WebApiNibu.Data.Context.Oracle.Migrations
 
                     b.HasIndex("IdUniversitiy");
 
-                    b.ToTable("AcademicPreference");
+                    b.ToTable("AcademicPreferenceImpl");
                 });
 
             modelBuilder.Entity("WebApiNibu.Data.Entity.Person.AdultType", b =>
@@ -2382,7 +2382,7 @@ namespace WebApiNibu.Data.Context.Oracle.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebApiNibu.Data.Entity.Person.AcademicPreference", b =>
+            modelBuilder.Entity("WebApiNibu.Data.Entity.Person.AcademicPreferenceImpl", b =>
                 {
                     b.HasOne("WebApiNibu.Data.Entity.Person.Carreer", "Carreer")
                         .WithMany("AcademicPreferences")
