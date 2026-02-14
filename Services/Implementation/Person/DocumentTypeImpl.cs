@@ -1,5 +1,5 @@
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
@@ -8,7 +8,7 @@ using WebApiNibu.Services.Implementation.Person.DocumentType;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class DocumentTypeImpl(IBaseCrud<Data.Entity.Person.DocumentType> baseCrud, OracleDbContext db)
+public class DocumentTypeImpl(IBaseCrud<Data.Entity.Person.DocumentType> baseCrud, CoreDbContext db)
     : IDocumentType
 {
     private readonly DocumentTypeQueries _queries = new(db);

@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Person.InterestActivity;
 
-public class InterestActivityQueries(OracleDbContext db)
+public class InterestActivityQueries(CoreDbContext db)
 {
     public async Task<Result<PagedResult<InterestActivitieReadDto>>> GetAllAsync(
         InterestActivityFilter filter, 

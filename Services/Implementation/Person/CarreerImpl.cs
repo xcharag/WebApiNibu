@@ -1,5 +1,5 @@
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
@@ -8,7 +8,7 @@ using WebApiNibu.Services.Implementation.Person.Carreer;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class CarreerImpl(IBaseCrud<Data.Entity.Person.Carreer> baseCrud, OracleDbContext db)
+public class CarreerImpl(IBaseCrud<Data.Entity.Person.Carreer> baseCrud, CoreDbContext db)
     : ICarreer
 {
     private readonly CarreerQueries _queries = new(db);

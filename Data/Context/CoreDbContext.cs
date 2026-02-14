@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Entity.CopaUpsa;
-using WebApiNibu.Data.Entity.FatherTable;
 using WebApiNibu.Data.Entity.Feed.Events;
 using WebApiNibu.Data.Entity.Feed.News;
 using WebApiNibu.Data.Entity.Feed.Polls;
@@ -9,14 +8,14 @@ using WebApiNibu.Data.Entity.School;
 using WebApiNibu.Data.Entity.Tags;
 using WebApiNibu.Data.Entity.UsersAndAccess;
 
-namespace WebApiNibu.Data.Context.Oracle;
+namespace WebApiNibu.Data.Context;
 
-public class OracleDbContext : DbContext
+/// <summary>
+/// Main database context that supports multiple database providers.
+/// The provider is determined at runtime based on configuration.
+/// </summary>
+public class CoreDbContext(DbContextOptions<CoreDbContext> options) : DbContext(options), IAppDbContext
 {
-    public OracleDbContext(DbContextOptions<OracleDbContext> options) : base(options)
-    {
-    }
-
     // Copa Upsa
     public DbSet<Match> Matches { get; set; }
     public DbSet<MatchStatus> MatchStatuses { get; set; }
@@ -81,9 +80,7 @@ public class OracleDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        // Configure TPH (Table Per Hierarchy) for PersonTable inheritance
-        // All person types share the same table with a discriminator column
+        
         modelBuilder.Entity<PersonTable>()
             .ToTable("personTable")
             .HasDiscriminator<string>("PersonType")

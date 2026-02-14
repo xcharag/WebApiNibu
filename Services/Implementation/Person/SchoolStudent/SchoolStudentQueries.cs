@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Person.SchoolStudent;
 
-public class SchoolStudentQueries(OracleDbContext db)
+public class SchoolStudentQueries(CoreDbContext db)
 {
     public async Task<Result<PagedResult<SchoolStudentReadDto>>> GetAllAsync(
         SchoolStudentFilter filter, PaginationParams pagination, CancellationToken ct)

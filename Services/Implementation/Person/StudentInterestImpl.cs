@@ -1,5 +1,5 @@
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
@@ -8,7 +8,7 @@ using WebApiNibu.Services.Implementation.Person.StudentInterest;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class StudentInterestImpl(IBaseCrud<Data.Entity.Person.StudentInterest> baseCrud, OracleDbContext db)
+public class StudentInterestImpl(IBaseCrud<Data.Entity.Person.StudentInterest> baseCrud, CoreDbContext db)
     : IStudentInterest
 {
     private readonly StudentInterestQueries _queries = new(db);

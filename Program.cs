@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Abstraction;
 using WebApiNibu.Services.Contract.Person;
 using WebApiNibu.Services.Implementation.Person;
@@ -32,27 +32,8 @@ builder.Services.AddScoped<IStudentInterest, StudentInterestImpl>();
 builder.Services.AddScoped<IUniversity, UniversityImpl>();
 builder.Services.AddScoped<IWorker, WorkerImpl>();
 
-// Configure DbContext with MySQL/Oracle
-var connectionString = builder.Configuration.GetConnectionString("OracleConnection");
-builder.Services.AddDbContext<OracleDbContext>(options =>
-{
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
-        mysqlOptions =>
-        {
-            mysqlOptions.MigrationsAssembly(typeof(OracleDbContext).Assembly.FullName);
-            mysqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(10),
-                errorNumbersToAdd: null);
-        });
-
-    // Enable sensitive data logging in development
-    if (builder.Environment.IsDevelopment())
-    {
-        options.EnableSensitiveDataLogging();
-        options.EnableDetailedErrors();
-    }
-});
+// Configure DbContext with dynamic database provider
+builder.Services.AddDatabaseProvider(builder.Configuration, builder.Environment.IsDevelopment());
 
 // Built-in OpenAPI document (optional alongside Swashbuckle)
 builder.Services.AddOpenApi();
@@ -98,7 +79,7 @@ static async Task ApplyMigrationsAsync(WebApplication app)
 
     try
     {
-        var context = services.GetRequiredService<OracleDbContext>();
+        var context = services.GetRequiredService<CoreDbContext>();
         var logger = services.GetRequiredService<ILogger<Program>>();
 
         logger.LogInformation("Checking for pending migrations...");

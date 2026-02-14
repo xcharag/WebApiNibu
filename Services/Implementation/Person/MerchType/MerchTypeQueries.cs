@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Person.MerchType;
 
-public class MerchTypeQueries(OracleDbContext db)
+public class MerchTypeQueries(CoreDbContext db)
 {
     public async Task<Result<PagedResult<MerchTypeReadDto>>> GetAllAsync(
         MerchTypeFilter filter, PaginationParams pagination, CancellationToken ct)

@@ -39,11 +39,17 @@ public class SchoolTable : BaseEntity
     public string? NormalLogo { get; set; }
 
     public int Rue { get; set; }
+    
+    [StringLength(100)]
+    public string City { get; set; } = string.Empty;
+    
+    [StringLength(100)]
+    public string Country { get; set; } = string.Empty;
 
     [Required]
     [StringLength(150)]
 
-    public string Delegada { get; set; } = string.Empty;
+    public string Delegada { get; set; } = "S/D";
 
     [Required]
     [StringLength(15)]
