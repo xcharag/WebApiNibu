@@ -1,17 +1,18 @@
+using WebApiNibu.Data.Context;
+
 namespace WebApiNibu.Abstraction;
 
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
 using WebApiNibu.Data.Entity.FatherTable;
 
 public class BaseCrudImplementation<TEntity> : IBaseCrud<TEntity>
     where TEntity : BaseEntity
 {
-    private readonly OracleDbContext _db;
+    private readonly CoreDbContext _db;
     private readonly DbSet<TEntity> _set;
 
-    public BaseCrudImplementation(OracleDbContext dbContext)
+    public BaseCrudImplementation(CoreDbContext dbContext)
     {
         _db = dbContext;
         _set = _db.Set<TEntity>();

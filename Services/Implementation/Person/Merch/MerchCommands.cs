@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Person.Merch;
 
-public class MerchCommands(IBaseCrud<Data.Entity.Person.Merch> baseCrud, OracleDbContext db)
+public class MerchCommands(IBaseCrud<Data.Entity.Person.Merch> baseCrud, CoreDbContext db)
 {
     public async Task<Result<MerchReadDto>> CreateAsync(MerchCreateDto dto, CancellationToken ct)
     {

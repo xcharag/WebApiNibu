@@ -1,5 +1,5 @@
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
@@ -8,7 +8,7 @@ using WebApiNibu.Services.Implementation.Person.Country;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class CountryImpl(IBaseCrud<Data.Entity.Person.Country> baseCrud, OracleDbContext db)
+public class CountryImpl(IBaseCrud<Data.Entity.Person.Country> baseCrud, CoreDbContext db)
     : ICountry
 {
     private readonly CountryQueries _queries = new(db);

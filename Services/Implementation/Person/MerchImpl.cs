@@ -1,5 +1,5 @@
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
@@ -8,7 +8,7 @@ using WebApiNibu.Services.Implementation.Person.Merch;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class MerchImpl(IBaseCrud<Data.Entity.Person.Merch> baseCrud, OracleDbContext db)
+public class MerchImpl(IBaseCrud<Data.Entity.Person.Merch> baseCrud, CoreDbContext db)
     : IMerch
 {
     private readonly MerchQueries _queries = new(db);

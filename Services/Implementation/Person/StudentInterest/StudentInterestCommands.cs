@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Person.StudentInterest;
 
-public class StudentInterestCommands(IBaseCrud<Data.Entity.Person.StudentInterest> baseCrud, OracleDbContext db)
+public class StudentInterestCommands(IBaseCrud<Data.Entity.Person.StudentInterest> baseCrud, CoreDbContext db)
 {
     public async Task<Result<StudentInterestReadDto>> CreateAsync(StudentInterestCreateDto dto, CancellationToken ct)
     {

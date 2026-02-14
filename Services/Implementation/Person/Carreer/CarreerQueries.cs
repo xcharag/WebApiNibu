@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Person.Carreer;
 
-public class CarreerQueries(OracleDbContext db)
+public class CarreerQueries(CoreDbContext db)
 {
     public async Task<Result<PagedResult<CarreerReadDto>>> GetAllAsync(
         CarreerFilter filter, 

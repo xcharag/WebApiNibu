@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Person.Adult;
 
-public class AdultCommands(IBaseCrud<Data.Entity.Person.Adult> baseCrud, OracleDbContext db)
+public class AdultCommands(IBaseCrud<Data.Entity.Person.Adult> baseCrud, CoreDbContext db)
 {
     public async Task<Result<AdultReadDto>> CreateAsync(AdultCreateDto dto, CancellationToken ct)
     {

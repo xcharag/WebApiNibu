@@ -5,7 +5,7 @@ namespace WebApiNibu.Helpers;
 /// </summary>
 public class PaginationParams
 {
-    private const int MaxPageSize = 100;
+    private const int MaxPageSize = 500;
     private int _pageSize = 10;
 
     public int PageNumber { get; set; } = 1;

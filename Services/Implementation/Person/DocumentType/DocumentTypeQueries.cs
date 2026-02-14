@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Person.DocumentType;
 
-public class DocumentTypeQueries(OracleDbContext db)
+public class DocumentTypeQueries(CoreDbContext db)
 {
     public async Task<Result<PagedResult<DocumentTypeReadDto>>> GetAllAsync(
         DocumentTypeFilter filter, 

@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Person.Merch;
 
-public class MerchQueries(OracleDbContext db)
+public class MerchQueries(CoreDbContext db)
 {
     public async Task<Result<PagedResult<MerchReadDto>>> GetAllAsync(
         MerchFilter filter, 

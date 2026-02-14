@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Person.AdultType;
 
-public class AdultTypeQueries(OracleDbContext db)
+public class AdultTypeQueries(CoreDbContext db)
 {
     public async Task<Result<PagedResult<AdultTypeReadDto>>> GetAllAsync(
         AdultTypeFilter filter, 

@@ -1,5 +1,5 @@
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Person;
 using WebApiNibu.Data.Dto.Person.Filters;
 using WebApiNibu.Helpers;
@@ -8,7 +8,7 @@ using WebApiNibu.Services.Implementation.Person.Adult;
 
 namespace WebApiNibu.Services.Implementation.Person;
 
-public class AdultImpl(IBaseCrud<Data.Entity.Person.Adult> baseCrud, OracleDbContext db)
+public class AdultImpl(IBaseCrud<Data.Entity.Person.Adult> baseCrud, CoreDbContext db)
     : IAdult
 {
     private readonly AdultQueries _queries = new(db);

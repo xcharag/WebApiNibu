@@ -13,6 +13,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.6" />
@@ -20,7 +21,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Data\Context\Oracle\Migrations\" />
+      <Folder Include="Data\Dto\CopaUpsa\Filters\" />
+      <Folder Include="Migrations\" />
     </ItemGroup>
 
 </Project>
