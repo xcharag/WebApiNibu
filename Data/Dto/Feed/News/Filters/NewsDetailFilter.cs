@@ -1,4 +1,4 @@
-namespace WebApiNibu.Data.Dto.News.Filters;
+namespace WebApiNibu.Data.Dto.Feed.News.Filters;
 
 
 

@@ -1,7 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Context.Oracle;
 using WebApiNibu.Abstraction;
+using WebApiNibu.Services.Contract.Feed.Events;
+using WebApiNibu.Services.Contract.Feed.News;
+using WebApiNibu.Services.Contract.Feed.Polls;
 using WebApiNibu.Services.Contract.Person;
+using WebApiNibu.Services.Implementation.Feed.Events;
+using WebApiNibu.Services.Implementation.Feed.News;
+using WebApiNibu.Services.Implementation.Feed.Polls;
 using WebApiNibu.Services.Implementation.Person;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +21,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped(typeof(IBaseCrud<>), typeof(BaseCrudImplementation<>));
 
 // Register Contract/Implementation services
+builder.Services.AddScoped<IEvent, EventImpl>();
+builder.Services.AddScoped<IEventDetail, EventDetailImpl>();
+builder.Services.AddScoped<IEventInteraction, EventInteractionImpl>();
+builder.Services.AddScoped<IPoll, PollImpl>();
+builder.Services.AddScoped<IOption, OptionImpl>();
+builder.Services.AddScoped<ISelectedOption, SelectedOptionImpl>();
+builder.Services.AddScoped<INews, NewsImpl>();
+builder.Services.AddScoped<INewsDetail, NewsDetailImpl>();
+builder.Services.AddScoped<INewsReaction, NewsReactionImpl>();
+
 builder.Services.AddScoped<IAcademicPreference, AcademicPreferenceImpl>();
 builder.Services.AddScoped<IAdult, AdultImpl>();
 builder.Services.AddScoped<IAdultType, AdultTypeImpl>();

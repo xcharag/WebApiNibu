@@ -1,5 +1,5 @@
-using WebApiNibu.Data.Dto.News;
-using WebApiNibu.Data.Dto.News.Filters;
+using WebApiNibu.Data.Dto.Feed.News;
+using WebApiNibu.Data.Dto.Feed.News.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Contract.News;

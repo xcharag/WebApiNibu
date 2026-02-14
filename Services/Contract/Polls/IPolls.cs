@@ -1,5 +1,5 @@
-using WebApiNibu.Data.Dto.Polls;
-using WebApiNibu.Data.Dto.Polls.Filters;
+using WebApiNibu.Data.Dto.Feed.Polls;
+using WebApiNibu.Data.Dto.Feed.Polls.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Contract.Polls;
