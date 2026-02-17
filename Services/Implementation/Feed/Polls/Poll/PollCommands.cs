@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.Polls;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Feed.Polls.Poll;
 
-public class PollCommands(IBaseCrud<Data.Entity.Feed.Polls.Poll> baseCrud, OracleDbContext db)
+public class PollCommands(IBaseCrud<Data.Entity.Feed.Polls.Poll> baseCrud, CoreDbContext db)
 {
     public async Task<Result<PollReadDto>> CreateAsync(PollCreateDto dto, CancellationToken ct)
     {

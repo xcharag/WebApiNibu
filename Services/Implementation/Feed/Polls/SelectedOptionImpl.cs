@@ -1,5 +1,5 @@
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.Polls;
 using WebApiNibu.Data.Dto.Feed.Polls.Filters;
 using WebApiNibu.Helpers;
@@ -8,7 +8,7 @@ using WebApiNibu.Services.Implementation.Feed.Polls.SelectedOption;
 
 namespace WebApiNibu.Services.Implementation.Feed.Polls;
 
-public class SelectedOptionImpl(IBaseCrud<Data.Entity.Feed.Polls.SelectedOption> baseCrud, OracleDbContext db)
+public class SelectedOptionImpl(IBaseCrud<Data.Entity.Feed.Polls.SelectedOption> baseCrud, CoreDbContext db)
     : ISelectedOption
 {
     private readonly SelectedOptionQueries _queries = new(db);

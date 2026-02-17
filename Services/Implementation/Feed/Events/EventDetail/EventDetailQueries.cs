@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.Events;
 using WebApiNibu.Data.Dto.Feed.Events.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Feed.Events.EventDetail;
 
-public class EventDetailQueries(OracleDbContext db)
+public class EventDetailQueries(CoreDbContext db)
 {
     public async Task<Result<PagedResult<EventDetailReadDto>>> GetAllAsync(
         EventDetailFilter filter,

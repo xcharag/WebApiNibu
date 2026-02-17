@@ -1,5 +1,5 @@
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.Polls;
 using WebApiNibu.Data.Dto.Feed.Polls.Filters;
 using WebApiNibu.Helpers;
@@ -8,7 +8,7 @@ using WebApiNibu.Services.Implementation.Feed.Polls.Option;
 
 namespace WebApiNibu.Services.Implementation.Feed.Polls;
 
-public class OptionImpl(IBaseCrud<Data.Entity.Feed.Polls.Option> baseCrud, OracleDbContext db)
+public class OptionImpl(IBaseCrud<Data.Entity.Feed.Polls.Option> baseCrud, CoreDbContext db)
     : IOption
 {
     private readonly OptionQueries _queries = new(db);

@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.Polls;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Feed.Polls.Option;
 
-public class OptionCommands(IBaseCrud<Data.Entity.Feed.Polls.Option> baseCrud, OracleDbContext db)
+public class OptionCommands(IBaseCrud<Data.Entity.Feed.Polls.Option> baseCrud, CoreDbContext db)
 {
     public async Task<Result<OptionReadDto>> CreateAsync(OptionCreateDto dto, CancellationToken ct)
     {

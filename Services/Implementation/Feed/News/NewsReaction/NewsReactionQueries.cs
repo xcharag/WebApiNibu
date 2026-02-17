@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.News;
 using WebApiNibu.Data.Dto.Feed.News.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Feed.News.NewsReaction;
 
-public class NewsReactionQueries(OracleDbContext db)
+public class NewsReactionQueries(CoreDbContext db)
 {
     public async Task<Result<PagedResult<NewsReactionReadDto>>> GetAllAsync(
         NewsReactionFilter filter,

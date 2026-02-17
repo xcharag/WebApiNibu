@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.Polls;
 using WebApiNibu.Data.Dto.Feed.Polls.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Feed.Polls.SelectedOption;
 
-public class SelectedOptionQueries(OracleDbContext db)
+public class SelectedOptionQueries(CoreDbContext db)
 {
     public async Task<Result<PagedResult<SelectedOptionReadDto>>> GetAllAsync(
         SelectedOptionFilter filter,

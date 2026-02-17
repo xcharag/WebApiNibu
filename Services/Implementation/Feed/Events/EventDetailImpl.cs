@@ -1,5 +1,5 @@
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.Events;
 using WebApiNibu.Data.Dto.Feed.Events.Filters;
 using WebApiNibu.Helpers;
@@ -8,7 +8,7 @@ using WebApiNibu.Services.Implementation.Feed.Events.EventDetail;
 
 namespace WebApiNibu.Services.Implementation.Feed.Events;
 
-public class EventDetailImpl(IBaseCrud<Data.Entity.Feed.Events.EventDetail> baseCrud, OracleDbContext db)
+public class EventDetailImpl(IBaseCrud<Data.Entity.Feed.Events.EventDetail> baseCrud, CoreDbContext db)
     : IEventDetail
 {
     private readonly EventDetailQueries _queries = new(db);

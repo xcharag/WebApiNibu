@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.Events;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Feed.Events.EventInteraction;
 
-public class EventInteractionCommands(IBaseCrud<Data.Entity.Feed.Events.EventInteraction> baseCrud, OracleDbContext db)
+public class EventInteractionCommands(IBaseCrud<Data.Entity.Feed.Events.EventInteraction> baseCrud, CoreDbContext db)
 {
     public async Task<Result<EventInteractionReadDto>> CreateAsync(EventInteractionCreateDto dto, CancellationToken ct)
     {

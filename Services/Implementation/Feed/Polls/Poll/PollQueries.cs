@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.Polls;
 using WebApiNibu.Data.Dto.Feed.Polls.Filters;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Feed.Polls.Poll;
 
-public class PollQueries(OracleDbContext db)
+public class PollQueries(CoreDbContext db)
 {
     public async Task<Result<PagedResult<PollReadDto>>> GetAllAsync(
         PollFilter filter,

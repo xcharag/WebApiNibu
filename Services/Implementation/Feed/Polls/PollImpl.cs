@@ -1,5 +1,5 @@
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.Polls;
 using WebApiNibu.Data.Dto.Feed.Polls.Filters;
 using WebApiNibu.Helpers;
@@ -8,7 +8,7 @@ using WebApiNibu.Services.Implementation.Feed.Polls.Poll;
 
 namespace WebApiNibu.Services.Implementation.Feed.Polls;
 
-public class PollImpl(IBaseCrud<Data.Entity.Feed.Polls.Poll> baseCrud, OracleDbContext db)
+public class PollImpl(IBaseCrud<Data.Entity.Feed.Polls.Poll> baseCrud, CoreDbContext db)
     : IPoll
 {
     private readonly PollQueries _queries = new(db);

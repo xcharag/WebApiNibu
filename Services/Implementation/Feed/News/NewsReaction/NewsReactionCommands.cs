@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.News;
 using WebApiNibu.Helpers;
 
 namespace WebApiNibu.Services.Implementation.Feed.News.NewsReaction;
 
-public class NewsReactionCommands(IBaseCrud<Data.Entity.Feed.News.NewsReaction> baseCrud, OracleDbContext db)
+public class NewsReactionCommands(IBaseCrud<Data.Entity.Feed.News.NewsReaction> baseCrud, CoreDbContext db)
 {
     public async Task<Result<NewsReactionReadDto>> CreateAsync(NewsReactionCreateDto dto, CancellationToken ct)
     {

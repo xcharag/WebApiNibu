@@ -1,5 +1,5 @@
 using WebApiNibu.Abstraction;
-using WebApiNibu.Data.Context.Oracle;
+using WebApiNibu.Data.Context;
 using WebApiNibu.Data.Dto.Feed.News;
 using WebApiNibu.Data.Dto.Feed.News.Filters;
 using WebApiNibu.Helpers;
@@ -8,7 +8,7 @@ using WebApiNibu.Services.Implementation.Feed.News.NewsDetail;
 
 namespace WebApiNibu.Services.Implementation.Feed.News;
 
-public class NewsDetailImpl(IBaseCrud<Data.Entity.Feed.News.NewsDetail> baseCrud, OracleDbContext db)
+public class NewsDetailImpl(IBaseCrud<Data.Entity.Feed.News.NewsDetail> baseCrud, CoreDbContext db)
     : INewsDetail
 {
     private readonly NewsDetailQueries _queries = new(db);
