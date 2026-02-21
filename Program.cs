@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Context;
 using WebApiNibu.Abstraction;
+using WebApiNibu.Services.Contract.CopaUpsa;
 using WebApiNibu.Services.Contract.Feed.Events;
 using WebApiNibu.Services.Contract.Feed.News;
 using WebApiNibu.Services.Contract.Feed.Polls;
 using WebApiNibu.Services.Contract.Person;
 using WebApiNibu.Services.Contract.School;
+using WebApiNibu.Services.Implementation.CopaUpsa;
 using WebApiNibu.Services.Implementation.Feed.Events;
 using WebApiNibu.Services.Implementation.Feed.News;
 using WebApiNibu.Services.Implementation.Feed.Polls;
@@ -68,6 +70,19 @@ builder.Services.AddScoped<IWorker, WorkerImpl>();
 
 builder.Services.AddScoped<ISchool, SchoolImpl>();
 builder.Services.AddScoped<ISchoolsContacts, SchoolsContactsImpl>();
+
+// Copa Upsa
+builder.Services.AddScoped<ISport, SportImpl>();
+builder.Services.AddScoped<ITournamentParent, TournamentParentImpl>();
+builder.Services.AddScoped<IPhaseType, PhaseTypeImpl>();
+builder.Services.AddScoped<IMatchStatus, MatchStatusImpl>();
+builder.Services.AddScoped<IPosition, PositionImpl>();
+builder.Services.AddScoped<ITournament, TournamentImpl>();
+builder.Services.AddScoped<IStatistic, StatisticImpl>();
+builder.Services.AddScoped<IParticipation, ParticipationImpl>();
+builder.Services.AddScoped<IMatch, MatchImpl>();
+builder.Services.AddScoped<IRoster, RosterImpl>();
+builder.Services.AddScoped<IStatisticEvent, StatisticEventImpl>();
 
 // Configure DbContext with dynamic database provider
 builder.Services.AddDatabaseProvider(builder.Configuration, builder.Environment.IsDevelopment());
