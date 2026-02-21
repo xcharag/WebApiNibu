@@ -19,6 +19,22 @@ builder.Services.AddControllers();
 // Enable endpoint discovery for OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 
+// Configure CORS from appsettings
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        if (allowedOrigins.Length > 0)
+            policy.WithOrigins(allowedOrigins);
+        else
+            policy.AllowAnyOrigin();
+
+        policy.AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Register generic CRUD service for all entities
 builder.Services.AddScoped(typeof(IBaseCrud<>), typeof(BaseCrudImplementation<>));
 
@@ -86,6 +102,8 @@ app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.UseHttpsRedirection();
 
+app.UseCors();
+
 app.UseAuthorization();
 
 app.MapControllers();
@@ -107,9 +125,10 @@ static async Task ApplyMigrationsAsync(WebApplication app)
 
         var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
 
-        if (pendingMigrations.Any())
+        var migrations = pendingMigrations as string[] ?? pendingMigrations.ToArray();
+        if (migrations.Length != 0)
         {
-            logger.LogInformation("Found {Count} pending migration(s). Applying...", pendingMigrations.Count());
+            logger.LogInformation("Found {Count} pending migration(s). Applying...", migrations.Count());
             await context.Database.MigrateAsync();
             logger.LogInformation("Migrations applied successfully.");
         }
