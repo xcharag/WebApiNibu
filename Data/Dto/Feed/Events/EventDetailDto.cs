@@ -39,8 +39,6 @@ public class EventDetailUpdateDto
 public class EventDetailCreateDto
 {
 
-    public int Id { get; set; }
-
     public int BlockNumber { get; set; }
 
     public EventDetailType EventDetailType { get; set; }
