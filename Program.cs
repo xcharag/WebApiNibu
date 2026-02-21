@@ -5,10 +5,12 @@ using WebApiNibu.Services.Contract.Feed.Events;
 using WebApiNibu.Services.Contract.Feed.News;
 using WebApiNibu.Services.Contract.Feed.Polls;
 using WebApiNibu.Services.Contract.Person;
+using WebApiNibu.Services.Contract.School;
 using WebApiNibu.Services.Implementation.Feed.Events;
 using WebApiNibu.Services.Implementation.Feed.News;
 using WebApiNibu.Services.Implementation.Feed.Polls;
 using WebApiNibu.Services.Implementation.Person;
+using WebApiNibu.Services.Implementation.School;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +49,9 @@ builder.Services.AddScoped<ISchoolStudent, SchoolStudentImpl>();
 builder.Services.AddScoped<IStudentInterest, StudentInterestImpl>();
 builder.Services.AddScoped<IUniversity, UniversityImpl>();
 builder.Services.AddScoped<IWorker, WorkerImpl>();
+
+builder.Services.AddScoped<ISchool, SchoolImpl>();
+builder.Services.AddScoped<ISchoolsContacts, SchoolsContactsImpl>();
 
 // Configure DbContext with dynamic database provider
 builder.Services.AddDatabaseProvider(builder.Configuration, builder.Environment.IsDevelopment());
