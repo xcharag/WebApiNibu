@@ -1,14 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Context;
 using WebApiNibu.Abstraction;
+using WebApiNibu.Services.Contract.CopaUpsa;
 using WebApiNibu.Services.Contract.Feed.Events;
 using WebApiNibu.Services.Contract.Feed.News;
 using WebApiNibu.Services.Contract.Feed.Polls;
 using WebApiNibu.Services.Contract.Person;
+using WebApiNibu.Services.Contract.School;
+using WebApiNibu.Services.Implementation.CopaUpsa;
 using WebApiNibu.Services.Implementation.Feed.Events;
 using WebApiNibu.Services.Implementation.Feed.News;
 using WebApiNibu.Services.Implementation.Feed.Polls;
 using WebApiNibu.Services.Implementation.Person;
+using WebApiNibu.Services.Implementation.School;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +20,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Enable endpoint discovery for OpenAPI
 builder.Services.AddEndpointsApiExplorer();
+
+// Configure CORS from appsettings
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        if (allowedOrigins.Length > 0)
+            policy.WithOrigins(allowedOrigins);
+        else
+            policy.AllowAnyOrigin();
+
+        policy.AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 // Register generic CRUD service for all entities
 builder.Services.AddScoped(typeof(IBaseCrud<>), typeof(BaseCrudImplementation<>));
@@ -47,6 +67,22 @@ builder.Services.AddScoped<ISchoolStudent, SchoolStudentImpl>();
 builder.Services.AddScoped<IStudentInterest, StudentInterestImpl>();
 builder.Services.AddScoped<IUniversity, UniversityImpl>();
 builder.Services.AddScoped<IWorker, WorkerImpl>();
+
+builder.Services.AddScoped<ISchool, SchoolImpl>();
+builder.Services.AddScoped<ISchoolsContacts, SchoolsContactsImpl>();
+
+// Copa Upsa
+builder.Services.AddScoped<ISport, SportImpl>();
+builder.Services.AddScoped<ITournamentParent, TournamentParentImpl>();
+builder.Services.AddScoped<IPhaseType, PhaseTypeImpl>();
+builder.Services.AddScoped<IMatchStatus, MatchStatusImpl>();
+builder.Services.AddScoped<IPosition, PositionImpl>();
+builder.Services.AddScoped<ITournament, TournamentImpl>();
+builder.Services.AddScoped<IStatistic, StatisticImpl>();
+builder.Services.AddScoped<IParticipation, ParticipationImpl>();
+builder.Services.AddScoped<IMatch, MatchImpl>();
+builder.Services.AddScoped<IRoster, RosterImpl>();
+builder.Services.AddScoped<IStatisticEvent, StatisticEventImpl>();
 
 // Configure DbContext with dynamic database provider
 builder.Services.AddDatabaseProvider(builder.Configuration, builder.Environment.IsDevelopment());
@@ -81,6 +117,8 @@ app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.UseHttpsRedirection();
 
+app.UseCors();
+
 app.UseAuthorization();
 
 app.MapControllers();
@@ -102,9 +140,10 @@ static async Task ApplyMigrationsAsync(WebApplication app)
 
         var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
 
-        if (pendingMigrations.Any())
+        var migrations = pendingMigrations as string[] ?? pendingMigrations.ToArray();
+        if (migrations.Length != 0)
         {
-            logger.LogInformation("Found {Count} pending migration(s). Applying...", pendingMigrations.Count());
+            logger.LogInformation("Found {Count} pending migration(s). Applying...", migrations.Count());
             await context.Database.MigrateAsync();
             logger.LogInformation("Migrations applied successfully.");
         }
