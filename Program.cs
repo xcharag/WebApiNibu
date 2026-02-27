@@ -54,6 +54,17 @@ builder.Services.AddDatabaseProvider(builder.Configuration, builder.Environment.
 // Built-in OpenAPI document (optional alongside Swashbuckle)
 builder.Services.AddOpenApi();
 
+// CORS: Allow all origins, methods and headers
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // Swashbuckle: Swagger generator
 builder.Services.AddSwaggerGen();
 
@@ -80,6 +91,9 @@ app.UseSwaggerUI(c =>
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.UseHttpsRedirection();
+
+// Enable CORS
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
