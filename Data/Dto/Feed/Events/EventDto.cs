@@ -93,7 +93,6 @@ public class EventCreateDto
 public class EventUpdateDto
 {
 
-    public int id { get; set; }
 
     public string Name { get; set; } = String.Empty;
 
