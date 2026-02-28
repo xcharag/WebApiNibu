@@ -188,6 +188,12 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) : DbContext(
             .WithMany(pt => pt.Participations)
             .HasForeignKey(p => p.PhaseTypeId)
             .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<Participation>()
+            .HasOne(p => p.SchoolTable)
+            .WithMany(st => st.Participations)
+            .HasForeignKey(p => p.SchoolId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Statistic relationships
         modelBuilder.Entity<StatisticEvent>()
