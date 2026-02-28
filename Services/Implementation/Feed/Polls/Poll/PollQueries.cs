@@ -13,7 +13,9 @@ public class PollQueries(CoreDbContext db)
         PaginationParams pagination,
         CancellationToken ct)
     {
-        var query = db.Polls.AsQueryable();
+        var query = db.Polls
+            .Include(x => x.Options)
+            .AsQueryable();
         query = PollFilterHandler.Apply(query, filter);
 
         var totalCount = await query.CountAsync(ct);
@@ -33,7 +35,9 @@ public class PollQueries(CoreDbContext db)
 
     public async Task<Result<PollReadDto>> GetByIdAsync(int id, CancellationToken ct)
     {
-        var item = await db.Polls.FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
+        var item = await db.Polls
+            .Include(x => x.Options)
+            .FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
         return item is null
             ? Result<PollReadDto>.Failure($"Poll with id {id} not found")
             : Result<PollReadDto>.Success(PollMapper.ToReadDto(item));

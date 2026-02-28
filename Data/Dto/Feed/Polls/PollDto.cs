@@ -15,6 +15,8 @@ public class PollReadDto
     //Foreign Keys
 
     public int TournamentId { get; set; }
+
+    public IEnumerable<OptionReadDto> Options { get; set; } = [];
 }
 
 public class PollUpdateDto

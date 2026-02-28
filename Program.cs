@@ -7,12 +7,14 @@ using WebApiNibu.Services.Contract.Feed.News;
 using WebApiNibu.Services.Contract.Feed.Polls;
 using WebApiNibu.Services.Contract.Person;
 using WebApiNibu.Services.Contract.School;
+using WebApiNibu.Services.Contract.UsersAndAccess;
 using WebApiNibu.Services.Implementation.CopaUpsa;
 using WebApiNibu.Services.Implementation.Feed.Events;
 using WebApiNibu.Services.Implementation.Feed.News;
 using WebApiNibu.Services.Implementation.Feed.Polls;
 using WebApiNibu.Services.Implementation.Person;
 using WebApiNibu.Services.Implementation.School;
+using WebApiNibu.Services.Implementation.UsersAndAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,6 +72,7 @@ builder.Services.AddScoped<IWorker, WorkerImpl>();
 
 builder.Services.AddScoped<ISchool, SchoolImpl>();
 builder.Services.AddScoped<ISchoolsContacts, SchoolsContactsImpl>();
+builder.Services.AddScoped<IQrAccess, QrAccessImpl>();
 
 // Copa Upsa
 builder.Services.AddScoped<ISport, SportImpl>();

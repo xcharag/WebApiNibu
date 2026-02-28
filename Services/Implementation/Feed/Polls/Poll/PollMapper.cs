@@ -1,4 +1,5 @@
 using WebApiNibu.Data.Dto.Feed.Polls;
+using OptionMapperAlias = WebApiNibu.Services.Implementation.Feed.Polls.Option.OptionMapper;
 
 namespace WebApiNibu.Services.Implementation.Feed.Polls.Poll;
 
@@ -11,7 +12,11 @@ public static class PollMapper
         Description = entity.Description,
         Question = entity.Question,
         ImageUrl = entity.ImageUrl,
-        TournamentId = entity.TournamentId
+        TournamentId = entity.TournamentId,
+        Options = entity.Options
+            .Where(x => x.Active)
+            .Select(OptionMapperAlias.ToReadDto)
+            .ToList()
     };
 
     public static Data.Entity.Feed.Polls.Poll ToEntity(PollCreateDto dto) => new()
