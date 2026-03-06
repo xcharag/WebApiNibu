@@ -7,4 +7,8 @@ public class PollFilter
     public string? Name { get; set; }
 
     public string? Question { get; set; }
+
+    // Added: allow filtering polls by tournament or by match (via participation->tournament)
+    public int? TournamentId { get; set; }
+    public int? MatchId { get; set; }
 }

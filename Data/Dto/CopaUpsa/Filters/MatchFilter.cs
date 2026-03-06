@@ -9,5 +9,7 @@ public class MatchFilter
     public DateTime? StartDateFrom { get; set; }
     public DateTime? StartDateTo { get; set; }
     public bool? Active { get; set; }
-}
 
+    // Added: filter matches by tournament via Participation
+    public int? TournamentId { get; set; }
+}

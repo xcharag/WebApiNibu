@@ -13,6 +13,18 @@ public class PollQueries(CoreDbContext db)
         PaginationParams pagination,
         CancellationToken ct)
     {
+        // If caller filtered by MatchId, resolve the related TournamentId to filter polls
+        if (filter.MatchId.HasValue)
+        {
+            var tournamentId = await db.Matches
+                .Where(m => m.Id == filter.MatchId.Value)
+                .Select(m => m.Participation.TournamentId)
+                .FirstOrDefaultAsync(ct);
+
+            // set TournamentId to the resolved value (0 if not found) so PollFilterHandler can apply it
+            filter.TournamentId = tournamentId;
+        }
+
         var query = db.Polls
             .Include(x => x.Options)
             .AsQueryable();
