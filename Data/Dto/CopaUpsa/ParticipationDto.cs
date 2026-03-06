@@ -9,6 +9,10 @@ public class ParticipationReadDto
     public int PhaseTypeId { get; set; }
     public int TournamentId { get; set; }
     public int SchoolId { get; set; }
+
+    public string? PhaseTypeName { get; set; } = string.Empty;
+    public string? TournamentName { get; set; } = string.Empty;
+    public string? SchoolName { get; set; } = string.Empty;
 }
 
 public class ParticipationCreateDto
@@ -30,4 +34,3 @@ public class ParticipationUpdateDto
     public int? TournamentId { get; set; }
     public int? SchoolId { get; set; }
 }
-

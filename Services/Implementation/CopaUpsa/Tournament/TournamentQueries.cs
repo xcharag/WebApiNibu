@@ -11,7 +11,10 @@ public class TournamentQueries(CoreDbContext db)
     public async Task<Result<PagedResult<TournamentReadDto>>> GetAllAsync(
         TournamentFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var query = db.Tournaments.AsQueryable();
+        var query = db.Tournaments
+            .Include(x => x.Sport)
+            .Include(x => x.TournamentParent)
+            .AsQueryable();
         query = TournamentFilterHandler.Apply(query, filter);
 
         var totalCount = await query.CountAsync(ct);
@@ -31,10 +34,12 @@ public class TournamentQueries(CoreDbContext db)
 
     public async Task<Result<TournamentReadDto>> GetByIdAsync(int id, CancellationToken ct)
     {
-        var item = await db.Tournaments.FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
+        var item = await db.Tournaments
+            .Include(x => x.Sport)
+            .Include(x => x.TournamentParent)
+            .FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
         return item is null
             ? Result<TournamentReadDto>.Failure($"Tournament with id {id} not found")
             : Result<TournamentReadDto>.Success(TournamentMapper.ToReadDto(item));
     }
 }
-
