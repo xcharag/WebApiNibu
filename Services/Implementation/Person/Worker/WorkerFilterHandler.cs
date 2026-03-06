@@ -16,6 +16,15 @@ public static class WorkerFilterHandler
         if (filter.Active.HasValue)
             query = query.Where(x => x.Active == filter.Active.Value);
 
+        // Added: filter by worker name (first, paternal and maternal surname)
+        if (!string.IsNullOrWhiteSpace(filter.Name))
+        {
+            var name = filter.Name.Trim();
+            query = query.Where(x => x.FirstName.Contains(name) ||
+                                     x.PaternalSurname.Contains(name) ||
+                                     x.MaternalSurname.Contains(name));
+        }
+
         return query;
     }
 }

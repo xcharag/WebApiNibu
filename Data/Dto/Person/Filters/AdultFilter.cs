@@ -6,4 +6,7 @@ public class AdultFilter
     public int? SchoolStudentId { get; set; }
     public string? WorkEmail { get; set; }
     public bool? Active { get; set; }
+
+    // Added: search by adult name
+    public string? Name { get; set; }
 }
