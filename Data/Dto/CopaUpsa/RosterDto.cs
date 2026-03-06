@@ -6,6 +6,9 @@ public class RosterReadDto
     public int MatchId { get; set; }
     public int SchoolStudentId { get; set; }
     public int PositionId { get; set; }
+    public string? StudentName { get; set; } = string.Empty;
+    public string? MatchName { get; set; } = string.Empty;
+    public string? PositionName { get; set; } = string.Empty;
 }
 
 public class RosterCreateDto
@@ -21,4 +24,3 @@ public class RosterUpdateDto
     public int? SchoolStudentId { get; set; }
     public int? PositionId { get; set; }
 }
-

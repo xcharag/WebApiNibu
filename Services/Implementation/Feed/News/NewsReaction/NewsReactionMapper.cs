@@ -9,7 +9,12 @@ public static class NewsReactionMapper
         Id = entity.Id,
         NewsId = entity.NewsId,
         UserId = entity.UserId,
-        MerchId = entity.MerchId
+        MerchId = entity.MerchId,
+        UserName = entity.User is not null && entity.User.PersonTable is not null
+            ? (entity.User.PersonTable.FirstName + " " + entity.User.PersonTable.PaternalSurname)
+            : string.Empty,
+        MerchName = entity.Merch is not null ? entity.Merch.Name : string.Empty,
+        NewsTitle = entity.News is not null ? entity.News.Title : string.Empty
     };
 
     public static Data.Entity.Feed.News.NewsReaction ToEntity(NewsReactionCreateDto dto) => new()

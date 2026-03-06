@@ -23,6 +23,10 @@ public class SchoolStudentReadDto
     public int SchoolGrade { get; set; }
     public bool IsPlayer { get; set; }
     public bool HasUpsaParents { get; set; }
+
+    // navigation names (added)
+    public string? SchoolName { get; set; } = string.Empty;
+    public string? CourseName { get; set; } = string.Empty;
 }
 
 // DTO used to create a new SchoolStudent

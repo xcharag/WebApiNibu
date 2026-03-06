@@ -11,7 +11,11 @@ public class RosterQueries(CoreDbContext db)
     public async Task<Result<PagedResult<RosterReadDto>>> GetAllAsync(
         RosterFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var query = db.Rosters.AsQueryable();
+        var query = db.Rosters
+            .Include(x => x.SchoolStudent)
+            .Include(x => x.Match)
+            .Include(x => x.Position)
+            .AsQueryable();
         query = RosterFilterHandler.Apply(query, filter);
 
         var totalCount = await query.CountAsync(ct);
@@ -31,10 +35,13 @@ public class RosterQueries(CoreDbContext db)
 
     public async Task<Result<RosterReadDto>> GetByIdAsync(int id, CancellationToken ct)
     {
-        var item = await db.Rosters.FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
+        var item = await db.Rosters
+            .Include(x => x.SchoolStudent)
+            .Include(x => x.Match)
+            .Include(x => x.Position)
+            .FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
         return item is null
             ? Result<RosterReadDto>.Failure($"Roster with id {id} not found")
             : Result<RosterReadDto>.Success(RosterMapper.ToReadDto(item));
     }
 }
-

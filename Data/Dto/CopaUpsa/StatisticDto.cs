@@ -9,6 +9,8 @@ public class StatisticReadDto
     public string? Description { get; set; }
     public StatisticType StatisticType { get; set; }
     public int SportId { get; set; }
+    public string? StatisticTypeName { get; set; } = string.Empty;
+    public string? SportName { get; set; } = string.Empty;
 }
 
 public class StatisticCreateDto
@@ -26,4 +28,3 @@ public class StatisticUpdateDto
     public StatisticType? StatisticType { get; set; }
     public int? SportId { get; set; }
 }
-

@@ -16,6 +16,9 @@ public class PollReadDto
 
     public int TournamentId { get; set; }
 
+    // navigation name
+    public string? TournamentName { get; set; } = string.Empty;
+
     public IEnumerable<OptionReadDto> Options { get; set; } = [];
 }
 

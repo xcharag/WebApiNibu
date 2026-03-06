@@ -13,6 +13,11 @@ public class NewsReactionReadDto
     public int UserId { get; set; }
 
     public int MerchId { get; set; }
+
+    // Navigation names (added)
+    public string? UserName { get; set; } = string.Empty;
+    public string? MerchName { get; set; } = string.Empty;
+    public string? NewsTitle { get; set; } = string.Empty;
 }
 public class NewsReactionUpdateDto
 {
@@ -29,7 +34,6 @@ public class NewsReactionUpdateDto
 }
 public class NewsReactionCreateDto
 {
-
 
 
 
