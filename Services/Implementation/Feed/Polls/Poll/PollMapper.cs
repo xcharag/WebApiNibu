@@ -13,6 +13,7 @@ public static class PollMapper
         Question = entity.Question,
         ImageUrl = entity.ImageUrl,
         TournamentId = entity.TournamentId,
+        TournamentName = entity.Tournament is not null ? entity.Tournament.Name : string.Empty,
         Options = entity.Options
             .Where(x => x.Active)
             .Select(OptionMapperAlias.ToReadDto)

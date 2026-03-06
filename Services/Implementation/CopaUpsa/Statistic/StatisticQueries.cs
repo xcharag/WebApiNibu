@@ -11,7 +11,9 @@ public class StatisticQueries(CoreDbContext db)
     public async Task<Result<PagedResult<StatisticReadDto>>> GetAllAsync(
         StatisticFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var query = db.Statistics.AsQueryable();
+        var query = db.Statistics
+            .Include(x => x.Sport)
+            .AsQueryable();
         query = StatisticFilterHandler.Apply(query, filter);
 
         var totalCount = await query.CountAsync(ct);
@@ -31,10 +33,11 @@ public class StatisticQueries(CoreDbContext db)
 
     public async Task<Result<StatisticReadDto>> GetByIdAsync(int id, CancellationToken ct)
     {
-        var item = await db.Statistics.FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
+        var item = await db.Statistics
+            .Include(x => x.Sport)
+            .FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
         return item is null
             ? Result<StatisticReadDto>.Failure($"Statistic with id {id} not found")
             : Result<StatisticReadDto>.Success(StatisticMapper.ToReadDto(item));
     }
 }
-

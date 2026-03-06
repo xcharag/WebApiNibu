@@ -27,6 +27,7 @@ public class PollQueries(CoreDbContext db)
 
         var query = db.Polls
             .Include(x => x.Options)
+            .Include(x => x.Tournament)
             .AsQueryable();
         query = PollFilterHandler.Apply(query, filter);
 
@@ -49,6 +50,7 @@ public class PollQueries(CoreDbContext db)
     {
         var item = await db.Polls
             .Include(x => x.Options)
+            .Include(x => x.Tournament)
             .FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
         return item is null
             ? Result<PollReadDto>.Failure($"Poll with id {id} not found")

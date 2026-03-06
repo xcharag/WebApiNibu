@@ -9,7 +9,12 @@ public static class RosterMapper
         Id = entity.Id,
         MatchId = entity.MatchId,
         SchoolStudentId = entity.SchoolStudentId,
-        PositionId = entity.PositionId
+        PositionId = entity.PositionId,
+        // navigation names
+        StudentName = entity.SchoolStudent is not null ? (entity.SchoolStudent.FirstName + " " + entity.SchoolStudent.PaternalSurname) : string.Empty,
+        // Match doesn't have Name property; use NumberMatch and StartDate for a readable label
+        MatchName = entity.Match is not null ? ($"Match #{entity.Match.NumberMatch} - {entity.Match.StartDate:yyyy-MM-dd}") : string.Empty,
+        PositionName = entity.Position is not null ? entity.Position.Name : string.Empty
     };
 
     public static Data.Entity.CopaUpsa.Roster ToEntity(RosterCreateDto dto) => new()
@@ -30,4 +35,3 @@ public static class RosterMapper
         if (dto.PositionId.HasValue) target.PositionId = dto.PositionId.Value;
     }
 }
-

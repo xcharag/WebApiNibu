@@ -20,7 +20,9 @@ public static class SchoolStudentMapper
         IdSchool = entity.IdSchool,
         SchoolGrade = entity.SchoolGrade,
         IsPlayer = entity.IsPlayer,
-        HasUpsaParents = entity.HasUpsaParents
+        HasUpsaParents = entity.HasUpsaParents,
+        SchoolName = entity.SchoolTable is not null ? entity.SchoolTable.Name : string.Empty,
+        CourseName = "Curso " + entity.SchoolGrade.ToString()
     };
 
     public static Data.Entity.Person.SchoolStudent ToEntity(SchoolStudentCreateDto dto) => new()

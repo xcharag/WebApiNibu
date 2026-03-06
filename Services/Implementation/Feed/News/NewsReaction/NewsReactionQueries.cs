@@ -13,7 +13,11 @@ public class NewsReactionQueries(CoreDbContext db)
         PaginationParams pagination,
         CancellationToken ct)
     {
-        var query = db.NewsReactions.Include(x => x.User).AsQueryable();
+        var query = db.NewsReactions
+            .Include(x => x.User)
+            .Include(x => x.Merch)
+            .Include(x => x.News)
+            .AsQueryable();
         query = NewsReactionFilterHandler.Apply(query, filter);
 
         var totalCount = await query.CountAsync(ct);
@@ -33,7 +37,11 @@ public class NewsReactionQueries(CoreDbContext db)
 
     public async Task<Result<NewsReactionReadDto>> GetByIdAsync(int id, CancellationToken ct)
     {
-        var item = await db.NewsReactions.FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
+        var item = await db.NewsReactions
+            .Include(x => x.User)
+            .Include(x => x.Merch)
+            .Include(x => x.News)
+            .FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
         return item is null
             ? Result<NewsReactionReadDto>.Failure($"NewsReaction with id {id} not found")
             : Result<NewsReactionReadDto>.Success(NewsReactionMapper.ToReadDto(item));
