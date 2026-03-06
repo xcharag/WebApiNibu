@@ -1,3 +1,4 @@
+using System.Linq;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 
 namespace WebApiNibu.Services.Implementation.CopaUpsa.Match;
@@ -28,7 +29,10 @@ public static class MatchFilterHandler
         if (filter.Active.HasValue)
             query = query.Where(x => x.Active == filter.Active.Value);
 
+        var tournamentId = filter.TournamentId;
+        if (tournamentId.HasValue)
+            query = query.Where(x => x.Participation.TournamentId == tournamentId.Value);
+
         return query;
     }
 }
-

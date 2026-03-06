@@ -13,10 +13,12 @@ public static class StatisticEventFilterHandler
         if (filter.RosterId.HasValue)
             query = query.Where(x => x.RosterId == filter.RosterId.Value);
 
+        if (filter.MatchId.HasValue)
+            query = query.Where(x => x.Roster.MatchId == filter.MatchId.Value);
+
         if (filter.Active.HasValue)
             query = query.Where(x => x.Active == filter.Active.Value);
 
         return query;
     }
 }
-
