@@ -12,7 +12,10 @@ public static class ParticipationMapper
         EndDate = entity.EndDate,
         PhaseTypeId = entity.PhaseTypeId,
         TournamentId = entity.TournamentId,
-        SchoolId = entity.SchoolId
+        SchoolId = entity.SchoolId,
+        PhaseTypeName = entity.PhaseType is not null ? entity.PhaseType.Name : string.Empty,
+        TournamentName = entity.Tournament is not null ? entity.Tournament.Name : string.Empty,
+        SchoolName = entity.SchoolTable is not null ? entity.SchoolTable.Name : string.Empty
     };
 
     public static Data.Entity.CopaUpsa.Participation ToEntity(ParticipationCreateDto dto) => new()
@@ -39,4 +42,3 @@ public static class ParticipationMapper
         if (dto.SchoolId.HasValue) target.SchoolId = dto.SchoolId.Value;
     }
 }
-
