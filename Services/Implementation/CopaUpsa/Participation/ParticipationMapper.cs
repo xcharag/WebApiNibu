@@ -8,21 +8,17 @@ public static class ParticipationMapper
     {
         Id = entity.Id,
         Key = entity.Key,
-        StartDate = entity.StartDate,
-        EndDate = entity.EndDate,
         PhaseTypeId = entity.PhaseTypeId,
         TournamentId = entity.TournamentId,
-        PhaseTypeName = entity.PhaseType is not null ? entity.PhaseType.Name : string.Empty,
-        TournamentName = entity.Tournament.Name,
+        PhaseTypeName = entity.PhaseType?.Name ?? string.Empty,
+        TournamentName = entity.Tournament?.Name ?? string.Empty,
         SchoolId = entity.SchoolId,
-        SchoolName = entity.SchoolTable.Name
+        SchoolName = entity.SchoolTable?.Name ?? string.Empty
     };
 
     public static Data.Entity.CopaUpsa.Participation ToEntity(ParticipationCreateDto dto) => new()
     {
         Key = dto.Key,
-        StartDate = dto.StartDate,
-        EndDate = dto.EndDate,
         PhaseTypeId = dto.PhaseTypeId,
         PhaseType = null!,
         TournamentId = dto.TournamentId,
@@ -35,8 +31,6 @@ public static class ParticipationMapper
     public static void ApplyUpdate(Data.Entity.CopaUpsa.Participation target, ParticipationUpdateDto dto)
     {
         if (dto.Key is not null) target.Key = dto.Key;
-        if (dto.StartDate.HasValue) target.StartDate = dto.StartDate.Value;
-        if (dto.EndDate.HasValue) target.EndDate = dto.EndDate.Value;
         if (dto.PhaseTypeId.HasValue) target.PhaseTypeId = dto.PhaseTypeId.Value;
         if (dto.TournamentId.HasValue) target.TournamentId = dto.TournamentId.Value;
         if (dto.SchoolId.HasValue) target.SchoolId = dto.SchoolId.Value;

@@ -16,9 +16,6 @@ public class Participation : BaseEntity
     [StringLength(2)]
     public string Key { get; set; } = string.Empty;
     
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    
     [Required]
     public int PhaseTypeId { get; set; }
     public required PhaseType PhaseType { get; set;}
