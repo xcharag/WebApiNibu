@@ -16,6 +16,10 @@ public class TournamentCommands(IBaseCrud<Data.Entity.CopaUpsa.Tournament> baseC
 
         var entity = TournamentMapper.ToEntity(dto);
         var created = await baseCrud.CreateAsync(entity, ct);
+
+        await db.Entry(created).Reference(t => t.Sport).LoadAsync(ct);
+        await db.Entry(created).Reference(t => t.TournamentParent).LoadAsync(ct);
+
         return Result<TournamentReadDto>.Success(TournamentMapper.ToReadDto(created));
     }
 
