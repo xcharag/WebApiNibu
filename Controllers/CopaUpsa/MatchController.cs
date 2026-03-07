@@ -34,7 +34,8 @@ public class MatchController(IMatch service) : ControllerBase
     }
 
     [HttpPost("upload")]
-    public async Task<IActionResult> UploadFromExcel([FromForm] IFormFile file, CancellationToken ct)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadFromExcel(IFormFile file, CancellationToken ct)
     {
         var result = await service.UploadFromExcel(file, ct);
         return result.IsSuccess
