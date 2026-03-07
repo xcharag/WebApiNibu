@@ -126,8 +126,12 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) : DbContext(
 
         // Match indexes
         modelBuilder.Entity<Match>()
-            .HasIndex(m => new { m.ParticipationId, m.StartDate })
-            .HasDatabaseName("IX_Match_ParticipationId_StartDate");
+            .HasIndex(m => new { m.ParticipationAId, m.StartDate })
+            .HasDatabaseName("IX_Match_ParticipationAId_StartDate");
+
+        modelBuilder.Entity<Match>()
+            .HasIndex(m => m.ParticipationBId)
+            .HasDatabaseName("IX_Match_ParticipationBId");
 
         // Tag indexes
         modelBuilder.Entity<Tag>()
@@ -158,9 +162,15 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) : DbContext(
 
         // Match relationships
         modelBuilder.Entity<Match>()
-            .HasOne(m => m.Participation)
-            .WithMany(p => p.Matches)
-            .HasForeignKey(m => m.ParticipationId)
+            .HasOne(m => m.ParticipationA)
+            .WithMany(p => p.MatchesAsA)
+            .HasForeignKey(m => m.ParticipationAId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Match>()
+            .HasOne(m => m.ParticipationB)
+            .WithMany(p => p.MatchesAsB)
+            .HasForeignKey(m => m.ParticipationBId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Match>()

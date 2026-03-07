@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 
 namespace WebApiNibu.Services.Implementation.CopaUpsa.Participation;
@@ -21,6 +22,10 @@ public static class ParticipationFilterHandler
 
         if (filter.Active.HasValue)
             query = query.Where(x => x.Active == filter.Active.Value);
+        
+        query.Include(p => p.PhaseType);
+        query.Include(p => p.Tournament);
+        query.Include(p => p.SchoolTable);
 
         return query;
     }

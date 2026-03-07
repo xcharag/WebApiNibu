@@ -11,7 +11,8 @@ public class MatchReadDto
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public int NumberMatch { get; set; }
-    public int ParticipationId { get; set; }
+    public int ParticipationAId { get; set; }
+    public int ParticipationBId { get; set; }
     public int MatchStatusId { get; set; }
 }
 
@@ -25,7 +26,8 @@ public class MatchCreateDto
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public int NumberMatch { get; set; }
-    public int ParticipationId { get; set; }
+    public int ParticipationAId { get; set; }
+    public int ParticipationBId { get; set; }
     public int MatchStatusId { get; set; }
 }
 
@@ -39,7 +41,14 @@ public class MatchUpdateDto
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public int? NumberMatch { get; set; }
-    public int? ParticipationId { get; set; }
+    public int? ParticipationAId { get; set; }
+    public int? ParticipationBId { get; set; }
     public int? MatchStatusId { get; set; }
+}
+
+public class MatchUploadResultDto
+{
+    public List<MatchReadDto> Created { get; set; } = [];
+    public List<string> Errors { get; set; } = [];
 }
 

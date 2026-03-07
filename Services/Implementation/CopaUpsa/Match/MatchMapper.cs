@@ -15,7 +15,8 @@ public static class MatchMapper
         StartDate = entity.StartDate,
         EndDate = entity.EndDate,
         NumberMatch = entity.NumberMatch,
-        ParticipationId = entity.ParticipationId,
+        ParticipationAId = entity.ParticipationAId,
+        ParticipationBId = entity.ParticipationBId,
         MatchStatusId = entity.MatchStatusId
     };
 
@@ -29,8 +30,10 @@ public static class MatchMapper
         StartDate = dto.StartDate,
         EndDate = dto.EndDate,
         NumberMatch = dto.NumberMatch,
-        ParticipationId = dto.ParticipationId,
-        Participation = null!,
+        ParticipationAId = dto.ParticipationAId,
+        ParticipationA = null!,
+        ParticipationBId = dto.ParticipationBId,
+        ParticipationB = null!,
         MatchStatusId = dto.MatchStatusId,
         MatchStatus = null!,
         Active = true
@@ -46,7 +49,8 @@ public static class MatchMapper
         if (dto.StartDate.HasValue) target.StartDate = dto.StartDate.Value;
         if (dto.EndDate.HasValue) target.EndDate = dto.EndDate.Value;
         if (dto.NumberMatch.HasValue) target.NumberMatch = dto.NumberMatch.Value;
-        if (dto.ParticipationId.HasValue) target.ParticipationId = dto.ParticipationId.Value;
+        if (dto.ParticipationAId.HasValue) target.ParticipationAId = dto.ParticipationAId.Value;
+        if (dto.ParticipationBId.HasValue) target.ParticipationBId = dto.ParticipationBId.Value;
         if (dto.MatchStatusId.HasValue) target.MatchStatusId = dto.MatchStatusId.Value;
     }
 }

@@ -9,6 +9,7 @@ public interface IMatch
     Task<Result<PagedResult<MatchReadDto>>> GetAllAsync(MatchFilter filter, PaginationParams pagination, CancellationToken ct);
     Task<Result<MatchReadDto>> GetByIdAsync(int id, CancellationToken ct);
     Task<Result<MatchReadDto>> CreateAsync(MatchCreateDto dto, CancellationToken ct);
+    Task<Result<MatchUploadResultDto>> UploadFromExcel(IFormFile file, CancellationToken ct);
     Task<Result<bool>> UpdateAsync(int id, MatchUpdateDto dto, CancellationToken ct);
     Task<Result<bool>> DeleteAsync(int id, bool soft, CancellationToken ct);
 }

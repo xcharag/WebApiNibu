@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 
 namespace WebApiNibu.Services.Implementation.CopaUpsa.Tournament;
@@ -24,6 +25,9 @@ public static class TournamentFilterHandler
 
         if (filter.Active.HasValue)
             query = query.Where(x => x.Active == filter.Active.Value);
+        
+        query.Include(t => t.TournamentParent);
+        query.Include(t => t.Sport);
 
         return query;
     }

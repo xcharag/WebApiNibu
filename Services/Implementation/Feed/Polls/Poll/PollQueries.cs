@@ -18,7 +18,7 @@ public class PollQueries(CoreDbContext db)
         {
             var tournamentId = await db.Matches
                 .Where(m => m.Id == filter.MatchId.Value)
-                .Select(m => m.Participation.TournamentId)
+                .Select(m => m.ParticipationA.TournamentId)
                 .FirstOrDefaultAsync(ct);
 
             // set TournamentId to the resolved value (0 if not found) so PollFilterHandler can apply it

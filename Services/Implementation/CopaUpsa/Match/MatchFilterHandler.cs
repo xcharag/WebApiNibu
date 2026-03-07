@@ -11,8 +11,15 @@ public static class MatchFilterHandler
         if (!string.IsNullOrWhiteSpace(filter.Location))
             query = query.Where(x => x.Location.Contains(filter.Location));
 
+        if (filter.ParticipationAId.HasValue)
+            query = query.Where(x => x.ParticipationAId == filter.ParticipationAId.Value);
+
+        if (filter.ParticipationBId.HasValue)
+            query = query.Where(x => x.ParticipationBId == filter.ParticipationBId.Value);
+
         if (filter.ParticipationId.HasValue)
-            query = query.Where(x => x.ParticipationId == filter.ParticipationId.Value);
+            query = query.Where(x => x.ParticipationAId == filter.ParticipationId.Value 
+                                  || x.ParticipationBId == filter.ParticipationId.Value);
 
         if (filter.MatchStatusId.HasValue)
             query = query.Where(x => x.MatchStatusId == filter.MatchStatusId.Value);
@@ -31,7 +38,8 @@ public static class MatchFilterHandler
 
         var tournamentId = filter.TournamentId;
         if (tournamentId.HasValue)
-            query = query.Where(x => x.Participation.TournamentId == tournamentId.Value);
+            query = query.Where(x => x.ParticipationA.TournamentId == tournamentId.Value 
+                                  || x.ParticipationB.TournamentId == tournamentId.Value);
 
         return query;
     }

@@ -35,8 +35,12 @@ public class Match : BaseEntity
     public int NumberMatch { get; set; } = 0;
     
     [Required]
-    public int ParticipationId { get; set; }
-    public required Participation Participation { get; set; }
+    public int ParticipationAId { get; set; }
+    public required Participation ParticipationA { get; set; }
+    
+    [Required]
+    public int ParticipationBId { get; set; }
+    public required Participation ParticipationB { get; set; }
     
     [Required]
     public int MatchStatusId { get; set; }

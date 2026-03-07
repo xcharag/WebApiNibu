@@ -11,7 +11,8 @@ public static class RosterFilterHandler
             query = query.Where(x => x.MatchId == filter.MatchId.Value);
 
         if (filter.ParticipationId.HasValue)
-            query = query.Where(x => x.Match.ParticipationId == filter.ParticipationId.Value);
+            query = query.Where(x => x.Match.ParticipationAId == filter.ParticipationId.Value
+                                  || x.Match.ParticipationBId == filter.ParticipationId.Value);
 
         if (filter.SchoolStudentId.HasValue)
             query = query.Where(x => x.SchoolStudentId == filter.SchoolStudentId.Value);

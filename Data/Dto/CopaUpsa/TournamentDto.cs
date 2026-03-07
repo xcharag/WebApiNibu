@@ -13,6 +13,7 @@ public class TournamentReadDto
     public bool HasGroupStage { get; set; }
     public bool HasPlayOffStage { get; set; }
     public int TournamentParentId { get; set; }
+    public string TournamentParentName { get; set; } = string.Empty;
     public int SportId { get; set; }
 
     public string? SportName { get; set; } = string.Empty;
@@ -32,6 +33,7 @@ public class TournamentCreateDto
     public bool HasPlayOffStage { get; set; } = true;
     public int TournamentParentId { get; set; }
     public int SportId { get; set; }
+    public string SportName { get; set; } = string.Empty;
 }
 
 public class TournamentUpdateDto

@@ -22,6 +22,9 @@ public class MatchImpl(IBaseCrud<Data.Entity.CopaUpsa.Match> baseCrud, CoreDbCon
 
     public Task<Result<MatchReadDto>> CreateAsync(MatchCreateDto dto, CancellationToken ct)
         => _commands.CreateAsync(dto, ct);
+    
+    public Task<Result<MatchUploadResultDto>> UploadFromExcel(IFormFile file, CancellationToken ct)
+        => _commands.UploadFromExcel(file, ct);
 
     public Task<Result<bool>> UpdateAsync(int id, MatchUpdateDto dto, CancellationToken ct)
         => _commands.UpdateAsync(id, dto, ct);
