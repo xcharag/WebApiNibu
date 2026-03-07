@@ -17,10 +17,10 @@ public static class TournamentMapper
         HasGroupStage = entity.HasGroupStage,
         HasPlayOffStage = entity.HasPlayOffStage,
         TournamentParentId = entity.TournamentParentId,
-        TournamentParentName = entity.TournamentParent.Name,
+        TournamentParentName = entity.TournamentParent?.Name ?? string.Empty,
         SportId = entity.SportId,
-        SportName = entity.Sport.Name,
-        CategoryName = entity.TournamentParent.Name
+        SportName = entity.Sport?.Name ?? string.Empty,
+        CategoryName = entity.TournamentParent?.Name ?? string.Empty
     };
 
     public static Data.Entity.CopaUpsa.Tournament ToEntity(TournamentCreateDto dto) => new()

@@ -12,7 +12,7 @@ public class RosterQueries(CoreDbContext db)
         RosterFilter filter, PaginationParams pagination, CancellationToken ct)
     {
         var query = db.Rosters
-            .Include(x => x.SchoolStudent)
+            .Include(x => x.TournamentRoster).ThenInclude(tr => tr.SchoolStudent)
             .Include(x => x.Match)
             .Include(x => x.Position)
             .AsQueryable();
@@ -36,7 +36,7 @@ public class RosterQueries(CoreDbContext db)
     public async Task<Result<RosterReadDto>> GetByIdAsync(int id, CancellationToken ct)
     {
         var item = await db.Rosters
-            .Include(x => x.SchoolStudent)
+            .Include(x => x.TournamentRoster).ThenInclude(tr => tr.SchoolStudent)
             .Include(x => x.Match)
             .Include(x => x.Position)
             .FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);

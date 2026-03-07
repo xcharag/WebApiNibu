@@ -85,6 +85,7 @@ builder.Services.AddScoped<IStatistic, StatisticImpl>();
 builder.Services.AddScoped<IParticipation, ParticipationImpl>();
 builder.Services.AddScoped<IMatch, MatchImpl>();
 builder.Services.AddScoped<IRoster, RosterImpl>();
+builder.Services.AddScoped<ITournamentRoster, TournamentRosterImpl>();
 builder.Services.AddScoped<IStatisticEvent, StatisticEventImpl>();
 
 // Configure DbContext with dynamic database provider

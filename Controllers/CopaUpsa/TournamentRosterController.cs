@@ -8,10 +8,10 @@ namespace WebApiNibu.Controllers.CopaUpsa;
 
 [ApiController]
 [Route("api/[controller]")]
-public class MatchController(IMatch service) : ControllerBase
+public class TournamentRosterController(ITournamentRoster service) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] MatchFilter filter, [FromQuery] PaginationParams pagination, CancellationToken ct)
+    public async Task<IActionResult> GetAll([FromQuery] TournamentRosterFilter filter, [FromQuery] PaginationParams pagination, CancellationToken ct)
     {
         var result = await service.GetAllAsync(filter, pagination, ct);
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
@@ -25,7 +25,7 @@ public class MatchController(IMatch service) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] MatchCreateDto dto, CancellationToken ct)
+    public async Task<IActionResult> Create([FromBody] TournamentRosterCreateDto dto, CancellationToken ct)
     {
         var result = await service.CreateAsync(dto, ct);
         return result.IsSuccess
@@ -33,18 +33,8 @@ public class MatchController(IMatch service) : ControllerBase
             : BadRequest(result.Errors);
     }
 
-    [HttpPost("upload")]
-    [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadFromExcel([FromForm] IFormFile file, CancellationToken ct)
-    {
-        var result = await service.UploadFromExcel(file, ct);
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : BadRequest(result.Errors);
-    }
-
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] MatchUpdateDto dto, CancellationToken ct)
+    public async Task<IActionResult> Update(int id, [FromBody] TournamentRosterUpdateDto dto, CancellationToken ct)
     {
         var result = await service.UpdateAsync(id, dto, ct);
         return result.IsSuccess ? NoContent() : NotFound(result.Errors);
