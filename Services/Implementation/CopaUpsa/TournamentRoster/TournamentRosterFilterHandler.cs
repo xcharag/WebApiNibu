@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 
 namespace WebApiNibu.Services.Implementation.CopaUpsa.TournamentRoster;
@@ -21,10 +22,12 @@ public static class TournamentRosterFilterHandler
 
         if (!string.IsNullOrWhiteSpace(filter.Name))
         {
-            var name = filter.Name.Trim();
-            query = query.Where(x => x.SchoolStudent.FirstName.Contains(name) ||
-                                     x.SchoolStudent.PaternalSurname.Contains(name) ||
-                                     x.SchoolStudent.MaternalSurname.Contains(name));
+            var pattern = $"%{filter.Name.Trim()}%";
+            query = query.Where(x =>
+                EF.Functions.ILike(x.SchoolStudent.FirstName, pattern) ||
+                (x.SchoolStudent.MiddleName != null && EF.Functions.ILike(x.SchoolStudent.MiddleName, pattern)) ||
+                EF.Functions.ILike(x.SchoolStudent.PaternalSurname, pattern) ||
+                EF.Functions.ILike(x.SchoolStudent.MaternalSurname, pattern));
         }
 
         return query;

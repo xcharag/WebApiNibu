@@ -2,8 +2,10 @@ namespace WebApiNibu.Data.Dto.Person.Filters;
 
 public class SchoolStudentFilter
 {
-    public string? FirstName { get; set; }
-    public string? PaternalSurname { get; set; }
+    /// <summary>
+    /// Searches across FirstName, MiddleName, PaternalSurname and MaternalSurname.
+    /// </summary>
+    public string? Name { get; set; }
     public string? Email { get; set; }
     public int? IdCountry { get; set; }
     public int? IdDocumentType { get; set; }
