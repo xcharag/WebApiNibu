@@ -99,6 +99,9 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Global exception handler — must be first in the pipeline
+app.UseMiddleware<WebApiNibu.Helpers.GlobalExceptionMiddleware>();
+
 // Auto-apply pending migrations
 await ApplyMigrationsAsync(app);
 
