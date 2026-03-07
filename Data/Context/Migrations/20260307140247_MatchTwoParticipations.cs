@@ -29,6 +29,9 @@ namespace WebApiNibu.Data.Context.Migrations
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
+            
+            migrationBuilder.Sql(
+                """UPDATE "Matches" SET "ParticipationAId" = "ParticipationBId";""");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Match_ParticipationAId_StartDate",
@@ -56,6 +59,7 @@ namespace WebApiNibu.Data.Context.Migrations
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }
+
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
