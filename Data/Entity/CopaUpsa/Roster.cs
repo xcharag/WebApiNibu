@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebApiNibu.Data.Entity.FatherTable;
-using WebApiNibu.Data.Entity.Person;
 
 namespace WebApiNibu.Data.Entity.CopaUpsa;
 
@@ -16,8 +15,8 @@ public class Roster : BaseEntity
     public required Match Match { get; set; }
     
     [Required]
-    public int SchoolStudentId { get; set; }
-    public required SchoolStudent SchoolStudent { get; set; }
+    public int TournamentRosterId { get; set; }
+    public required TournamentRoster TournamentRoster { get; set; }
     
     [Required]
     public int PositionId { get; set; }

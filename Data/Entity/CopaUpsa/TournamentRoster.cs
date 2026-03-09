@@ -1,24 +1,20 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using WebApiNibu.Data.Entity.FatherTable;
-using WebApiNibu.Data.Entity.Feed.Polls;
+using WebApiNibu.Data.Entity.Person;
 using WebApiNibu.Data.Entity.School;
 
 namespace WebApiNibu.Data.Entity.CopaUpsa;
 
-public class Participation : BaseEntity
-{
+public class TournamentRoster : BaseEntity
+{ 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     
     [Required]
-    [StringLength(2)]
-    public string Key { get; set; } = string.Empty;
-    
-    [Required]
-    public int PhaseTypeId { get; set; }
-    public required PhaseType PhaseType { get; set;}
+    public int SchoolStudentId { get; set; }
+    public required SchoolStudent SchoolStudent { get; set; }
     
     [Required]
     public int TournamentId { get; set; }
@@ -28,7 +24,5 @@ public class Participation : BaseEntity
     public int SchoolId { get; set; }
     public required SchoolTable SchoolTable { get; set; }
     
-    public ICollection<Match> MatchesAsA { get; set; } = new List<Match>();
-    public ICollection<Match> MatchesAsB { get; set; } = new List<Match>();
-    public ICollection<Option> Options { get; set; } = new List<Option>();
+    public ICollection<Roster> Rosters { get; set; } = new List<Roster>();
 }

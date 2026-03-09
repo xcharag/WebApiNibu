@@ -10,7 +10,7 @@ public class RosterCommands(IBaseCrud<Data.Entity.CopaUpsa.Roster> baseCrud, Cor
 {
     public async Task<Result<RosterReadDto>> CreateAsync(RosterCreateDto dto, CancellationToken ct)
     {
-        var validation = await ValidateForeignKeysAsync(dto.MatchId, dto.SchoolStudentId, dto.PositionId, ct);
+        var validation = await ValidateForeignKeysAsync(dto.MatchId, dto.TournamentRosterId, dto.PositionId, ct);
         if (!validation.IsSuccess)
             return Result<RosterReadDto>.Failure(validation.Errors);
 
@@ -24,8 +24,8 @@ public class RosterCommands(IBaseCrud<Data.Entity.CopaUpsa.Roster> baseCrud, Cor
         var errors = new List<string>();
         if (dto.MatchId.HasValue && !await db.Matches.AnyAsync(x => x.Id == dto.MatchId.Value, ct))
             errors.Add($"MatchId ({dto.MatchId.Value}) not found");
-        if (dto.SchoolStudentId.HasValue && !await db.SchoolStudents.AnyAsync(x => x.Id == dto.SchoolStudentId.Value, ct))
-            errors.Add($"SchoolStudentId ({dto.SchoolStudentId.Value}) not found");
+        if (dto.TournamentRosterId.HasValue && !await db.TournamentRosters.AnyAsync(x => x.Id == dto.TournamentRosterId.Value, ct))
+            errors.Add($"TournamentRosterId ({dto.TournamentRosterId.Value}) not found");
         if (dto.PositionId.HasValue && !await db.Positions.AnyAsync(x => x.Id == dto.PositionId.Value, ct))
             errors.Add($"PositionId ({dto.PositionId.Value}) not found");
         if (errors.Count > 0)
@@ -45,14 +45,14 @@ public class RosterCommands(IBaseCrud<Data.Entity.CopaUpsa.Roster> baseCrud, Cor
             : Result<bool>.Failure($"Roster with id {id} not found");
     }
 
-    private async Task<Result<bool>> ValidateForeignKeysAsync(int matchId, int schoolStudentId, int positionId, CancellationToken ct)
+    private async Task<Result<bool>> ValidateForeignKeysAsync(int matchId, int tournamentRosterId, int positionId, CancellationToken ct)
     {
         var errors = new List<string>();
 
         if (!await db.Matches.AnyAsync(x => x.Id == matchId, ct))
             errors.Add($"MatchId ({matchId}) not found");
-        if (!await db.SchoolStudents.AnyAsync(x => x.Id == schoolStudentId, ct))
-            errors.Add($"SchoolStudentId ({schoolStudentId}) not found");
+        if (!await db.TournamentRosters.AnyAsync(x => x.Id == tournamentRosterId, ct))
+            errors.Add($"TournamentRosterId ({tournamentRosterId}) not found");
         if (!await db.Positions.AnyAsync(x => x.Id == positionId, ct))
             errors.Add($"PositionId ({positionId}) not found");
 

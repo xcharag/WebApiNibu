@@ -41,4 +41,5 @@ public class Tournament : BaseEntity
     public required Sport Sport { get; set; }
     
     public ICollection<Participation> Participations { get; set; } = new List<Participation>();
+    public ICollection<TournamentRoster> TournamentRosters { get; set; } = new List<TournamentRoster>();
 }

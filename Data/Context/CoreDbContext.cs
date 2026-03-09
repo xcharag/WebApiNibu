@@ -23,6 +23,7 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) : DbContext(
     public DbSet<PhaseType> PhaseTypes { get; set; }
     public DbSet<Position> Positions { get; set; }
     public DbSet<Roster> Rosters { get; set; }
+    public DbSet<TournamentRoster> TournamentRosters { get; set; }
     public DbSet<Sport> Sports { get; set; }
     public DbSet<Statistic> Statistics { get; set; }
     public DbSet<StatisticEvent> StatisticEvents { get; set; }
@@ -223,6 +224,34 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) : DbContext(
             .HasOne(r => r.Position)
             .WithMany(p => p.Rosters)
             .HasForeignKey(r => r.PositionId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Roster -> TournamentRoster
+        modelBuilder.Entity<Roster>()
+            .HasOne(r => r.TournamentRoster)
+            .WithMany(tr => tr.Rosters)
+            .HasForeignKey(r => r.TournamentRosterId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // TournamentRoster -> SchoolStudent
+        modelBuilder.Entity<TournamentRoster>()
+            .HasOne(tr => tr.SchoolStudent)
+            .WithMany()
+            .HasForeignKey(tr => tr.SchoolStudentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // TournamentRoster -> Tournament
+        modelBuilder.Entity<TournamentRoster>()
+            .HasOne(tr => tr.Tournament)
+            .WithMany(t => t.TournamentRosters)
+            .HasForeignKey(tr => tr.TournamentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // TournamentRoster -> SchoolTable
+        modelBuilder.Entity<TournamentRoster>()
+            .HasOne(tr => tr.SchoolTable)
+            .WithMany(s => s.TournamentRosters)
+            .HasForeignKey(tr => tr.SchoolId)
             .OnDelete(DeleteBehavior.Restrict);
 
         // Event relationships

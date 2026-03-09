@@ -16,6 +16,11 @@ public class ParticipationCommands(IBaseCrud<Data.Entity.CopaUpsa.Participation>
 
         var entity = ParticipationMapper.ToEntity(dto);
         var created = await baseCrud.CreateAsync(entity, ct);
+
+        await db.Entry(created).Reference(p => p.PhaseType).LoadAsync(ct);
+        await db.Entry(created).Reference(p => p.Tournament).LoadAsync(ct);
+        await db.Entry(created).Reference(p => p.SchoolTable).LoadAsync(ct);
+
         return Result<ParticipationReadDto>.Success(ParticipationMapper.ToReadDto(created));
     }
 

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Dto.Person.Filters;
 
 namespace WebApiNibu.Services.Implementation.Person.SchoolStudent;
@@ -7,11 +8,15 @@ public static class SchoolStudentFilterHandler
     public static IQueryable<Data.Entity.Person.SchoolStudent> Apply(
         IQueryable<Data.Entity.Person.SchoolStudent> query, SchoolStudentFilter filter)
     {
-        if (!string.IsNullOrWhiteSpace(filter.FirstName))
-            query = query.Where(x => x.FirstName.Contains(filter.FirstName));
-
-        if (!string.IsNullOrWhiteSpace(filter.PaternalSurname))
-            query = query.Where(x => x.PaternalSurname.Contains(filter.PaternalSurname));
+        if (!string.IsNullOrWhiteSpace(filter.Name))
+        {
+            var pattern = $"%{filter.Name.Trim()}%";
+            query = query.Where(x =>
+                EF.Functions.ILike(x.FirstName, pattern) ||
+                (x.MiddleName != null && EF.Functions.ILike(x.MiddleName, pattern)) ||
+                EF.Functions.ILike(x.PaternalSurname, pattern) ||
+                EF.Functions.ILike(x.MaternalSurname, pattern));
+        }
 
         if (!string.IsNullOrWhiteSpace(filter.Email))
             query = query.Where(x => x.Email.Contains(filter.Email));

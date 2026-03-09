@@ -82,5 +82,7 @@ public class SchoolTable : BaseEntity
     public ICollection<Contact>? Contacts { get; set; } = new List<Contact>();
     
     public ICollection<Participation> Participations { get; set; } = new List<Participation>();
+    
+    public ICollection<TournamentRoster> TournamentRosters { get; set; } = new List<TournamentRoster>();
 
 }

@@ -85,6 +85,7 @@ builder.Services.AddScoped<IStatistic, StatisticImpl>();
 builder.Services.AddScoped<IParticipation, ParticipationImpl>();
 builder.Services.AddScoped<IMatch, MatchImpl>();
 builder.Services.AddScoped<IRoster, RosterImpl>();
+builder.Services.AddScoped<ITournamentRoster, TournamentRosterImpl>();
 builder.Services.AddScoped<IStatisticEvent, StatisticEventImpl>();
 
 // Configure DbContext with dynamic database provider
@@ -97,6 +98,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// Global exception handler — must be first in the pipeline
+app.UseMiddleware<WebApiNibu.Helpers.GlobalExceptionMiddleware>();
 
 // Auto-apply pending migrations
 await ApplyMigrationsAsync(app);

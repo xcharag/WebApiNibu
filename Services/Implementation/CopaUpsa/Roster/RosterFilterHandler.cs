@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 
 namespace WebApiNibu.Services.Implementation.CopaUpsa.Roster;
@@ -14,8 +15,8 @@ public static class RosterFilterHandler
             query = query.Where(x => x.Match.ParticipationAId == filter.ParticipationId.Value
                                   || x.Match.ParticipationBId == filter.ParticipationId.Value);
 
-        if (filter.SchoolStudentId.HasValue)
-            query = query.Where(x => x.SchoolStudentId == filter.SchoolStudentId.Value);
+        if (filter.TournamentRosterId.HasValue)
+            query = query.Where(x => x.TournamentRosterId == filter.TournamentRosterId.Value);
 
         if (filter.PositionId.HasValue)
             query = query.Where(x => x.PositionId == filter.PositionId.Value);
@@ -23,13 +24,14 @@ public static class RosterFilterHandler
         if (filter.Active.HasValue)
             query = query.Where(x => x.Active == filter.Active.Value);
 
-        // Added: filter by student name (search in first, paternal and maternal surname)
         if (!string.IsNullOrWhiteSpace(filter.Name))
         {
-            var name = filter.Name.Trim();
-            query = query.Where(x => x.SchoolStudent.FirstName.Contains(name) ||
-                                     x.SchoolStudent.PaternalSurname.Contains(name) ||
-                                     x.SchoolStudent.MaternalSurname.Contains(name));
+            var pattern = $"%{filter.Name.Trim()}%";
+            query = query.Where(x =>
+                EF.Functions.ILike(x.TournamentRoster.SchoolStudent.FirstName, pattern) ||
+                (x.TournamentRoster.SchoolStudent.MiddleName != null && EF.Functions.ILike(x.TournamentRoster.SchoolStudent.MiddleName, pattern)) ||
+                EF.Functions.ILike(x.TournamentRoster.SchoolStudent.PaternalSurname, pattern) ||
+                EF.Functions.ILike(x.TournamentRoster.SchoolStudent.MaternalSurname, pattern));
         }
 
         return query;
