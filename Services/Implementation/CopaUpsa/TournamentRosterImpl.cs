@@ -23,6 +23,9 @@ public class TournamentRosterImpl(IBaseCrud<Data.Entity.CopaUpsa.TournamentRoste
     public Task<Result<TournamentRosterReadDto>> CreateAsync(TournamentRosterCreateDto dto, CancellationToken ct)
         => _commands.CreateAsync(dto, ct);
 
+    public Task<Result<TournamentRosterUploadResultDto>> UploadFromExcel(IFormFile file, CancellationToken ct)
+        => _commands.UploadFromExcel(file, ct);
+
     public Task<Result<bool>> UpdateAsync(int id, TournamentRosterUpdateDto dto, CancellationToken ct)
         => _commands.UpdateAsync(id, dto, ct);
 

@@ -37,3 +37,9 @@ public class TournamentRosterUpdateDto
     public int? SchoolId { get; set; }
 }
 
+public class TournamentRosterUploadResultDto
+{
+    public List<TournamentRosterReadDto> Created { get; set; } = [];
+    public List<string> Errors { get; set; } = [];
+}
+

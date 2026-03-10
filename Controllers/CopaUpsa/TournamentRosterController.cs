@@ -33,6 +33,16 @@ public class TournamentRosterController(ITournamentRoster service) : ControllerB
             : BadRequest(result.Errors);
     }
 
+    [HttpPost("upload")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadFromExcel([FromForm] IFormFile file, CancellationToken ct)
+    {
+        var result = await service.UploadFromExcel(file, ct);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : BadRequest(result.Errors);
+    }
+
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] TournamentRosterUpdateDto dto, CancellationToken ct)
     {
