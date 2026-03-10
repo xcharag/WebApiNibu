@@ -566,10 +566,29 @@ namespace WebApiNibu.Data.Context.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SchoolId")
-                        .HasColumnType("integer");
+                    b.Property<string>("DocumentNumber")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
-                    b.Property<int>("SchoolStudentId")
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("MaternalName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("MiddleName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("SchoolId")
                         .HasColumnType("integer");
 
                     b.Property<int>("TournamentId")
@@ -584,8 +603,6 @@ namespace WebApiNibu.Data.Context.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("SchoolId");
-
-                    b.HasIndex("SchoolStudentId");
 
                     b.HasIndex("TournamentId");
 
@@ -2324,19 +2341,11 @@ namespace WebApiNibu.Data.Context.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WebApiNibu.Data.Entity.Person.SchoolStudent", "SchoolStudent")
-                        .WithMany()
-                        .HasForeignKey("SchoolStudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("WebApiNibu.Data.Entity.CopaUpsa.Tournament", "Tournament")
                         .WithMany("TournamentRosters")
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("SchoolStudent");
 
                     b.Navigation("SchoolTable");
 

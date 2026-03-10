@@ -233,12 +233,6 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) : DbContext(
             .HasForeignKey(r => r.TournamentRosterId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // TournamentRoster -> SchoolStudent
-        modelBuilder.Entity<TournamentRoster>()
-            .HasOne(tr => tr.SchoolStudent)
-            .WithMany()
-            .HasForeignKey(tr => tr.SchoolStudentId)
-            .OnDelete(DeleteBehavior.Restrict);
 
         // TournamentRoster -> Tournament
         modelBuilder.Entity<TournamentRoster>()

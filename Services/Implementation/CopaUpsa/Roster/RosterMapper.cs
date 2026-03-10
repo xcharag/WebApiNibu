@@ -10,8 +10,10 @@ public static class RosterMapper
         MatchId = entity.MatchId,
         TournamentRosterId = entity.TournamentRosterId,
         PositionId = entity.PositionId,
-        StudentName = entity.TournamentRoster?.SchoolStudent is not null
-            ? (entity.TournamentRoster.SchoolStudent.FirstName + " " + entity.TournamentRoster.SchoolStudent.PaternalSurname)
+        StudentName = entity.TournamentRoster is not null
+            ? string.Join(" ",
+                new[] { entity.TournamentRoster.FirstName, entity.TournamentRoster.LastName }
+                    .Where(s => !string.IsNullOrWhiteSpace(s)))
             : string.Empty,
         MatchName = entity.Match is not null
             ? $"Match #{entity.Match.NumberMatch} - {entity.Match.StartDate:yyyy-MM-dd}"

@@ -13,10 +13,6 @@ public class TournamentRoster : BaseEntity
     public int Id { get; set; }
     
     [Required]
-    public int SchoolStudentId { get; set; }
-    public required SchoolStudent SchoolStudent { get; set; }
-    
-    [Required]
     public int TournamentId { get; set; }
     public required Tournament Tournament { get; set; }
     
@@ -25,4 +21,21 @@ public class TournamentRoster : BaseEntity
     public required SchoolTable SchoolTable { get; set; }
     
     public ICollection<Roster> Rosters { get; set; } = new List<Roster>();
+    
+    [Required]
+    [StringLength(100)]
+    public string FirstName { get; set; } = string.Empty;
+    
+    [StringLength(100)]
+    public string? MiddleName { get; set; }
+    
+    [Required]
+    [StringLength(100)]
+    public string LastName { get; set; } = string.Empty;
+    
+    [StringLength(100)]
+    public string? MaternalName { get; set; }
+    
+    [StringLength(100)]
+    public string? DocumentNumber { get; set; }
 }

@@ -28,10 +28,10 @@ public static class RosterFilterHandler
         {
             var pattern = $"%{filter.Name.Trim()}%";
             query = query.Where(x =>
-                EF.Functions.ILike(x.TournamentRoster.SchoolStudent.FirstName, pattern) ||
-                (x.TournamentRoster.SchoolStudent.MiddleName != null && EF.Functions.ILike(x.TournamentRoster.SchoolStudent.MiddleName, pattern)) ||
-                EF.Functions.ILike(x.TournamentRoster.SchoolStudent.PaternalSurname, pattern) ||
-                EF.Functions.ILike(x.TournamentRoster.SchoolStudent.MaternalSurname, pattern));
+                EF.Functions.ILike(x.TournamentRoster.FirstName, pattern) ||
+                (x.TournamentRoster.MiddleName != null && EF.Functions.ILike(x.TournamentRoster.MiddleName, pattern)) ||
+                EF.Functions.ILike(x.TournamentRoster.LastName, pattern) ||
+                (x.TournamentRoster.MaternalName != null && EF.Functions.ILike(x.TournamentRoster.MaternalName, pattern)));
         }
 
         return query;

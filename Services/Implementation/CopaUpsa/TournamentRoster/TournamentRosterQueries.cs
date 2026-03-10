@@ -12,7 +12,6 @@ public class TournamentRosterQueries(CoreDbContext db)
         TournamentRosterFilter filter, PaginationParams pagination, CancellationToken ct)
     {
         var query = db.TournamentRosters
-            .Include(x => x.SchoolStudent)
             .Include(x => x.Tournament)
             .Include(x => x.SchoolTable)
             .AsQueryable();
@@ -36,7 +35,6 @@ public class TournamentRosterQueries(CoreDbContext db)
     public async Task<Result<TournamentRosterReadDto>> GetByIdAsync(int id, CancellationToken ct)
     {
         var item = await db.TournamentRosters
-            .Include(x => x.SchoolStudent)
             .Include(x => x.Tournament)
             .Include(x => x.SchoolTable)
             .FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
