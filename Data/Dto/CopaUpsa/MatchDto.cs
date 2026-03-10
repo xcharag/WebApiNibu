@@ -12,8 +12,11 @@ public class MatchReadDto
     public DateTime EndDate { get; set; }
     public int NumberMatch { get; set; }
     public int ParticipationAId { get; set; }
+    public string ParticipationASchoolName { get; set; } = string.Empty;
     public int ParticipationBId { get; set; }
+    public string ParticipationBSchoolName { get; set; } = string.Empty;
     public int MatchStatusId { get; set; }
+    public string MatchStatusName { get; set; } = string.Empty;
 }
 
 public class MatchCreateDto

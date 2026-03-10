@@ -9,7 +9,13 @@ public static class StatisticEventMapper
         Id = entity.Id,
         Moment = entity.Moment,
         StatisticId = entity.StatisticId,
-        RosterId = entity.RosterId
+        StatisticName = entity.Statistic?.Name ?? string.Empty,
+        RosterId = entity.RosterId,
+        RosterStudentName = entity.Roster?.TournamentRoster is not null
+            ? string.Join(" ",
+                new[] { entity.Roster.TournamentRoster.FirstName, entity.Roster.TournamentRoster.LastName }
+                    .Where(s => !string.IsNullOrWhiteSpace(s)))
+            : string.Empty
     };
 
     public static Data.Entity.CopaUpsa.StatisticEvent ToEntity(StatisticEventCreateDto dto) => new()

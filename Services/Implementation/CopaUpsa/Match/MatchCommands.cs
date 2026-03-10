@@ -17,6 +17,11 @@ public class MatchCommands(IBaseCrud<Data.Entity.CopaUpsa.Match> baseCrud, CoreD
 
         var entity = MatchMapper.ToEntity(dto);
         var created = await baseCrud.CreateAsync(entity, ct);
+
+        await db.Entry(created).Reference(m => m.ParticipationA).Query().Include(p => p.SchoolTable).LoadAsync(ct);
+        await db.Entry(created).Reference(m => m.ParticipationB).Query().Include(p => p.SchoolTable).LoadAsync(ct);
+        await db.Entry(created).Reference(m => m.MatchStatus).LoadAsync(ct);
+
         return Result<MatchReadDto>.Success(MatchMapper.ToReadDto(created));
     }
 
@@ -130,6 +135,11 @@ public class MatchCommands(IBaseCrud<Data.Entity.CopaUpsa.Match> baseCrud, CoreD
             };
 
             var created = await baseCrud.CreateAsync(entity, ct);
+
+            await db.Entry(created).Reference(m => m.ParticipationA).Query().Include(p => p.SchoolTable).LoadAsync(ct);
+            await db.Entry(created).Reference(m => m.ParticipationB).Query().Include(p => p.SchoolTable).LoadAsync(ct);
+            await db.Entry(created).Reference(m => m.MatchStatus).LoadAsync(ct);
+
             result.Created.Add(MatchMapper.ToReadDto(created));
         }
 

@@ -11,7 +11,10 @@ public class StatisticEventQueries(CoreDbContext db)
     public async Task<Result<PagedResult<StatisticEventReadDto>>> GetAllAsync(
         StatisticEventFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var query = db.StatisticEvents.AsQueryable();
+        var query = db.StatisticEvents
+            .Include(x => x.Statistic)
+            .Include(x => x.Roster).ThenInclude(r => r.TournamentRoster)
+            .AsQueryable();
         query = StatisticEventFilterHandler.Apply(query, filter);
 
         var totalCount = await query.CountAsync(ct);
@@ -31,7 +34,10 @@ public class StatisticEventQueries(CoreDbContext db)
 
     public async Task<Result<StatisticEventReadDto>> GetByIdAsync(int id, CancellationToken ct)
     {
-        var item = await db.StatisticEvents.FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
+        var item = await db.StatisticEvents
+            .Include(x => x.Statistic)
+            .Include(x => x.Roster).ThenInclude(r => r.TournamentRoster)
+            .FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
         return item is null
             ? Result<StatisticEventReadDto>.Failure($"StatisticEvent with id {id} not found")
             : Result<StatisticEventReadDto>.Success(StatisticEventMapper.ToReadDto(item));

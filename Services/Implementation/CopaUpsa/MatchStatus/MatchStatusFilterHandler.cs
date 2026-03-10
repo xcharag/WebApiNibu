@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 
 namespace WebApiNibu.Services.Implementation.CopaUpsa.MatchStatus;
@@ -8,7 +9,10 @@ public static class MatchStatusFilterHandler
         IQueryable<Data.Entity.CopaUpsa.MatchStatus> query, MatchStatusFilter filter)
     {
         if (!string.IsNullOrWhiteSpace(filter.Name))
-            query = query.Where(x => x.Name.Contains(filter.Name));
+        {
+            var pattern = $"%{filter.Name.Trim()}%";
+            query = query.Where(x => EF.Functions.ILike(x.Name, pattern));
+        }
 
         if (filter.Active.HasValue)
             query = query.Where(x => x.Active == filter.Active.Value);

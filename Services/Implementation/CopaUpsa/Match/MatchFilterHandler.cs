@@ -1,4 +1,5 @@
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 
 namespace WebApiNibu.Services.Implementation.CopaUpsa.Match;
@@ -9,7 +10,10 @@ public static class MatchFilterHandler
         IQueryable<Data.Entity.CopaUpsa.Match> query, MatchFilter filter)
     {
         if (!string.IsNullOrWhiteSpace(filter.Location))
-            query = query.Where(x => x.Location.Contains(filter.Location));
+        {
+            var pattern = $"%{filter.Location.Trim()}%";
+            query = query.Where(x => EF.Functions.ILike(x.Location, pattern));
+        }
 
         if (filter.ParticipationAId.HasValue)
             query = query.Where(x => x.ParticipationAId == filter.ParticipationAId.Value);

@@ -16,8 +16,11 @@ public static class MatchMapper
         EndDate = entity.EndDate,
         NumberMatch = entity.NumberMatch,
         ParticipationAId = entity.ParticipationAId,
+        ParticipationASchoolName = entity.ParticipationA?.SchoolTable?.Name ?? string.Empty,
         ParticipationBId = entity.ParticipationBId,
-        MatchStatusId = entity.MatchStatusId
+        ParticipationBSchoolName = entity.ParticipationB?.SchoolTable?.Name ?? string.Empty,
+        MatchStatusId = entity.MatchStatusId,
+        MatchStatusName = entity.MatchStatus?.Name ?? string.Empty
     };
 
     public static Data.Entity.CopaUpsa.Match ToEntity(MatchCreateDto dto) => new()

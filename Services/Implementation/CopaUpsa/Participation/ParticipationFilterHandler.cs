@@ -9,7 +9,10 @@ public static class ParticipationFilterHandler
         IQueryable<Data.Entity.CopaUpsa.Participation> query, ParticipationFilter filter)
     {
         if (!string.IsNullOrWhiteSpace(filter.Key))
-            query = query.Where(x => x.Key.Contains(filter.Key));
+        {
+            var pattern = $"%{filter.Key.Trim()}%";
+            query = query.Where(x => EF.Functions.ILike(x.Key, pattern));
+        }
 
         if (filter.PhaseTypeId.HasValue)
             query = query.Where(x => x.PhaseTypeId == filter.PhaseTypeId.Value);
@@ -22,10 +25,6 @@ public static class ParticipationFilterHandler
 
         if (filter.Active.HasValue)
             query = query.Where(x => x.Active == filter.Active.Value);
-        
-        query.Include(p => p.PhaseType);
-        query.Include(p => p.Tournament);
-        query.Include(p => p.SchoolTable);
 
         return query;
     }

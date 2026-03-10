@@ -9,7 +9,10 @@ public static class TournamentFilterHandler
         IQueryable<Data.Entity.CopaUpsa.Tournament> query, TournamentFilter filter)
     {
         if (!string.IsNullOrWhiteSpace(filter.Name))
-            query = query.Where(x => x.Name.Contains(filter.Name));
+        {
+            var pattern = $"%{filter.Name.Trim()}%";
+            query = query.Where(x => EF.Functions.ILike(x.Name, pattern));
+        }
 
         if (filter.TournamentParentId.HasValue)
             query = query.Where(x => x.TournamentParentId == filter.TournamentParentId.Value);
@@ -25,9 +28,6 @@ public static class TournamentFilterHandler
 
         if (filter.Active.HasValue)
             query = query.Where(x => x.Active == filter.Active.Value);
-        
-        query.Include(t => t.TournamentParent);
-        query.Include(t => t.Sport);
 
         return query;
     }

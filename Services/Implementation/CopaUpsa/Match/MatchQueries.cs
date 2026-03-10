@@ -11,7 +11,11 @@ public class MatchQueries(CoreDbContext db)
     public async Task<Result<PagedResult<MatchReadDto>>> GetAllAsync(
         MatchFilter filter, PaginationParams pagination, CancellationToken ct)
     {
-        var query = db.Matches.AsQueryable();
+        var query = db.Matches
+            .Include(x => x.ParticipationA).ThenInclude(p => p.SchoolTable)
+            .Include(x => x.ParticipationB).ThenInclude(p => p.SchoolTable)
+            .Include(x => x.MatchStatus)
+            .AsQueryable();
         query = MatchFilterHandler.Apply(query, filter);
 
         var totalCount = await query.CountAsync(ct);
@@ -31,7 +35,11 @@ public class MatchQueries(CoreDbContext db)
 
     public async Task<Result<MatchReadDto>> GetByIdAsync(int id, CancellationToken ct)
     {
-        var item = await db.Matches.FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
+        var item = await db.Matches
+            .Include(x => x.ParticipationA).ThenInclude(p => p.SchoolTable)
+            .Include(x => x.ParticipationB).ThenInclude(p => p.SchoolTable)
+            .Include(x => x.MatchStatus)
+            .FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
         return item is null
             ? Result<MatchReadDto>.Failure($"Match with id {id} not found")
             : Result<MatchReadDto>.Success(MatchMapper.ToReadDto(item));
