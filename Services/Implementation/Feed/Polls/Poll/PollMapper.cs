@@ -12,6 +12,7 @@ public static class PollMapper
         Description = entity.Description,
         Question = entity.Question,
         ImageUrl = entity.ImageUrl,
+        ExpirationDate = entity.ExpirationDate,
         TournamentId = entity.TournamentId,
         TournamentName = entity.Tournament is not null ? entity.Tournament.Name : string.Empty,
         Options = entity.Options
@@ -26,6 +27,7 @@ public static class PollMapper
         Description = dto.Description,
         Question = dto.Question,
         ImageUrl = dto.ImageUrl,
+        ExpirationDate = dto.ExpirationDate,
         TournamentId = dto.TournamentId,
         Tournament = null!,
         Active = true
@@ -37,6 +39,7 @@ public static class PollMapper
         target.Description = dto.Description;
         target.Question = dto.Question;
         target.ImageUrl = dto.ImageUrl;
+        target.ExpirationDate = dto.ExpirationDate;
         target.TournamentId = dto.TournamentId;
     }
 }

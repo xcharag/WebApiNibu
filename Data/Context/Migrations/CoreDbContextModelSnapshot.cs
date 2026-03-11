@@ -1009,6 +1009,9 @@ namespace WebApiNibu.Data.Context.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Question")
                         .IsRequired()
                         .HasColumnType("text");

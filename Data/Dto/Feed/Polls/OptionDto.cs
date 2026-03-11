@@ -10,6 +10,8 @@ public class OptionReadDto
     public string Name { get; set; } = String.Empty;
 
     public bool Correct { get; set; }
+    
+    public int Votes { get; set; }
 
     //Foreign Keys
 

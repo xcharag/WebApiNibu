@@ -9,6 +9,7 @@ public static class OptionMapper
         Id = entity.Id,
         Name = entity.Name,
         Correct = entity.Correct,
+        Votes = entity.SelectedOptions?.Count(x => x.Active) ?? 0,
         PollId = entity.PollId,
         ParticipationId = entity.ParticipationId
     };

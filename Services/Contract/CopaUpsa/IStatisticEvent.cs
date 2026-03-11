@@ -8,8 +8,9 @@ public interface IStatisticEvent
 {
     Task<Result<PagedResult<StatisticEventReadDto>>> GetAllAsync(StatisticEventFilter filter, PaginationParams pagination, CancellationToken ct);
     Task<Result<StatisticEventReadDto>> GetByIdAsync(int id, CancellationToken ct);
+    Task<Result<List<StatisticEventTimelineDto>>> GetTimelineAsync(int? matchId, int? tournamentId, int? statisticId, CancellationToken ct);
+    Task<Result<List<StatisticEventRankingDto>>> GetRankingAsync(int statisticId, int? tournamentId, int top, CancellationToken ct);
     Task<Result<StatisticEventReadDto>> CreateAsync(StatisticEventCreateDto dto, CancellationToken ct);
     Task<Result<bool>> UpdateAsync(int id, StatisticEventUpdateDto dto, CancellationToken ct);
     Task<Result<bool>> DeleteAsync(int id, bool soft, CancellationToken ct);
 }
-
