@@ -18,6 +18,7 @@ public class TournamentReadDto
 
     public string? SportName { get; set; } = string.Empty;
     public string? CategoryName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
 }
 
 public class TournamentCreateDto
@@ -49,4 +50,5 @@ public class TournamentUpdateDto
     public bool? HasPlayOffStage { get; set; }
     public int? TournamentParentId { get; set; }
     public int? SportId { get; set; }
+    public bool? Active { get; set; }
 }

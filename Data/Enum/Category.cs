@@ -4,5 +4,5 @@ public enum Category
 {
     Promo = 0,
     Prepromo = 1,
-    Mixto = 2
+    Secundaria = 2
 }

@@ -13,14 +13,12 @@ public class Match : BaseEntity
     [Required]
     [MaxLength(100)]
     public string Location { get; set; } = string.Empty;
-
-    [Required]
-    [Column(TypeName = "decimal(18,4)")]
-    public decimal ScoreA { get; set; } = 0m;
     
-    [Required]
     [Column(TypeName = "decimal(18,4)")]
-    public decimal ScoreB { get; set; } = 0m;
+    public decimal ScoreA { get; set; }
+    
+    [Column(TypeName = "decimal(18,4)")]
+    public decimal ScoreB { get; set; }
     
     [Column(TypeName = "decimal(18,4)")]
     public decimal DetailPointA { get; set; } = 0m;
