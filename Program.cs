@@ -25,18 +25,40 @@ using WebApiNibu.Services.Implementation.UsersAndAccess;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure CORS from appsettings
-var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+var allowedOrigins = builder.Configuration["AllowedOrigins"]?.Split(',', StringSplitOptions.RemoveEmptyEntries) 
+                     ?? new[] { "https://localhost:5173" };
+
+Console.WriteLine("=".PadRight(60, '='));
+Console.WriteLine("CORS Configuration:");
+Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
+Console.WriteLine($"Allowed Origins ({allowedOrigins.Length}):");
+foreach (var origin in allowedOrigins)
+{
+    Console.WriteLine($"  - {origin}");
+}
+
+Console.WriteLine("=".PadRight(60, '='));
+Console.WriteLine("JasperServer Configuration:");
+Console.WriteLine($"  URL: {builder.Configuration["JasperServer:Url"]}");
+Console.WriteLine($"  Username: {builder.Configuration["JasperServer:Username"]}");
+Console.WriteLine("=".PadRight(60, '='));
+
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("ProductionPolicy", policy =>
     {
-        if (allowedOrigins.Length > 0)
-            policy.WithOrigins(allowedOrigins);
-        else
-            policy.AllowAnyOrigin();
-
-        policy.AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins(allowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+    
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
+        policy.WithOrigins("https://localhost:5174", "http://localhost:5174")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
