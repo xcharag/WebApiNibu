@@ -118,7 +118,7 @@ public class MatchCommands(IBaseCrud<Data.Entity.CopaUpsa.Match> baseCrud, CoreD
                 continue;
             }
 
-            var startDate = fecha.Add(hora);
+            var startDate = DateTime.SpecifyKind(fecha.Add(hora), DateTimeKind.Utc);
             var entity = new Data.Entity.CopaUpsa.Match
             {
                 Location = string.Empty,
@@ -144,6 +144,102 @@ public class MatchCommands(IBaseCrud<Data.Entity.CopaUpsa.Match> baseCrud, CoreD
         }
 
         return Result<MatchUploadResultDto>.Success(result);
+    }
+
+    public async Task<Result<MatchResultUploadResultDto>> UploadResultsFromExcel(IFormFile file, CancellationToken ct)
+    {
+        var result = new MatchResultUploadResultDto();
+
+        using var stream = file.OpenReadStream();
+        using var workbook = new XLWorkbook(stream);
+
+        var worksheet = workbook.Worksheet(1);
+        var rows = worksheet.RangeUsed()?.RowsUsed().Skip(1);
+
+        if (rows is null)
+            return Result<MatchResultUploadResultDto>.Success(result);
+
+        var rowNumber = 1;
+        foreach (var row in rows)
+        {
+            rowNumber++;
+            var rowErrors = new List<string>();
+
+            // Column 1: PartidoId
+            var partidoIdStr = row.Cell(1).GetString().Trim();
+            // Column 2: ResultadoEquipoA
+            var scoreAStr = row.Cell(2).GetString().Trim();
+            // Column 3: ResultadoEquipoB
+            var scoreBStr = row.Cell(3).GetString().Trim();
+            // Column 4: DetallePuntosA (optional)
+            var detailAStr = row.Cell(4).GetString().Trim();
+            // Column 5: DetallePuntosB (optional)
+            var detailBStr = row.Cell(5).GetString().Trim();
+
+            if (!int.TryParse(partidoIdStr, out var partidoId))
+            {
+                rowErrors.Add($"Fila {rowNumber}: PartidoId '{partidoIdStr}' no es un número válido.");
+                result.Errors.AddRange(rowErrors);
+                continue;
+            }
+
+            if (!decimal.TryParse(scoreAStr, out var scoreA))
+            {
+                rowErrors.Add($"Fila {rowNumber}: ResultadoEquipoA '{scoreAStr}' no es un número válido.");
+            }
+
+            if (!decimal.TryParse(scoreBStr, out var scoreB))
+            {
+                rowErrors.Add($"Fila {rowNumber}: ResultadoEquipoB '{scoreBStr}' no es un número válido.");
+            }
+
+            decimal? detailA = null;
+            if (!string.IsNullOrWhiteSpace(detailAStr))
+            {
+                if (!decimal.TryParse(detailAStr, out var parsedDetailA))
+                    rowErrors.Add($"Fila {rowNumber}: DetallePuntosA '{detailAStr}' no es un número válido.");
+                else
+                    detailA = parsedDetailA;
+            }
+
+            decimal? detailB = null;
+            if (!string.IsNullOrWhiteSpace(detailBStr))
+            {
+                if (!decimal.TryParse(detailBStr, out var parsedDetailB))
+                    rowErrors.Add($"Fila {rowNumber}: DetallePuntosB '{detailBStr}' no es un número válido.");
+                else
+                    detailB = parsedDetailB;
+            }
+
+            if (rowErrors.Count > 0)
+            {
+                result.Errors.AddRange(rowErrors);
+                continue;
+            }
+
+            var match = await db.Matches
+                .Include(m => m.ParticipationA).ThenInclude(p => p.SchoolTable)
+                .Include(m => m.ParticipationB).ThenInclude(p => p.SchoolTable)
+                .Include(m => m.MatchStatus)
+                .FirstOrDefaultAsync(m => m.Id == partidoId && m.Active, ct);
+
+            if (match is null)
+            {
+                result.Errors.Add($"Fila {rowNumber}: Partido con Id {partidoId} no fue encontrado.");
+                continue;
+            }
+
+            match.ScoreA = scoreA;
+            match.ScoreB = scoreB;
+            if (detailA.HasValue) match.DetailPointA = detailA.Value;
+            if (detailB.HasValue) match.DetailPointB = detailB.Value;
+
+            await db.SaveChangesAsync(ct);
+
+            result.Updated.Add(MatchMapper.ToReadDto(match));
+        }
+
+        return Result<MatchResultUploadResultDto>.Success(result);
     }
 
     public async Task<Result<bool>> UpdateAsync(int id, MatchUpdateDto dto, CancellationToken ct)

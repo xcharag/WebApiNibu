@@ -48,6 +48,16 @@ public class MatchController(IMatch service) : ControllerBase
             : BadRequest(result.Errors);
     }
 
+    [HttpPost("upload-results")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadResultsFromExcel([FromForm] FileUploadDto dto, CancellationToken ct)
+    {
+        var result = await service.UploadResultsFromExcel(dto.File, ct);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : BadRequest(result.Errors);
+    }
+
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] MatchUpdateDto dto, CancellationToken ct)
     {
