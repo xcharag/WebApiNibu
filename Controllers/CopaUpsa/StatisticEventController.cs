@@ -15,6 +15,7 @@ namespace WebApiNibu.Controllers.CopaUpsa;
 public class StatisticEventController(IStatisticEvent service) : ControllerBase
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAll([FromQuery] StatisticEventFilter filter, [FromQuery] PaginationParams pagination, CancellationToken ct)
     {
         var result = await service.GetAllAsync(filter, pagination, ct);
@@ -22,6 +23,7 @@ public class StatisticEventController(IStatisticEvent service) : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetById(int id, CancellationToken ct)
     {
         var result = await service.GetByIdAsync(id, ct);
