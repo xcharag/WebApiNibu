@@ -93,7 +93,6 @@ public class StatisticEventQueries(CoreDbContext db)
                 TournamentId = x.Roster.Match.ParticipationA.TournamentId,
                 SchoolId = x.Roster.TournamentRoster.SchoolId,
                 SchoolName = x.Roster.TournamentRoster.SchoolTable.Name,
-                SchoolStudentId = x.Roster.TournamentRosterId,
                 StudentName = string.Join(" ",
                     new[]
                     {
@@ -155,14 +154,14 @@ public class StatisticEventQueries(CoreDbContext db)
             })
             .Select(g => new StatisticEventRankingDto
             {
-                SchoolStudentId = g.Key.SchoolStudentId,
+                TournamentRosterId = g.Key.TournamentRosterId,
                 StudentName = string.Join(" ",
                     new[]
                     {
                         g.Key.StudentFirstName,
                         g.Key.StudentMiddleName,
-                        g.Key.StudentPaternalSurname,
-                        g.Key.StudentMaternalSurname
+                        g.Key.StudentLastName,
+                        g.Key.StudentMaternalName
                     }
                     .Where(s => !string.IsNullOrWhiteSpace(s))),
                 SchoolId = g.Key.SchoolId,
