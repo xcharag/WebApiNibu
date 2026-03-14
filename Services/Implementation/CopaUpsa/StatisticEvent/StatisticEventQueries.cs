@@ -144,12 +144,12 @@ public class StatisticEventQueries(CoreDbContext db)
         var grouped = await query
             .GroupBy(x => new
             {
-                SchoolStudentId = x.Roster.TournamentRosterId,
+                TournamentRosterId = x.Roster.TournamentRosterId,
                 StudentFirstName = x.Roster.TournamentRoster.FirstName,
                 StudentMiddleName = x.Roster.TournamentRoster.MiddleName,
-                StudentPaternalSurname = x.Roster.TournamentRoster.LastName,
-                StudentMaternalSurname = x.Roster.TournamentRoster.MaternalName,
-                x.Roster.TournamentRoster.SchoolId,
+                StudentLastName = x.Roster.TournamentRoster.LastName,
+                StudentMaternalName = x.Roster.TournamentRoster.MaternalName,
+                SchoolId = x.Roster.TournamentRoster.SchoolId,
                 SchoolName = x.Roster.TournamentRoster.SchoolTable.Name
             })
             .Select(g => new StatisticEventRankingDto

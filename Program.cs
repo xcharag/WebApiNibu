@@ -25,16 +25,17 @@ builder.Services.AddEndpointsApiExplorer();
 
 // Configure CORS from appsettings
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+var defaultLocalOrigins = new[] { "https://localhost:5173", "https://localhost:5174" };
+var originsToUse = allowedOrigins.Length > 0 ? allowedOrigins : defaultLocalOrigins;
+
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("CorsPolicy", policy =>
     {
-        if (allowedOrigins.Length > 0)
-            policy.WithOrigins(allowedOrigins);
-        else
-            policy.AllowAnyOrigin();
-
-        policy.AllowAnyHeader()
+        // Use explicit origins (either from configuration or the local defaults) and allow credentials
+        policy.WithOrigins(originsToUse)
+              .AllowCredentials()
+              .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
@@ -124,7 +125,7 @@ app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.UseHttpsRedirection();
 
-app.UseCors();
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 
