@@ -11,12 +11,9 @@ namespace WebApiNibu.Controllers.CopaUpsa;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
-[DynamicPermission]
 public class TournamentRosterController(ITournamentRoster service) : ControllerBase
 {
     [HttpGet]
-    [AllowAnonymous]
     public async Task<IActionResult> GetAll([FromQuery] TournamentRosterFilter filter, [FromQuery] PaginationParams pagination, CancellationToken ct)
     {
         var result = await service.GetAllAsync(filter, pagination, ct);
@@ -24,7 +21,6 @@ public class TournamentRosterController(ITournamentRoster service) : ControllerB
     }
 
     [HttpGet("{id:int}")]
-    [AllowAnonymous]
     public async Task<IActionResult> GetById(int id, CancellationToken ct)
     {
         var result = await service.GetByIdAsync(id, ct);
@@ -32,6 +28,8 @@ public class TournamentRosterController(ITournamentRoster service) : ControllerB
     }
 
     [HttpPost]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Create([FromBody] TournamentRosterCreateDto dto, CancellationToken ct)
     {
         var result = await service.CreateAsync(dto, ct);
@@ -42,6 +40,8 @@ public class TournamentRosterController(ITournamentRoster service) : ControllerB
 
     [HttpPost("upload")]
     [Consumes("multipart/form-data")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> UploadFromExcel([FromForm] FileUploadDto dto, CancellationToken ct)
     {
         var result = await service.UploadFromExcel(dto.File, ct);
@@ -51,6 +51,8 @@ public class TournamentRosterController(ITournamentRoster service) : ControllerB
     }
 
     [HttpPut("{id:int}")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Update(int id, [FromBody] TournamentRosterUpdateDto dto, CancellationToken ct)
     {
         var result = await service.UpdateAsync(id, dto, ct);
@@ -58,6 +60,8 @@ public class TournamentRosterController(ITournamentRoster service) : ControllerB
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
         var result = await service.DeleteAsync(id, soft, ct);

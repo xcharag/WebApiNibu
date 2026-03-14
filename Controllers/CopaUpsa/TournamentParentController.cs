@@ -10,12 +10,9 @@ namespace WebApiNibu.Controllers.CopaUpsa;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
-[DynamicPermission]
 public class TournamentParentController(ITournamentParent service) : ControllerBase
 {
     [HttpGet]
-    [AllowAnonymous]
     public async Task<IActionResult> GetAll([FromQuery] TournamentParentFilter filter, [FromQuery] PaginationParams pagination, CancellationToken ct)
     {
         var result = await service.GetAllAsync(filter, pagination, ct);
@@ -23,7 +20,6 @@ public class TournamentParentController(ITournamentParent service) : ControllerB
     }
 
     [HttpGet("{id:int}")]
-    [AllowAnonymous]
     public async Task<IActionResult> GetById(int id, CancellationToken ct)
     {
         var result = await service.GetByIdAsync(id, ct);
@@ -31,6 +27,8 @@ public class TournamentParentController(ITournamentParent service) : ControllerB
     }
 
     [HttpPost]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Create([FromBody] TournamentParentCreateDto dto, CancellationToken ct)
     {
         var result = await service.CreateAsync(dto, ct);
@@ -40,6 +38,8 @@ public class TournamentParentController(ITournamentParent service) : ControllerB
     }
 
     [HttpPut("{id:int}")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Update(int id, [FromBody] TournamentParentUpdateDto dto, CancellationToken ct)
     {
         var result = await service.UpdateAsync(id, dto, ct);
@@ -47,6 +47,8 @@ public class TournamentParentController(ITournamentParent service) : ControllerB
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
         var result = await service.DeleteAsync(id, soft, ct);
