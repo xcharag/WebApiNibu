@@ -12,13 +12,12 @@ public class StatisticEventTimelineDto
     public int TournamentId { get; set; }
     public int SchoolId { get; set; }
     public string SchoolName { get; set; } = string.Empty;
-    public int SchoolStudentId { get; set; }
     public string StudentName { get; set; } = string.Empty;
 }
 
 public class StatisticEventRankingDto
 {
-    public int SchoolStudentId { get; set; }
+    public int TournamentRosterId { get; set; }
     public string StudentName { get; set; } = string.Empty;
     public int SchoolId { get; set; }
     public string SchoolName { get; set; } = string.Empty;
