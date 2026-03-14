@@ -57,9 +57,6 @@ public class StatisticEventQueries(CoreDbContext db)
                 .ThenInclude(r => r.TournamentRoster)
                     .ThenInclude(tr => tr.SchoolTable)
             .Include(x => x.Roster)
-                .ThenInclude(r => r.TournamentRoster)
-                    .ThenInclude(tr => tr.SchoolStudent)
-            .Include(x => x.Roster)
                 .ThenInclude(r => r.Match)
                     .ThenInclude(m => m.ParticipationA)
             .Include(x => x.Roster)
@@ -96,14 +93,14 @@ public class StatisticEventQueries(CoreDbContext db)
                 TournamentId = x.Roster.Match.ParticipationA.TournamentId,
                 SchoolId = x.Roster.TournamentRoster.SchoolId,
                 SchoolName = x.Roster.TournamentRoster.SchoolTable.Name,
-                SchoolStudentId = x.Roster.TournamentRoster.SchoolStudentId,
+                SchoolStudentId = x.Roster.TournamentRosterId,
                 StudentName = string.Join(" ",
                     new[]
                     {
-                        x.Roster.TournamentRoster.SchoolStudent.FirstName,
-                        x.Roster.TournamentRoster.SchoolStudent.MiddleName,
-                        x.Roster.TournamentRoster.SchoolStudent.PaternalSurname,
-                        x.Roster.TournamentRoster.SchoolStudent.MaternalSurname
+                        x.Roster.TournamentRoster.FirstName,
+                        x.Roster.TournamentRoster.MiddleName,
+                        x.Roster.TournamentRoster.LastName,
+                        x.Roster.TournamentRoster.MaternalName
                     }
                     .Where(s => !string.IsNullOrWhiteSpace(s)))
             })
@@ -130,9 +127,6 @@ public class StatisticEventQueries(CoreDbContext db)
                 .ThenInclude(r => r.TournamentRoster)
                     .ThenInclude(tr => tr.SchoolTable)
             .Include(x => x.Roster)
-                .ThenInclude(r => r.TournamentRoster)
-                    .ThenInclude(tr => tr.SchoolStudent)
-            .Include(x => x.Roster)
                 .ThenInclude(r => r.Match)
                     .ThenInclude(m => m.ParticipationA)
             .Include(x => x.Roster)
@@ -151,11 +145,11 @@ public class StatisticEventQueries(CoreDbContext db)
         var grouped = await query
             .GroupBy(x => new
             {
-                x.Roster.TournamentRoster.SchoolStudentId,
-                StudentFirstName = x.Roster.TournamentRoster.SchoolStudent.FirstName,
-                StudentMiddleName = x.Roster.TournamentRoster.SchoolStudent.MiddleName,
-                StudentPaternalSurname = x.Roster.TournamentRoster.SchoolStudent.PaternalSurname,
-                StudentMaternalSurname = x.Roster.TournamentRoster.SchoolStudent.MaternalSurname,
+                SchoolStudentId = x.Roster.TournamentRosterId,
+                StudentFirstName = x.Roster.TournamentRoster.FirstName,
+                StudentMiddleName = x.Roster.TournamentRoster.MiddleName,
+                StudentPaternalSurname = x.Roster.TournamentRoster.LastName,
+                StudentMaternalSurname = x.Roster.TournamentRoster.MaternalName,
                 x.Roster.TournamentRoster.SchoolId,
                 SchoolName = x.Roster.TournamentRoster.SchoolTable.Name
             })

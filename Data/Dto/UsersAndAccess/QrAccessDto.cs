@@ -4,6 +4,12 @@ public class QrAccessReadDto
 {
     public int Id { get; set; }
     public string? Reason { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string DocumentNumber { get; set; } = string.Empty;
+    public string PhoneNumber { get; set; } = string.Empty;
+    public string Relationship { get; set; } = string.Empty;
+    public bool WasUpsaStudent { get; set; }
     public DateTime ExpirationDate { get; set; }
     public string Value { get; set; } = string.Empty;
     public bool IsUsed { get; set; }
@@ -15,6 +21,12 @@ public class QrAccessReadDto
 public class QrAccessCreateDto
 {
     public string? Reason { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string DocumentNumber { get; set; } = string.Empty;
+    public string PhoneNumber { get; set; } = string.Empty;
+    public string Relationship { get; set; } = string.Empty;
+    public bool WasUpsaStudent { get; set; }
     public DateTime ExpirationDate { get; set; }
     public string? Value { get; set; }
 }
@@ -22,12 +34,24 @@ public class QrAccessCreateDto
 public class QrAccessGenerateDto
 {
     public string? Reason { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string DocumentNumber { get; set; } = string.Empty;
+    public string PhoneNumber { get; set; } = string.Empty;
+    public string Relationship { get; set; } = string.Empty;
+    public bool WasUpsaStudent { get; set; }
     public DateTime ExpirationDate { get; set; }
 }
 
 public class QrAccessUpdateDto
 {
     public string? Reason { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string DocumentNumber { get; set; } = string.Empty;
+    public string PhoneNumber { get; set; } = string.Empty;
+    public string Relationship { get; set; } = string.Empty;
+    public bool WasUpsaStudent { get; set; }
     public DateTime ExpirationDate { get; set; }
     public string Value { get; set; } = string.Empty;
     public bool IsUsed { get; set; }
