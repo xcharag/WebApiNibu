@@ -13,7 +13,9 @@ public class SelectedOptionQueries(CoreDbContext db)
         PaginationParams pagination,
         CancellationToken ct)
     {
-        var query = db.SelectedOptions.AsQueryable();
+        var query = db.SelectedOptions
+            .Where(x => x.Active)
+            .AsQueryable();
         query = SelectedOptionFilterHandler.Apply(query, filter);
 
         var totalCount = await query.CountAsync(ct);

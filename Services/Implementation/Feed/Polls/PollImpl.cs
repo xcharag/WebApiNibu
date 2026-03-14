@@ -19,6 +19,14 @@ public class PollImpl(IBaseCrud<Data.Entity.Feed.Polls.Poll> baseCrud, CoreDbCon
 
     public Task<Result<PollReadDto>> GetByIdAsync(int id, CancellationToken ct)
         => _queries.GetByIdAsync(id, ct);
+    
+    public Task<Result<PredictionRankingDto>> GetPredictionRankingAsync(
+        int? tournamentId,
+        int page,
+        int pageSize,
+        int? currentUserId,
+        CancellationToken ct)
+        => _queries.GetPredictionRankingAsync(tournamentId, page, pageSize, currentUserId, ct);
 
     public Task<Result<PollReadDto>> CreateAsync(PollCreateDto dto, CancellationToken ct)
         => _commands.CreateAsync(dto, ct);

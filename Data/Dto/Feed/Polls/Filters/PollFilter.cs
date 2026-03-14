@@ -11,4 +11,7 @@ public class PollFilter
     // Added: allow filtering polls by tournament or by match (via participation->tournament)
     public int? TournamentId { get; set; }
     public int? MatchId { get; set; }
+    public DateTime? ExpirationFrom { get; set; }
+    public DateTime? ExpirationTo { get; set; }
+    public bool? IsExpired { get; set; }
 }

@@ -20,6 +20,19 @@ public class MatchImpl(IBaseCrud<Data.Entity.CopaUpsa.Match> baseCrud, CoreDbCon
     public Task<Result<MatchReadDto>> GetByIdAsync(int id, CancellationToken ct)
         => _queries.GetByIdAsync(id, ct);
 
+    public Task<Result<MatchScheduleDto>> GetDetailAsync(int id, CancellationToken ct)
+        => _queries.GetDetailAsync(id, ct);
+
+    public Task<Result<List<MatchScheduleDto>>> GetScheduleAsync(
+        DateTime? startDateFrom, DateTime? startDateTo, int? tournamentId, CancellationToken ct)
+        => _queries.GetScheduleAsync(startDateFrom, startDateTo, tournamentId, ct);
+
+    public Task<Result<List<string>>> GetAvailableDatesAsync(int? tournamentId, CancellationToken ct)
+        => _queries.GetAvailableDatesAsync(tournamentId, ct);
+
+    public Task<Result<List<MatchStandingDto>>> GetStandingsAsync(int tournamentId, int? phaseTypeId, CancellationToken ct)
+        => _queries.GetStandingsAsync(tournamentId, phaseTypeId, ct);
+
     public Task<Result<MatchReadDto>> CreateAsync(MatchCreateDto dto, CancellationToken ct)
         => _commands.CreateAsync(dto, ct);
     
@@ -35,4 +48,3 @@ public class MatchImpl(IBaseCrud<Data.Entity.CopaUpsa.Match> baseCrud, CoreDbCon
     public Task<Result<bool>> DeleteAsync(int id, bool soft, CancellationToken ct)
         => _commands.DeleteAsync(id, soft, ct);
 }
-

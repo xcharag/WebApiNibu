@@ -20,6 +20,14 @@ public class StatisticEventImpl(IBaseCrud<Data.Entity.CopaUpsa.StatisticEvent> b
     public Task<Result<StatisticEventReadDto>> GetByIdAsync(int id, CancellationToken ct)
         => _queries.GetByIdAsync(id, ct);
 
+    public Task<Result<List<StatisticEventTimelineDto>>> GetTimelineAsync(
+        int? matchId, int? tournamentId, int? statisticId, CancellationToken ct)
+        => _queries.GetTimelineAsync(matchId, tournamentId, statisticId, ct);
+
+    public Task<Result<List<StatisticEventRankingDto>>> GetRankingAsync(
+        int statisticId, int? tournamentId, int top, CancellationToken ct)
+        => _queries.GetRankingAsync(statisticId, tournamentId, top, ct);
+
     public Task<Result<StatisticEventReadDto>> CreateAsync(StatisticEventCreateDto dto, CancellationToken ct)
         => _commands.CreateAsync(dto, ct);
 
@@ -29,4 +37,3 @@ public class StatisticEventImpl(IBaseCrud<Data.Entity.CopaUpsa.StatisticEvent> b
     public Task<Result<bool>> DeleteAsync(int id, bool soft, CancellationToken ct)
         => _commands.DeleteAsync(id, soft, ct);
 }
-

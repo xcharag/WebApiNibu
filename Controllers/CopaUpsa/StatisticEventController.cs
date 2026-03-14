@@ -26,6 +26,28 @@ public class StatisticEventController(IStatisticEvent service) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors);
     }
 
+    [HttpGet("timeline")]
+    public async Task<IActionResult> GetTimeline(
+        [FromQuery] int? matchId,
+        [FromQuery] int? tournamentId,
+        [FromQuery] int? statisticId,
+        CancellationToken ct)
+    {
+        var result = await service.GetTimelineAsync(matchId, tournamentId, statisticId, ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
+    }
+
+    [HttpGet("ranking")]
+    public async Task<IActionResult> GetRanking(
+        [FromQuery] int statisticId,
+        [FromQuery] int? tournamentId,
+        [FromQuery] int top = 10,
+        CancellationToken ct = default)
+    {
+        var result = await service.GetRankingAsync(statisticId, tournamentId, top, ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
+    }
+
     [HttpPost]
     [Authorize]
     [DynamicPermission]
@@ -55,4 +77,3 @@ public class StatisticEventController(IStatisticEvent service) : ControllerBase
         return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 }
-

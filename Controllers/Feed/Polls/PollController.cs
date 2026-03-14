@@ -26,6 +26,23 @@ public class PollController(IPoll service) : ControllerBase
         var result = await service.GetByIdAsync(id, ct);
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors);
     }
+    
+    [HttpGet("prediction-ranking")]
+    public async Task<IActionResult> GetPredictionRanking(
+        [FromQuery] int? tournamentId,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] int? currentUserId = null,
+        CancellationToken ct = default)
+    {
+        var result = await service.GetPredictionRankingAsync(
+            tournamentId,
+            page,
+            pageSize,
+            currentUserId,
+            ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
+    }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] PollCreateDto dto, CancellationToken ct)

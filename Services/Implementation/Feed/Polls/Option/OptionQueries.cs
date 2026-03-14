@@ -13,7 +13,9 @@ public class OptionQueries(CoreDbContext db)
         PaginationParams pagination,
         CancellationToken ct)
     {
-        var query = db.Options.AsQueryable();
+        var query = db.Options
+            .Include(x => x.SelectedOptions)
+            .AsQueryable();
         query = OptionFilterHandler.Apply(query, filter);
 
         var totalCount = await query.CountAsync(ct);
@@ -33,7 +35,9 @@ public class OptionQueries(CoreDbContext db)
 
     public async Task<Result<OptionReadDto>> GetByIdAsync(int id, CancellationToken ct)
     {
-        var item = await db.Options.FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
+        var item = await db.Options
+            .Include(x => x.SelectedOptions)
+            .FirstOrDefaultAsync(x => x.Id == id && x.Active, ct);
         return item is null
             ? Result<OptionReadDto>.Failure($"Option with id {id} not found")
             : Result<OptionReadDto>.Success(OptionMapper.ToReadDto(item));

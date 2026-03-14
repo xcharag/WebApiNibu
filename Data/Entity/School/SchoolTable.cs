@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using WebApiNibu.Data.Entity.CopaUpsa;
 using WebApiNibu.Data.Entity.FatherTable;
 using WebApiNibu.Data.Entity.Person;
+using WebApiNibu.Data.Entity.UsersAndAccess;
 
 namespace WebApiNibu.Data.Entity.School;
 
@@ -84,5 +85,8 @@ public class SchoolTable : BaseEntity
     public ICollection<Participation> Participations { get; set; } = new List<Participation>();
     
     public ICollection<TournamentRoster> TournamentRosters { get; set; } = new List<TournamentRoster>();
+
+    // Nuevo: un colegio puede tener varios QrAccess
+    public ICollection<QrAccess> QrAccesses { get; set; } = new List<QrAccess>();
 
 }
