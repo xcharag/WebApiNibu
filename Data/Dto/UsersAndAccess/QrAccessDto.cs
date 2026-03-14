@@ -16,6 +16,9 @@ public class QrAccessReadDto
     public bool Active { get; set; }
     public string QrSvg { get; set; } = string.Empty;
     public string QrPngBase64 { get; set; } = string.Empty;
+    public string? Comment { get; set; }
+    public int? SchoolTableId { get; set; }
+    public string? SchoolName { get; set; }
 }
 
 public class QrAccessCreateDto
@@ -29,6 +32,8 @@ public class QrAccessCreateDto
     public bool WasUpsaStudent { get; set; }
     public DateTime ExpirationDate { get; set; }
     public string? Value { get; set; }
+    public string? Comment { get; set; }
+    public int? SchoolTableId { get; set; }
 }
 
 public class QrAccessGenerateDto
@@ -41,6 +46,9 @@ public class QrAccessGenerateDto
     public string Relationship { get; set; } = string.Empty;
     public bool WasUpsaStudent { get; set; }
     public DateTime ExpirationDate { get; set; }
+
+    public string? Comment { get; set; }
+    public int? SchoolTableId { get; set; }
 }
 
 public class QrAccessUpdateDto
@@ -55,6 +63,9 @@ public class QrAccessUpdateDto
     public DateTime ExpirationDate { get; set; }
     public string Value { get; set; } = string.Empty;
     public bool IsUsed { get; set; }
+
+    public string? Comment { get; set; }
+    public int? SchoolTableId { get; set; }
 }
 
 public class QrMarkUsedResultDto
