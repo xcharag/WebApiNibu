@@ -10,6 +10,12 @@ public interface IPoll
     // Queries
     Task<Result<PagedResult<PollReadDto>>> GetAllAsync(PollFilter filter, PaginationParams pagination, CancellationToken ct);
     Task<Result<PollReadDto>> GetByIdAsync(int id, CancellationToken ct);
+    Task<Result<PredictionRankingDto>> GetPredictionRankingAsync(
+        int? tournamentId,
+        int page,
+        int pageSize,
+        int? currentUserId,
+        CancellationToken ct);
 
     // Commands
     Task<Result<PollReadDto>> CreateAsync(PollCreateDto dto, CancellationToken ct);

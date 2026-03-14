@@ -17,6 +17,20 @@ public static class PollFilterHandler
         if (filter.TournamentId.HasValue)
             query = query.Where(x => x.TournamentId == filter.TournamentId.Value);
 
+        if (filter.ExpirationFrom.HasValue)
+            query = query.Where(x => x.ExpirationDate.HasValue && x.ExpirationDate.Value >= filter.ExpirationFrom.Value);
+
+        if (filter.ExpirationTo.HasValue)
+            query = query.Where(x => x.ExpirationDate.HasValue && x.ExpirationDate.Value <= filter.ExpirationTo.Value);
+
+        if (filter.IsExpired.HasValue)
+        {
+            var now = DateTime.UtcNow;
+            query = filter.IsExpired.Value
+                ? query.Where(x => x.ExpirationDate.HasValue && x.ExpirationDate.Value < now)
+                : query.Where(x => !x.ExpirationDate.HasValue || x.ExpirationDate.Value >= now);
+        }
+
         return query;
     }
 }
