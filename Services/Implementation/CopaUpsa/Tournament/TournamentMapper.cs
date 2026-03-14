@@ -20,7 +20,8 @@ public static class TournamentMapper
         TournamentParentName = entity.TournamentParent?.Name ?? string.Empty,
         SportId = entity.SportId,
         SportName = entity.Sport?.Name ?? string.Empty,
-        CategoryName = entity.TournamentParent?.Name ?? string.Empty
+        CategoryName = entity.TournamentParent?.Name ?? string.Empty,
+        IsActive = entity.Active
     };
 
     public static Data.Entity.CopaUpsa.Tournament ToEntity(TournamentCreateDto dto) => new()
@@ -54,6 +55,6 @@ public static class TournamentMapper
         if (dto.HasPlayOffStage.HasValue) target.HasPlayOffStage = dto.HasPlayOffStage.Value;
         if (dto.TournamentParentId.HasValue) target.TournamentParentId = dto.TournamentParentId.Value;
         if (dto.SportId.HasValue) target.SportId = dto.SportId.Value;
+        if (dto.Active.HasValue && dto.Active.Value != target.Active ) target.Active = dto.Active.Value;
     }
 }
-

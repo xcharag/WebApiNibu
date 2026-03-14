@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApiNibu.Authorization;
+using WebApiNibu.Data.Dto;
 using WebApiNibu.Data.Dto.CopaUpsa;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 using WebApiNibu.Helpers;
@@ -62,6 +65,8 @@ public class MatchController(IMatch service) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Create([FromBody] MatchCreateDto dto, CancellationToken ct)
     {
         var result = await service.CreateAsync(dto, ct);
@@ -72,15 +77,31 @@ public class MatchController(IMatch service) : ControllerBase
 
     [HttpPost("upload")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadFromExcel([FromForm] IFormFile file, CancellationToken ct)
+    [Authorize]
+    [DynamicPermission]
+    public async Task<IActionResult> UploadFromExcel([FromForm] FileUploadDto dto, CancellationToken ct)
     {
-        var result = await service.UploadFromExcel(file, ct);
+        var result = await service.UploadFromExcel(dto.File, ct);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : BadRequest(result.Errors);
+    }
+
+    [HttpPost("upload-results")]
+    [Consumes("multipart/form-data")]
+    [Authorize]
+    [DynamicPermission]
+    public async Task<IActionResult> UploadResultsFromExcel([FromForm] FileUploadDto dto, CancellationToken ct)
+    {
+        var result = await service.UploadResultsFromExcel(dto.File, ct);
         return result.IsSuccess
             ? Ok(result.Value)
             : BadRequest(result.Errors);
     }
 
     [HttpPut("{id:int}")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Update(int id, [FromBody] MatchUpdateDto dto, CancellationToken ct)
     {
         var result = await service.UpdateAsync(id, dto, ct);
@@ -88,6 +109,8 @@ public class MatchController(IMatch service) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
         var result = await service.DeleteAsync(id, soft, ct);

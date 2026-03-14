@@ -15,11 +15,13 @@ public static class MatchFilterHandler
             query = query.Where(x => EF.Functions.ILike(x.Location, pattern));
         }
 
-        if (filter.ParticipationAId.HasValue)
-            query = query.Where(x => x.ParticipationAId == filter.ParticipationAId.Value);
-
-        if (filter.ParticipationBId.HasValue)
-            query = query.Where(x => x.ParticipationBId == filter.ParticipationBId.Value);
+        if (!string.IsNullOrWhiteSpace(filter.ParticipationName))
+        {
+            var namePattern = $"%{filter.ParticipationName.Trim()}%";
+            query = query.Where(x =>
+                EF.Functions.ILike(x.ParticipationA.SchoolTable.Name, namePattern) ||
+                EF.Functions.ILike(x.ParticipationB.SchoolTable.Name, namePattern));
+        }
 
         if (filter.ParticipationId.HasValue)
             query = query.Where(x => x.ParticipationAId == filter.ParticipationId.Value 

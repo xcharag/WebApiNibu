@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApiNibu.Authorization;
 using WebApiNibu.Data.Dto.CopaUpsa;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 using WebApiNibu.Helpers;
@@ -47,6 +49,8 @@ public class StatisticEventController(IStatisticEvent service) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Create([FromBody] StatisticEventCreateDto dto, CancellationToken ct)
     {
         var result = await service.CreateAsync(dto, ct);
@@ -56,6 +60,8 @@ public class StatisticEventController(IStatisticEvent service) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Update(int id, [FromBody] StatisticEventUpdateDto dto, CancellationToken ct)
     {
         var result = await service.UpdateAsync(id, dto, ct);
@@ -63,6 +69,8 @@ public class StatisticEventController(IStatisticEvent service) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
         var result = await service.DeleteAsync(id, soft, ct);

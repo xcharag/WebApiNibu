@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApiNibu.Authorization;
 using WebApiNibu.Data.Dto.CopaUpsa;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 using WebApiNibu.Helpers;
@@ -25,6 +27,8 @@ public class ParticipationController(IParticipation service) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Create([FromBody] ParticipationCreateDto dto, CancellationToken ct)
     {
         var result = await service.CreateAsync(dto, ct);
@@ -34,6 +38,8 @@ public class ParticipationController(IParticipation service) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Update(int id, [FromBody] ParticipationUpdateDto dto, CancellationToken ct)
     {
         var result = await service.UpdateAsync(id, dto, ct);
@@ -41,6 +47,8 @@ public class ParticipationController(IParticipation service) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
         var result = await service.DeleteAsync(id, soft, ct);

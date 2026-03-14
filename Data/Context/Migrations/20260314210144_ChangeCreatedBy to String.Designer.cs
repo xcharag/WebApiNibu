@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebApiNibu.Data.Context;
@@ -11,9 +12,11 @@ using WebApiNibu.Data.Context;
 namespace WebApiNibu.Data.Context.Migrations
 {
     [DbContext(typeof(CoreDbContext))]
-    partial class CoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260314210144_ChangeCreatedBy to String")]
+    partial class ChangeCreatedBytoString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1058,9 +1061,6 @@ namespace WebApiNibu.Data.Context.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
-
-                    b.Property<DateTime?>("ExpirationDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
@@ -2127,10 +2127,6 @@ namespace WebApiNibu.Data.Context.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Comment")
-                        .HasMaxLength(450)
-                        .HasColumnType("character varying(450)");
-
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -2138,43 +2134,15 @@ namespace WebApiNibu.Data.Context.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("DocumentNumber")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
 
                     b.Property<bool>("IsUsed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<string>("Reason")
                         .HasMaxLength(450)
                         .HasColumnType("character varying(450)");
-
-                    b.Property<string>("Relationship")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int?>("SchoolTableId")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -2187,12 +2155,7 @@ namespace WebApiNibu.Data.Context.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("WasUpsaStudent")
-                        .HasColumnType("boolean");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SchoolTableId");
 
                     b.ToTable("QrAccess");
                 });
@@ -2806,15 +2769,6 @@ namespace WebApiNibu.Data.Context.Migrations
                     b.Navigation("Tag");
                 });
 
-            modelBuilder.Entity("WebApiNibu.Data.Entity.UsersAndAccess.QrAccess", b =>
-                {
-                    b.HasOne("WebApiNibu.Data.Entity.School.SchoolTable", "SchoolTable")
-                        .WithMany("QrAccesses")
-                        .HasForeignKey("SchoolTableId");
-
-                    b.Navigation("SchoolTable");
-                });
-
             modelBuilder.Entity("WebApiNibu.Data.Entity.UsersAndAccess.Users", b =>
                 {
                     b.HasOne("WebApiNibu.Data.Entity.Person.PersonTable", "PersonTable")
@@ -3020,8 +2974,6 @@ namespace WebApiNibu.Data.Context.Migrations
                     b.Navigation("Contacts");
 
                     b.Navigation("Participations");
-
-                    b.Navigation("QrAccesses");
 
                     b.Navigation("SchoolStudents");
 

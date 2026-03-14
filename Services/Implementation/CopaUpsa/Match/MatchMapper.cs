@@ -30,8 +30,8 @@ public static class MatchMapper
         ScoreB = dto.ScoreB,
         DetailPointA = dto.DetailPointA,
         DetailPointB = dto.DetailPointB,
-        StartDate = dto.StartDate,
-        EndDate = dto.EndDate,
+        StartDate = DateTime.SpecifyKind(dto.StartDate, DateTimeKind.Utc),
+        EndDate = DateTime.SpecifyKind(dto.EndDate, DateTimeKind.Utc),
         NumberMatch = dto.NumberMatch,
         ParticipationAId = dto.ParticipationAId,
         ParticipationA = null!,
@@ -49,8 +49,8 @@ public static class MatchMapper
         if (dto.ScoreB.HasValue) target.ScoreB = dto.ScoreB.Value;
         if (dto.DetailPointA.HasValue) target.DetailPointA = dto.DetailPointA.Value;
         if (dto.DetailPointB.HasValue) target.DetailPointB = dto.DetailPointB.Value;
-        if (dto.StartDate.HasValue) target.StartDate = dto.StartDate.Value;
-        if (dto.EndDate.HasValue) target.EndDate = dto.EndDate.Value;
+        if (dto.StartDate.HasValue) target.StartDate = DateTime.SpecifyKind(dto.StartDate.Value, DateTimeKind.Utc);
+        if (dto.EndDate.HasValue) target.EndDate = DateTime.SpecifyKind(dto.EndDate.Value, DateTimeKind.Utc);
         if (dto.NumberMatch.HasValue) target.NumberMatch = dto.NumberMatch.Value;
         if (dto.ParticipationAId.HasValue) target.ParticipationAId = dto.ParticipationAId.Value;
         if (dto.ParticipationBId.HasValue) target.ParticipationBId = dto.ParticipationBId.Value;

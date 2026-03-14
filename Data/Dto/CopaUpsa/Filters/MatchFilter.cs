@@ -3,8 +3,7 @@ namespace WebApiNibu.Data.Dto.CopaUpsa.Filters;
 public class MatchFilter
 {
     public string? Location { get; set; }
-    public int? ParticipationAId { get; set; }
-    public int? ParticipationBId { get; set; }
+    public string? ParticipationName { get; set; } // Search by school name across both participations
     public int? ParticipationId { get; set; } // Matches where participation is either A or B
     public int? MatchStatusId { get; set; }
     public int? NumberMatch { get; set; }
