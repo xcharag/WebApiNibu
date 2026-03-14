@@ -17,6 +17,24 @@ public class QrAccess : BaseEntity
 
     public string? Reason { get; set; }
 
+    [StringLength(150)]
+    public string FirstName { get; set; } = string.Empty;
+
+    [StringLength(150)]
+    public string LastName { get; set; } = string.Empty;
+
+    [StringLength(50)]
+    public string DocumentNumber { get; set; } = string.Empty;
+
+    [StringLength(50)]
+    public string PhoneNumber { get; set; } = string.Empty;
+
+    [StringLength(100)]
+    public string Relationship { get; set; } = string.Empty;
+
+    [Required]
+    public bool WasUpsaStudent { get; set; }
+
     [Required]
     public required DateTime ExpirationDate { get; set; }
 
