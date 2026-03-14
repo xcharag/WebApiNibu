@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApiNibu.Authorization;
 using WebApiNibu.Data.Dto.CopaUpsa;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 using WebApiNibu.Helpers;
@@ -8,6 +10,8 @@ namespace WebApiNibu.Controllers.CopaUpsa;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
+[DynamicPermission]
 public class StatisticEventController(IStatisticEvent service) : ControllerBase
 {
     [HttpGet]

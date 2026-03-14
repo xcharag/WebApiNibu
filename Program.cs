@@ -1,6 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using WebApiNibu.Data.Context;
 using WebApiNibu.Abstraction;
+using WebApiNibu.Authorization;
+using WebApiNibu.Extensions;
+using WebApiNibu.Helpers;
 using WebApiNibu.Services.Contract.CopaUpsa;
 using WebApiNibu.Services.Contract.Feed.Events;
 using WebApiNibu.Services.Contract.Feed.News;
@@ -18,11 +24,6 @@ using WebApiNibu.Services.Implementation.UsersAndAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
-// Enable endpoint discovery for OpenAPI
-builder.Services.AddEndpointsApiExplorer();
-
 // Configure CORS from appsettings
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(options =>
@@ -38,6 +39,48 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
+builder.Services.AddHttpClient<IAuthMicroserviceClient, AuthMicroserviceClient>(client =>
+    {
+        var authServiceUrl = builder.Configuration["AuthMicroserviceUrl"] ?? 
+                             throw new InvalidOperationException("AuthMicroserviceUrl is not configured");
+        client.BaseAddress = new Uri(authServiceUrl);
+        client.Timeout = TimeSpan.FromSeconds(120);
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
+    })
+    .ConfigurePrimaryHttpMessageHandler(() =>
+    {
+        var handler = new HttpClientHandler();
+        
+        if (builder.Environment.IsDevelopment())
+        {
+            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+        }
+        
+        return handler;
+    });
+
+builder.Services.Configure<ProjectPermissionSettings>(builder.Configuration.GetSection("ProjectPermission"));
+builder.Services.AddHttpClient<IProjectPermissionUserClient, ProjectPermissionUserClient>((sp, client) =>
+    {
+        var settings = sp.GetRequiredService<IOptions<ProjectPermissionSettings>>().Value;
+        client.BaseAddress = new Uri(settings.BaseUrl);
+        client.Timeout = TimeSpan.FromSeconds(60);
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
+    })
+    .ConfigurePrimaryHttpMessageHandler(() =>
+    {
+        var handler = new HttpClientHandler();
+        if (builder.Environment.IsDevelopment())
+        {
+            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+        }
+        return handler;
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
 // Register generic CRUD service for all entities
 builder.Services.AddScoped(typeof(IBaseCrud<>), typeof(BaseCrudImplementation<>));
@@ -91,43 +134,103 @@ builder.Services.AddScoped<IStatisticEvent, StatisticEventImpl>();
 // Configure DbContext with dynamic database provider
 builder.Services.AddDatabaseProvider(builder.Configuration, builder.Environment.IsDevelopment());
 
+builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddCustomAuthorization();
+
 // Built-in OpenAPI document (optional alongside Swashbuckle)
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
 
 // Swashbuckle: Swagger generator
-builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options => {
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiNibu", Version = "v1" });
+
+    // Support Bearer token authentication for Swagger testing
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter your JWT token from the auth microservice. Example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'"
+    });
+    
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 var app = builder.Build();
 
-// Global exception handler — must be first in the pipeline
-app.UseMiddleware<WebApiNibu.Helpers.GlobalExceptionMiddleware>();
+var corsPolicy = app.Environment.IsDevelopment() ? "FrontendPolicy" : "ProductionPolicy";
+Console.WriteLine("=".PadRight(60, '='));
+Console.WriteLine($"Active CORS Policy: {corsPolicy}");
+Console.WriteLine("=".PadRight(60, '='));
+Console.WriteLine(builder.Configuration.GetConnectionString("CoreConnection"));
+app.UseCors(corsPolicy);
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 // Auto-apply pending migrations
 await ApplyMigrationsAsync(app);
 
-// Expose the OpenAPI spec regardless of environment (minimal API doc)
 app.MapOpenApi();
 
-// Swashbuckle: Enable Swagger middleware and UI
-app.UseSwagger(c =>
-{
-    // Serve at /swagger/v1/swagger.json by default
-});
+app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApiNibu v1");
     c.RoutePrefix = "swagger"; // UI at /swagger
 });
 
+// 4. Health check endpoint (after CORS is configured)
+app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }))
+    .AllowAnonymous();
+
+// 5. Debug endpoint to check CORS configuration
+app.MapGet("/debug/cors", (HttpContext context) =>
+{
+    var origin = context.Request.Headers["Origin"].ToString();
+    return Results.Ok(new
+    {
+        requestOrigin = origin,
+        configuredOrigins = allowedOrigins,
+        policy = corsPolicy,
+        environment = app.Environment.EnvironmentName,
+        timestamp = DateTime.UtcNow
+    });
+}).AllowAnonymous();
+
 // Optional: redirect root to Swagger UI for quick discovery
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
-app.UseHttpsRedirection();
+// 6. Only redirect to HTTPS in non-Docker environments (same as SISAPI)
+if (!app.Environment.IsProduction())
+{
+    app.UseHttpsRedirection();
+}
 
-app.UseCors();
-
+// 7. Authentication and Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
+// 8. Static files
+app.UseStaticFiles();
+
+// 9. Map controllers
 app.MapControllers();
 
 app.Run();

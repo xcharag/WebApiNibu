@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApiNibu.Authorization;
+using WebApiNibu.Data.Dto;
 using WebApiNibu.Data.Dto.CopaUpsa;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 using WebApiNibu.Helpers;
@@ -8,6 +11,8 @@ namespace WebApiNibu.Controllers.CopaUpsa;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
+[DynamicPermission]
 public class TournamentRosterController(ITournamentRoster service) : ControllerBase
 {
     [HttpGet]
@@ -35,9 +40,9 @@ public class TournamentRosterController(ITournamentRoster service) : ControllerB
 
     [HttpPost("upload")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadFromExcel([FromForm] IFormFile file, CancellationToken ct)
+    public async Task<IActionResult> UploadFromExcel([FromForm] FileUploadDto dto, CancellationToken ct)
     {
-        var result = await service.UploadFromExcel(file, ct);
+        var result = await service.UploadFromExcel(dto.File, ct);
         return result.IsSuccess
             ? Ok(result.Value)
             : BadRequest(result.Errors);
