@@ -5,17 +5,21 @@ namespace WebApiNibu.Abstraction;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using WebApiNibu.Data.Entity.FatherTable;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 public class BaseCrudImplementation<TEntity> : IBaseCrud<TEntity>
     where TEntity : BaseEntity
 {
     private readonly CoreDbContext _db;
     private readonly DbSet<TEntity> _set;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public BaseCrudImplementation(CoreDbContext dbContext)
+    public BaseCrudImplementation(CoreDbContext dbContext, IHttpContextAccessor httpContextAccessor)
     {
         _db = dbContext;
         _set = _db.Set<TEntity>();
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>>? predicate = null, bool asNoTracking = true)
@@ -44,9 +48,15 @@ public class BaseCrudImplementation<TEntity> : IBaseCrud<TEntity>
 
     public async Task<TEntity> CreateAsync(TEntity entity, CancellationToken ct = default)
     {
-        entity.CreatedAt = DateTime.UtcNow;
-        entity.UpdatedAt = DateTime.UtcNow;
+        var now = DateTime.UtcNow;
+        entity.CreatedAt = now;
+        entity.UpdatedAt = now;
         entity.Active = true;
+
+        var user = GetCurrentUser();
+        entity.CreatedBy = user;
+        entity.UpdatedBy = user;
+
         await _set.AddAsync(entity, ct);
         await _db.SaveChangesAsync(ct);
         return entity;
@@ -58,6 +68,9 @@ public class BaseCrudImplementation<TEntity> : IBaseCrud<TEntity>
         if (entity is null) return false;
         applyUpdates(entity);
         entity.UpdatedAt = DateTime.UtcNow;
+
+        entity.UpdatedBy = GetCurrentUser();
+
         await _db.SaveChangesAsync(ct);
         return true;
     }
@@ -70,6 +83,7 @@ public class BaseCrudImplementation<TEntity> : IBaseCrud<TEntity>
         {
             entity.Active = false;
             entity.UpdatedAt = DateTime.UtcNow;
+            entity.UpdatedBy = GetCurrentUser();
         }
         else
         {
@@ -77,6 +91,33 @@ public class BaseCrudImplementation<TEntity> : IBaseCrud<TEntity>
         }
         await _db.SaveChangesAsync(ct);
         return true;
+    }
+
+    private string GetCurrentUser()
+    {
+        try
+        {
+            var http = _httpContextAccessor?.HttpContext;
+            var user = http?.User;
+            if (user is null) return string.Empty;
+            var id = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrWhiteSpace(id)) return id;
+
+            var nameClaim = user.FindFirst(ClaimTypes.Name)?.Value;
+            if (!string.IsNullOrWhiteSpace(nameClaim)) return nameClaim;
+
+            var preferred = user.FindFirst("preferred_username")?.Value;
+            if (!string.IsNullOrWhiteSpace(preferred)) return preferred;
+
+            var email = user.FindFirst(ClaimTypes.Email)?.Value;
+            if (!string.IsNullOrWhiteSpace(email)) return email;
+
+            return string.Empty;
+        }
+        catch
+        {
+            return string.Empty;
+        }
     }
 
     public async Task<bool> ExistsAsync(int id, CancellationToken ct = default)

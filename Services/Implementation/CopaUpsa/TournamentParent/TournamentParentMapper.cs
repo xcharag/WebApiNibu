@@ -9,7 +9,7 @@ public static class TournamentParentMapper
         Id = entity.Id,
         Name = entity.Name,
         Description = entity.Description,
-        Category = entity.Category
+        Category = entity.Category.ToString()
     };
 
     public static Data.Entity.CopaUpsa.TournamentParent ToEntity(TournamentParentCreateDto dto) => new()
@@ -27,4 +27,3 @@ public static class TournamentParentMapper
         if (dto.Category.HasValue) target.Category = dto.Category.Value;
     }
 }
-
