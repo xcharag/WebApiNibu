@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApiNibu.Authorization;
+using WebApiNibu.Data.Dto;
 using WebApiNibu.Data.Dto.CopaUpsa;
 using WebApiNibu.Data.Dto.CopaUpsa.Filters;
 using WebApiNibu.Helpers;
@@ -25,6 +28,8 @@ public class TournamentRosterController(ITournamentRoster service) : ControllerB
     }
 
     [HttpPost]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Create([FromBody] TournamentRosterCreateDto dto, CancellationToken ct)
     {
         var result = await service.CreateAsync(dto, ct);
@@ -35,15 +40,19 @@ public class TournamentRosterController(ITournamentRoster service) : ControllerB
 
     [HttpPost("upload")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadFromExcel([FromForm] IFormFile file, CancellationToken ct)
+    [Authorize]
+    [DynamicPermission]
+    public async Task<IActionResult> UploadFromExcel([FromForm] FileUploadDto dto, CancellationToken ct)
     {
-        var result = await service.UploadFromExcel(file, ct);
+        var result = await service.UploadFromExcel(dto.File, ct);
         return result.IsSuccess
             ? Ok(result.Value)
             : BadRequest(result.Errors);
     }
 
     [HttpPut("{id:int}")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Update(int id, [FromBody] TournamentRosterUpdateDto dto, CancellationToken ct)
     {
         var result = await service.UpdateAsync(id, dto, ct);
@@ -51,6 +60,8 @@ public class TournamentRosterController(ITournamentRoster service) : ControllerB
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
+    [DynamicPermission]
     public async Task<IActionResult> Delete(int id, CancellationToken ct, [FromQuery] bool soft = true)
     {
         var result = await service.DeleteAsync(id, soft, ct);

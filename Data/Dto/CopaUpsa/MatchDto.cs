@@ -55,3 +55,9 @@ public class MatchUploadResultDto
     public List<string> Errors { get; set; } = [];
 }
 
+public class MatchResultUploadResultDto
+{
+    public List<MatchReadDto> Updated { get; set; } = [];
+    public List<string> Errors { get; set; } = [];
+}
+

@@ -30,7 +30,7 @@ public static class StatisticEventMapper
 
     public static void ApplyUpdate(Data.Entity.CopaUpsa.StatisticEvent target, StatisticEventUpdateDto dto)
     {
-        if (dto.Moment.HasValue) target.Moment = dto.Moment.Value;
+        if (!string.IsNullOrEmpty(dto.Moment)) target.Moment = dto.Moment;
         if (dto.StatisticId.HasValue) target.StatisticId = dto.StatisticId.Value;
         if (dto.RosterId.HasValue) target.RosterId = dto.RosterId.Value;
     }

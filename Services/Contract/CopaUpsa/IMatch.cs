@@ -14,6 +14,7 @@ public interface IMatch
     Task<Result<List<MatchStandingDto>>> GetStandingsAsync(int tournamentId, int? phaseTypeId, CancellationToken ct);
     Task<Result<MatchReadDto>> CreateAsync(MatchCreateDto dto, CancellationToken ct);
     Task<Result<MatchUploadResultDto>> UploadFromExcel(IFormFile file, CancellationToken ct);
+    Task<Result<MatchResultUploadResultDto>> UploadResultsFromExcel(IFormFile file, CancellationToken ct);
     Task<Result<bool>> UpdateAsync(int id, MatchUpdateDto dto, CancellationToken ct);
     Task<Result<bool>> DeleteAsync(int id, bool soft, CancellationToken ct);
 }

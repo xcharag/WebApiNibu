@@ -25,7 +25,12 @@ public static class QrAccessMapper
             IsUsed = entity.IsUsed,
             Active = entity.Active,
             QrSvg = qr.ToSvgString(4),
-            QrPngBase64 = Convert.ToBase64String(png)
+            QrPngBase64 = Convert.ToBase64String(png),
+
+            // Mapear nuevo campo y la relación
+            Comment = entity.Comment,
+            SchoolTableId = entity.SchoolTableId,
+            SchoolName = entity.SchoolTable?.Name
         };
     }
 
@@ -41,7 +46,9 @@ public static class QrAccessMapper
         ExpirationDate = dto.ExpirationDate,
         Value = value,
         IsUsed = false,
-        Active = true
+        Active = true,
+        Comment = dto.Comment,
+        SchoolTableId = dto.SchoolTableId
     };
 
     public static Data.Entity.UsersAndAccess.QrAccess ToEntity(QrAccessGenerateDto dto, string generatedValue) => new()
@@ -56,7 +63,9 @@ public static class QrAccessMapper
         ExpirationDate = dto.ExpirationDate,
         Value = generatedValue,
         IsUsed = false,
-        Active = true
+        Active = true,
+        Comment = dto.Comment,
+        SchoolTableId = dto.SchoolTableId
     };
 
     public static void ApplyUpdate(Data.Entity.UsersAndAccess.QrAccess target, QrAccessUpdateDto dto)
@@ -71,5 +80,7 @@ public static class QrAccessMapper
         target.ExpirationDate = dto.ExpirationDate;
         target.Value = dto.Value;
         target.IsUsed = dto.IsUsed;
+        target.Comment = dto.Comment;
+        target.SchoolTableId = dto.SchoolTableId;
     }
 }

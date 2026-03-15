@@ -4,11 +4,12 @@ using System.ComponentModel.DataAnnotations;
 
 public abstract class BaseEntity
 {
-    public int CreatedBy { get; set; } = 0;
+    [Required]
+    public string CreatedBy { get; set; }
     
     public DateTime? CreatedAt { get; set; }
 
-    public int UpdatedBy { get; set; } = 0;
+    public string UpdatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
     [Required] public required bool Active { get; set; } = true;

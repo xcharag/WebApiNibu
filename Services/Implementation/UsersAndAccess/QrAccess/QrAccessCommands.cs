@@ -24,6 +24,7 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
             dto.DocumentNumber,
             dto.PhoneNumber,
             dto.Relationship,
+            dto.SchoolTableId,
             null,
             ct);
         if (!validation.IsSuccess)
@@ -46,6 +47,7 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
             dto.DocumentNumber,
             dto.PhoneNumber,
             dto.Relationship,
+            dto.SchoolTableId,
             null,
             ct);
         if (!validation.IsSuccess)
@@ -69,6 +71,7 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
             dto.DocumentNumber,
             dto.PhoneNumber,
             dto.Relationship,
+            dto.SchoolTableId,
             null,
             ct);
         if (!validation.IsSuccess)
@@ -159,6 +162,7 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
             dto.DocumentNumber,
             dto.PhoneNumber,
             dto.Relationship,
+            dto.SchoolTableId,
             id,
             ct);
         if (!validation.IsSuccess)
@@ -186,6 +190,7 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
         string documentNumber,
         string phoneNumber,
         string relationship,
+        int? schoolTableId,
         int? idToExclude,
         CancellationToken ct)
     {
@@ -211,6 +216,14 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
 
         if (string.IsNullOrWhiteSpace(relationship))
             errors.Add("Relationship is required");
+
+        // Validar existencia del colegio si se provee
+        if (schoolTableId.HasValue)
+        {
+            var schoolExists = await db.Schools.AnyAsync(s => s.Id == schoolTableId.Value, ct);
+            if (!schoolExists)
+                errors.Add($"SchoolTable with id {schoolTableId.Value} not found");
+        }
 
         if (!string.IsNullOrWhiteSpace(value))
         {

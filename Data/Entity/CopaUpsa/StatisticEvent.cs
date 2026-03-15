@@ -11,7 +11,7 @@ public class StatisticEvent : BaseEntity
     public int Id { get; set; }
     
     [Required]
-    public TimeOnly Moment { get; set; }
+    public required string Moment { get; set; }
     
     [Required]
     public int StatisticId { get; set; }
