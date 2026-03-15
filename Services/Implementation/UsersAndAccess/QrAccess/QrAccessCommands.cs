@@ -24,7 +24,7 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
             dto.DocumentNumber,
             dto.PhoneNumber,
             dto.Relationship,
-            dto.SchoolTableId,
+            dto.SchoolName,
             null,
             ct);
         if (!validation.IsSuccess)
@@ -47,7 +47,7 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
             dto.DocumentNumber,
             dto.PhoneNumber,
             dto.Relationship,
-            dto.SchoolTableId,
+            dto.SchoolName,
             null,
             ct);
         if (!validation.IsSuccess)
@@ -71,7 +71,7 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
             dto.DocumentNumber,
             dto.PhoneNumber,
             dto.Relationship,
-            dto.SchoolTableId,
+            dto.SchoolName,
             null,
             ct);
         if (!validation.IsSuccess)
@@ -162,7 +162,7 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
             dto.DocumentNumber,
             dto.PhoneNumber,
             dto.Relationship,
-            dto.SchoolTableId,
+            dto.SchoolName,
             id,
             ct);
         if (!validation.IsSuccess)
@@ -190,7 +190,7 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
         string documentNumber,
         string phoneNumber,
         string relationship,
-        int? schoolTableId,
+        string? schoolName,
         int? idToExclude,
         CancellationToken ct)
     {
@@ -217,12 +217,11 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
         if (string.IsNullOrWhiteSpace(relationship))
             errors.Add("Relationship is required");
 
-        // Validar existencia del colegio si se provee
-        if (schoolTableId.HasValue)
+        // Validar nombre del colegio si se provee
+        if (!string.IsNullOrWhiteSpace(schoolName))
         {
-            var schoolExists = await db.Schools.AnyAsync(s => s.Id == schoolTableId.Value, ct);
-            if (!schoolExists)
-                errors.Add($"SchoolTable with id {schoolTableId.Value} not found");
+            if (schoolName!.Length > 150)
+                errors.Add("SchoolName is too long (max 150 characters)");
         }
 
         if (!string.IsNullOrWhiteSpace(value))

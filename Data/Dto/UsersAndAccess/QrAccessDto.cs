@@ -17,8 +17,7 @@ public class QrAccessReadDto
     public string QrSvg { get; set; } = string.Empty;
     public string QrPngBase64 { get; set; } = string.Empty;
     public string? Comment { get; set; }
-    public int? SchoolTableId { get; set; }
-    public string? SchoolName { get; set; }
+    public string? SchoolName { get; set; } // Ahora almacenamos directamente el nombre del colegio
 }
 
 public class QrAccessCreateDto
@@ -33,7 +32,7 @@ public class QrAccessCreateDto
     public DateTime ExpirationDate { get; set; }
     public string? Value { get; set; }
     public string? Comment { get; set; }
-    public int? SchoolTableId { get; set; }
+    public string? SchoolName { get; set; }
 }
 
 public class QrAccessGenerateDto
@@ -48,7 +47,7 @@ public class QrAccessGenerateDto
     public DateTime ExpirationDate { get; set; }
 
     public string? Comment { get; set; }
-    public int? SchoolTableId { get; set; }
+    public string? SchoolName { get; set; }
 }
 
 public class QrAccessUpdateDto
@@ -65,7 +64,7 @@ public class QrAccessUpdateDto
     public bool IsUsed { get; set; }
 
     public string? Comment { get; set; }
-    public int? SchoolTableId { get; set; }
+    public string? SchoolName { get; set; }
 }
 
 public class QrMarkUsedResultDto

@@ -29,8 +29,7 @@ public static class QrAccessMapper
 
             // Mapear nuevo campo y la relación
             Comment = entity.Comment,
-            SchoolTableId = entity.SchoolTableId,
-            SchoolName = entity.SchoolTable?.Name
+            SchoolName = entity.SchoolName
         };
     }
 
@@ -48,7 +47,7 @@ public static class QrAccessMapper
         IsUsed = false,
         Active = true,
         Comment = dto.Comment,
-        SchoolTableId = dto.SchoolTableId
+        SchoolName = dto.SchoolName
     };
 
     public static Data.Entity.UsersAndAccess.QrAccess ToEntity(QrAccessGenerateDto dto, string generatedValue) => new()
@@ -65,7 +64,7 @@ public static class QrAccessMapper
         IsUsed = false,
         Active = true,
         Comment = dto.Comment,
-        SchoolTableId = dto.SchoolTableId
+        SchoolName = dto.SchoolName
     };
 
     public static void ApplyUpdate(Data.Entity.UsersAndAccess.QrAccess target, QrAccessUpdateDto dto)
@@ -81,6 +80,6 @@ public static class QrAccessMapper
         target.Value = dto.Value;
         target.IsUsed = dto.IsUsed;
         target.Comment = dto.Comment;
-        target.SchoolTableId = dto.SchoolTableId;
+        target.SchoolName = dto.SchoolName;
     }
 }

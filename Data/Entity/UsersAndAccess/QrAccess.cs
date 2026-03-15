@@ -50,6 +50,7 @@ public class QrAccess : BaseEntity
     [StringLength(450)]
     public string? Comment { get; set; }
 
-    public int? SchoolTableId { get; set; }
-    public SchoolTable? SchoolTable { get; set; }
+    // Almacenar el nombre del colegio directamente en lugar de una FK
+    [StringLength(150)]
+    public string? SchoolName { get; set; }
 }

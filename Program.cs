@@ -242,10 +242,10 @@ app.MapGet("/debug/cors", (HttpContext context) =>
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
 // 6. Only redirect to HTTPS in non-Docker environments (same as SISAPI)
-if (!app.Environment.IsProduction())
+/*if (!app.Environment.IsProduction())
 {
     app.UseHttpsRedirection();
-}
+}*/
 
 // 7. Authentication and Authorization
 app.UseAuthentication();
