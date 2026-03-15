@@ -27,6 +27,43 @@ public class MatchController(IMatch service) : ControllerBase
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors);
     }
 
+    [HttpGet("{id:int}/detail")]
+    public async Task<IActionResult> GetDetail(int id, CancellationToken ct)
+    {
+        var result = await service.GetDetailAsync(id, ct);
+        return result.IsSuccess ? Ok(result.Value) : NotFound(result.Errors);
+    }
+
+    [HttpGet("schedule")]
+    public async Task<IActionResult> GetSchedule(
+        [FromQuery] DateTime? startDateFrom,
+        [FromQuery] DateTime? startDateTo,
+        [FromQuery] int? tournamentId,
+        CancellationToken ct)
+    {
+        var result = await service.GetScheduleAsync(startDateFrom, startDateTo, tournamentId, ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
+    }
+
+    [HttpGet("available-dates")]
+    public async Task<IActionResult> GetAvailableDates(
+        [FromQuery] int? tournamentId,
+        CancellationToken ct)
+    {
+        var result = await service.GetAvailableDatesAsync(tournamentId, ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
+    }
+
+    [HttpGet("standings")]
+    public async Task<IActionResult> GetStandings(
+        [FromQuery] int tournamentId,
+        [FromQuery] int? phaseTypeId,
+        CancellationToken ct)
+    {
+        var result = await service.GetStandingsAsync(tournamentId, phaseTypeId, ct);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Errors);
+    }
+
     [HttpPost]
     [Authorize]
     [DynamicPermission]
@@ -80,4 +117,3 @@ public class MatchController(IMatch service) : ControllerBase
         return result.IsSuccess ? NoContent() : NotFound(result.Errors);
     }
 }
-

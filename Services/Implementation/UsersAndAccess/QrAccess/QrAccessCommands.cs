@@ -16,7 +16,17 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
             ? Guid.NewGuid().ToString("N")
             : dto.Value.Trim();
 
-        var validation = await ValidateAsync(dto.ExpirationDate, normalizedValue, null, ct);
+        var validation = await ValidateAsync(
+            dto.ExpirationDate,
+            normalizedValue,
+            dto.FirstName,
+            dto.LastName,
+            dto.DocumentNumber,
+            dto.PhoneNumber,
+            dto.Relationship,
+            dto.SchoolTableId,
+            null,
+            ct);
         if (!validation.IsSuccess)
             return Result<QrAccessReadDto>.Failure(validation.Errors);
 
@@ -29,7 +39,17 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
     {
         var generatedValue = $"qr-{Guid.NewGuid():N}";
 
-        var validation = await ValidateAsync(dto.ExpirationDate, generatedValue, null, ct);
+        var validation = await ValidateAsync(
+            dto.ExpirationDate,
+            generatedValue,
+            dto.FirstName,
+            dto.LastName,
+            dto.DocumentNumber,
+            dto.PhoneNumber,
+            dto.Relationship,
+            dto.SchoolTableId,
+            null,
+            ct);
         if (!validation.IsSuccess)
             return Result<QrAccessReadDto>.Failure(validation.Errors);
 
@@ -43,7 +63,17 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
         CancellationToken ct)
     {
         var hashedKey = await GenerateUniqueHashedKeyAsync(ct);
-        var validation = await ValidateAsync(dto.ExpirationDate, hashedKey, null, ct);
+        var validation = await ValidateAsync(
+            dto.ExpirationDate,
+            hashedKey,
+            dto.FirstName,
+            dto.LastName,
+            dto.DocumentNumber,
+            dto.PhoneNumber,
+            dto.Relationship,
+            dto.SchoolTableId,
+            null,
+            ct);
         if (!validation.IsSuccess)
             return Result<QrAccessReadDto>.Failure(validation.Errors);
 
@@ -124,7 +154,17 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
 
     public async Task<Result<bool>> UpdateAsync(int id, QrAccessUpdateDto dto, CancellationToken ct)
     {
-        var validation = await ValidateAsync(dto.ExpirationDate, dto.Value.Trim(), id, ct);
+        var validation = await ValidateAsync(
+            dto.ExpirationDate,
+            dto.Value.Trim(),
+            dto.FirstName,
+            dto.LastName,
+            dto.DocumentNumber,
+            dto.PhoneNumber,
+            dto.Relationship,
+            dto.SchoolTableId,
+            id,
+            ct);
         if (!validation.IsSuccess)
             return Result<bool>.Failure(validation.Errors);
 
@@ -145,6 +185,12 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
     private async Task<Result<bool>> ValidateAsync(
         DateTime expirationDate,
         string value,
+        string firstName,
+        string lastName,
+        string documentNumber,
+        string phoneNumber,
+        string relationship,
+        int? schoolTableId,
         int? idToExclude,
         CancellationToken ct)
     {
@@ -155,6 +201,29 @@ public class QrAccessCommands(IBaseCrud<Data.Entity.UsersAndAccess.QrAccess> bas
 
         if (string.IsNullOrWhiteSpace(value))
             errors.Add("Value is required");
+
+        if (string.IsNullOrWhiteSpace(firstName))
+            errors.Add("FirstName is required");
+
+        if (string.IsNullOrWhiteSpace(lastName))
+            errors.Add("LastName is required");
+
+        if (string.IsNullOrWhiteSpace(documentNumber))
+            errors.Add("DocumentNumber is required");
+
+        if (string.IsNullOrWhiteSpace(phoneNumber))
+            errors.Add("PhoneNumber is required");
+
+        if (string.IsNullOrWhiteSpace(relationship))
+            errors.Add("Relationship is required");
+
+        // Validar existencia del colegio si se provee
+        if (schoolTableId.HasValue)
+        {
+            var schoolExists = await db.Schools.AnyAsync(s => s.Id == schoolTableId.Value, ct);
+            if (!schoolExists)
+                errors.Add($"SchoolTable with id {schoolTableId.Value} not found");
+        }
 
         if (!string.IsNullOrWhiteSpace(value))
         {

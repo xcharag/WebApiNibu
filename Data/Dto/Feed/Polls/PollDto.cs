@@ -11,6 +11,8 @@ public class PollReadDto
     public string Question { get; set; } = String.Empty;
 
     public string? ImageUrl { get; set; } = String.Empty;
+    
+    public DateTime? ExpirationDate { get; set; }
 
     //Foreign Keys
 
@@ -31,6 +33,8 @@ public class PollUpdateDto
     public string Question { get; set; } = String.Empty;
 
     public string? ImageUrl { get; set; } = String.Empty;
+    
+    public DateTime? ExpirationDate { get; set; }
 
     //Foreign Keys
 
@@ -45,6 +49,8 @@ public class PollCreateDto
     public string Question { get; set; } = String.Empty;
 
     public string? ImageUrl { get; set; } = String.Empty;
+    
+    public DateTime? ExpirationDate { get; set; }
 
     //Foreign Keys
 

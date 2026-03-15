@@ -9,7 +9,7 @@ public static class TournamentParentMapper
         Id = entity.Id,
         Name = entity.Name,
         Description = entity.Description,
-        Category = entity.Category,
+        Category = entity.Category.ToString()
         IsActive = entity.Active
     };
 

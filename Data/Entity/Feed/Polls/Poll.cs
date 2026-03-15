@@ -17,6 +17,7 @@ public class Poll : BaseEntity
     public string? Description { get; set; } = string.Empty;
     [Required] public string Question { get; set; } = string.Empty;
     public string? ImageUrl { get; set; } = string.Empty;
+    public DateTime? ExpirationDate { get; set; }
     
     [Required]
     public int TournamentId { get; set; }

@@ -8,10 +8,13 @@ public interface IMatch
 {
     Task<Result<PagedResult<MatchReadDto>>> GetAllAsync(MatchFilter filter, PaginationParams pagination, CancellationToken ct);
     Task<Result<MatchReadDto>> GetByIdAsync(int id, CancellationToken ct);
+    Task<Result<MatchScheduleDto>> GetDetailAsync(int id, CancellationToken ct);
+    Task<Result<List<MatchScheduleDto>>> GetScheduleAsync(DateTime? startDateFrom, DateTime? startDateTo, int? tournamentId, CancellationToken ct);
+    Task<Result<List<string>>> GetAvailableDatesAsync(int? tournamentId, CancellationToken ct);
+    Task<Result<List<MatchStandingDto>>> GetStandingsAsync(int tournamentId, int? phaseTypeId, CancellationToken ct);
     Task<Result<MatchReadDto>> CreateAsync(MatchCreateDto dto, CancellationToken ct);
     Task<Result<MatchUploadResultDto>> UploadFromExcel(IFormFile file, CancellationToken ct);
     Task<Result<MatchResultUploadResultDto>> UploadResultsFromExcel(IFormFile file, CancellationToken ct);
     Task<Result<bool>> UpdateAsync(int id, MatchUpdateDto dto, CancellationToken ct);
     Task<Result<bool>> DeleteAsync(int id, bool soft, CancellationToken ct);
 }
-
