@@ -18,7 +18,8 @@ public static class TournamentRosterMapper
         TournamentId = entity.TournamentId,
         TournamentName = entity.Tournament is not null ? entity.Tournament.Name : string.Empty,
         SchoolId = entity.SchoolId,
-        SchoolName = entity.SchoolTable is not null ? entity.SchoolTable.Name : string.Empty
+        SchoolName = entity.SchoolTable is not null ? entity.SchoolTable.Name : string.Empty,
+        IsActive = entity.Active
     };
 
     public static Data.Entity.CopaUpsa.TournamentRoster ToEntity(TournamentRosterCreateDto dto) => new()

@@ -8,6 +8,7 @@ public class StatisticEventReadDto
     public string StatisticName { get; set; } = string.Empty;
     public int RosterId { get; set; }
     public string RosterStudentName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
 }
 
 public class StatisticEventCreateDto
@@ -23,4 +24,3 @@ public class StatisticEventUpdateDto
     public int? StatisticId { get; set; }
     public int? RosterId { get; set; }
 }
-

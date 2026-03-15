@@ -6,6 +6,7 @@ public class MatchStatusReadDto
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string Color { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
 }
 
 public class MatchStatusCreateDto
@@ -21,4 +22,3 @@ public class MatchStatusUpdateDto
     public string? Description { get; set; }
     public string? Color { get; set; }
 }
-

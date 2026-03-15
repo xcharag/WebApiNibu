@@ -12,7 +12,8 @@ public static class StatisticMapper
         StatisticType = entity.StatisticType,
         SportId = entity.SportId,
         StatisticTypeName = entity.StatisticType.ToString(),
-        SportName = entity.Sport is not null ? entity.Sport.Name : string.Empty
+        SportName = entity.Sport is not null ? entity.Sport.Name : string.Empty,
+        IsActive = entity.Active
     };
 
     public static Data.Entity.CopaUpsa.Statistic ToEntity(StatisticCreateDto dto) => new()

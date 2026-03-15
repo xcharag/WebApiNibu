@@ -8,7 +8,8 @@ public static class PhaseTypeMapper
     {
         Id = entity.Id,
         Name = entity.Name,
-        Description = entity.Description
+        Description = entity.Description,
+        IsActive = entity.Active
     };
 
     public static Data.Entity.CopaUpsa.PhaseType ToEntity(PhaseTypeCreateDto dto) => new()

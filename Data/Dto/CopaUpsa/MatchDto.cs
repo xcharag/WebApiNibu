@@ -17,6 +17,7 @@ public class MatchReadDto
     public string ParticipationBSchoolName { get; set; } = string.Empty;
     public int MatchStatusId { get; set; }
     public string MatchStatusName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
 }
 
 public class MatchCreateDto
@@ -60,4 +61,3 @@ public class MatchResultUploadResultDto
     public List<MatchReadDto> Updated { get; set; } = [];
     public List<string> Errors { get; set; } = [];
 }
-

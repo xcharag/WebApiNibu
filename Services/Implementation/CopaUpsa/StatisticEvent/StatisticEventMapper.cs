@@ -15,7 +15,8 @@ public static class StatisticEventMapper
             ? string.Join(" ",
                 new[] { entity.Roster.TournamentRoster.FirstName, entity.Roster.TournamentRoster.LastName }
                     .Where(s => !string.IsNullOrWhiteSpace(s)))
-            : string.Empty
+            : string.Empty,
+        IsActive = entity.Active
     };
 
     public static Data.Entity.CopaUpsa.StatisticEvent ToEntity(StatisticEventCreateDto dto) => new()

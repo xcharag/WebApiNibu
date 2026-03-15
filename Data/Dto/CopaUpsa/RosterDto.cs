@@ -9,6 +9,7 @@ public class RosterReadDto
     public string? StudentName { get; set; } = string.Empty;
     public string? MatchName { get; set; } = string.Empty;
     public string? PositionName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
 }
 
 public class RosterCreateDto

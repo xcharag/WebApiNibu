@@ -7,6 +7,7 @@ public class PositionReadDto
     public string? Name { get; set; }
     public int CoordX { get; set; }
     public int CoordY { get; set; }
+    public bool IsActive { get; set; }
 }
 
 public class PositionCreateDto
@@ -24,4 +25,3 @@ public class PositionUpdateDto
     public int? CoordX { get; set; }
     public int? CoordY { get; set; }
 }
-

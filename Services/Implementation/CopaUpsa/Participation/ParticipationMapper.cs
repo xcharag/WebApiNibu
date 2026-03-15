@@ -13,7 +13,8 @@ public static class ParticipationMapper
         PhaseTypeName = entity.PhaseType?.Name ?? string.Empty,
         TournamentName = entity.Tournament?.Name ?? string.Empty,
         SchoolId = entity.SchoolId,
-        SchoolName = entity.SchoolTable?.Name ?? string.Empty
+        SchoolName = entity.SchoolTable?.Name ?? string.Empty,
+        IsActive = entity.Active
     };
 
     public static Data.Entity.CopaUpsa.Participation ToEntity(ParticipationCreateDto dto) => new()

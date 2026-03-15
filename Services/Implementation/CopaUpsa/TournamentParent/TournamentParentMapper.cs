@@ -9,7 +9,8 @@ public static class TournamentParentMapper
         Id = entity.Id,
         Name = entity.Name,
         Description = entity.Description,
-        Category = entity.Category
+        Category = entity.Category,
+        IsActive = entity.Active
     };
 
     public static Data.Entity.CopaUpsa.TournamentParent ToEntity(TournamentParentCreateDto dto) => new()

@@ -10,7 +10,8 @@ public static class PositionMapper
         Code = entity.Code,
         Name = entity.Name,
         CoordX = entity.CoordX,
-        CoordY = entity.CoordY
+        CoordY = entity.CoordY,
+        IsActive = entity.Active
     };
 
     public static Data.Entity.CopaUpsa.Position ToEntity(PositionCreateDto dto) => new()

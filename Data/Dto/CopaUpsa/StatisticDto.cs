@@ -11,6 +11,7 @@ public class StatisticReadDto
     public int SportId { get; set; }
     public string? StatisticTypeName { get; set; } = string.Empty;
     public string? SportName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
 }
 
 public class StatisticCreateDto

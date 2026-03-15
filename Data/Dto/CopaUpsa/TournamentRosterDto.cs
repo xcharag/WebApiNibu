@@ -13,6 +13,7 @@ public class TournamentRosterReadDto
     public string? TournamentName { get; set; } = string.Empty;
     public int SchoolId { get; set; }
     public string? SchoolName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
 }
 
 public class TournamentRosterCreateDto
@@ -42,4 +43,3 @@ public class TournamentRosterUploadResultDto
     public List<TournamentRosterReadDto> Created { get; set; } = [];
     public List<string> Errors { get; set; } = [];
 }
-

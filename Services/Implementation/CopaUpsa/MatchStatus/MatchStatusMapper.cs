@@ -9,7 +9,8 @@ public static class MatchStatusMapper
         Id = entity.Id,
         Name = entity.Name,
         Description = entity.Description,
-        Color = entity.Color
+        Color = entity.Color,
+        IsActive = entity.Active
     };
 
     public static Data.Entity.CopaUpsa.MatchStatus ToEntity(MatchStatusCreateDto dto) => new()

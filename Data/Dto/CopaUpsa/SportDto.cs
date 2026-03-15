@@ -6,6 +6,7 @@ public class SportReadDto
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string Icon { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
 }
 
 public class SportCreateDto
@@ -21,4 +22,3 @@ public class SportUpdateDto
     public string? Description { get; set; }
     public string? Icon { get; set; }
 }
-

@@ -20,7 +20,8 @@ public static class MatchMapper
         ParticipationBId = entity.ParticipationBId,
         ParticipationBSchoolName = entity.ParticipationB?.SchoolTable?.Name ?? string.Empty,
         MatchStatusId = entity.MatchStatusId,
-        MatchStatusName = entity.MatchStatus?.Name ?? string.Empty
+        MatchStatusName = entity.MatchStatus?.Name ?? string.Empty,
+        IsActive = entity.Active
     };
 
     public static Data.Entity.CopaUpsa.Match ToEntity(MatchCreateDto dto) => new()

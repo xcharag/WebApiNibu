@@ -8,6 +8,7 @@ public class TournamentParentReadDto
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public Category Category { get; set; }
+    public bool IsActive { get; set; }
 }
 
 public class TournamentParentCreateDto
@@ -23,4 +24,3 @@ public class TournamentParentUpdateDto
     public string? Description { get; set; }
     public Category? Category { get; set; }
 }
-

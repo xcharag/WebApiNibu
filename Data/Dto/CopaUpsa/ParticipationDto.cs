@@ -10,6 +10,7 @@ public class ParticipationReadDto
     public string TournamentName { get; set; } = string.Empty;
     public int SchoolId { get; set; }
     public string? SchoolName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
 }
 
 public class ParticipationCreateDto

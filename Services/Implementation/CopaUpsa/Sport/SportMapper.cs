@@ -9,7 +9,8 @@ public static class SportMapper
         Id = entity.Id,
         Name = entity.Name,
         Description = entity.Description,
-        Icon = entity.Icon
+        Icon = entity.Icon,
+        IsActive = entity.Active
     };
 
     public static Data.Entity.CopaUpsa.Sport ToEntity(SportCreateDto dto) => new()
