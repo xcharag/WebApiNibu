@@ -1,0 +1,79 @@
+# ============================================================
+# COOLIFY DEPLOYMENT - WebApiNibu Docker Compose Stack
+# ============================================================
+# This file is optimized for Coolify deployment.
+# Deploy this as a "Docker Compose" application in Coolify.
+#
+# NOTE: The PostgreSQL database is already deployed externally.
+# This stack only contains the API service.
+#
+# REQUIRED ENV VARS (set in Coolify > Service > Environment):
+#   DB_HOST              - PostgreSQL host (IP or hostname)
+#   DB_PORT              - PostgreSQL port (default: 5432)
+#   DB_NAME              - Database name
+#   DB_USER              - Database username
+#   DB_PASSWORD           - Database password
+#   JWT_SECRET_KEY       - JWT signing key (min 32 chars)
+#   ALLOWED_ORIGINS      - Comma-separated list of allowed CORS origins
+#   AUTH_MICROSERVICE_URL - URL of the auth microservice
+#   PROJECT_PERMISSION_URL - URL of the project permission service
+# ============================================================
+
+services:
+  # ===========================================
+  # WebApiNibu - .NET 9 Web API
+  # ===========================================
+  webapinibu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Coolify handles routing via reverse proxy (Traefik)
+    expose:
+      - "8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+
+      # Database Provider
+      - DatabaseProvider=PostgreSql
+
+      # PostgreSQL Connection (external, already deployed)
+      - ConnectionStrings__PostgreSqlConnection=Host=${DB_HOST};Port=${DB_PORT:-5432};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+
+      # JWT Settings
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
+      - JwtSettings__Issuer=${JWT_ISSUER:-SisApi}
+      - JwtSettings__Audience=${JWT_AUDIENCE:-SisApiClient}
+
+      # Auth Microservice
+      - AuthMicroserviceUrl=${AUTH_MICROSERVICE_URL}
+
+      # Project Permission Settings
+      - ProjectPermission__BaseUrl=${PROJECT_PERMISSION_URL}
+      - ProjectPermission__Endpoint=${PROJECT_PERMISSION_ENDPOINT:-/api/ProjectPermission}
+      - ProjectPermission__Module=${PROJECT_PERMISSION_MODULE:-2}
+
+      # CORS Settings (comma-separated origins)
+      - AllowedOrigins=${ALLOWED_ORIGINS}
+
+    restart: unless-stopped
+    networks:
+      - coolify
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+    labels:
+      - coolify.managed=true
+      - traefik.enable=true
+      - "traefik.http.routers.webapinibu.rule=Host(`${DOMAIN:-webapinibu.example.com}`) && PathPrefix(`/`)"
+      - traefik.http.routers.webapinibu.entryPoints=http
+      - traefik.docker.network=coolify
+
+networks:
+  coolify:
+    external: true
+    name: coolify  # Coolify's default network for Traefik routing
+
