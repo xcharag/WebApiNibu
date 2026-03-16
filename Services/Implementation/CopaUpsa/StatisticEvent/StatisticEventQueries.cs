@@ -8,6 +8,9 @@ namespace WebApiNibu.Services.Implementation.CopaUpsa.StatisticEvent;
 
 public class StatisticEventQueries(CoreDbContext db)
 {
+    private static string BuildFullName(params string?[] parts)
+        => string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
+
     public async Task<Result<PagedResult<StatisticEventReadDto>>> GetAllAsync(
         StatisticEventFilter filter, PaginationParams pagination, CancellationToken ct)
     {
@@ -78,10 +81,10 @@ public class StatisticEventQueries(CoreDbContext db)
                 x.Roster.Match.ParticipationB.TournamentId == tid);
         }
 
-        var items = await query
+        var rows = await query
             .OrderBy(x => x.Moment)
             .ThenBy(x => x.Id)
-            .Select(x => new StatisticEventTimelineDto
+            .Select(x => new
             {
                 Id = x.Id,
                 Moment = x.Moment,
@@ -93,17 +96,27 @@ public class StatisticEventQueries(CoreDbContext db)
                 TournamentId = x.Roster.Match.ParticipationA.TournamentId,
                 SchoolId = x.Roster.TournamentRoster.SchoolId,
                 SchoolName = x.Roster.TournamentRoster.SchoolTable.Name,
-                StudentName = string.Join(" ",
-                    new[]
-                    {
-                        x.Roster.TournamentRoster.FirstName,
-                        x.Roster.TournamentRoster.MiddleName,
-                        x.Roster.TournamentRoster.LastName,
-                        x.Roster.TournamentRoster.MaternalName
-                    }
-                    .Where(s => !string.IsNullOrWhiteSpace(s)))
+                FirstName = x.Roster.TournamentRoster.FirstName,
+                MiddleName = x.Roster.TournamentRoster.MiddleName,
+                LastName = x.Roster.TournamentRoster.LastName,
+                MaternalName = x.Roster.TournamentRoster.MaternalName
             })
             .ToListAsync(ct);
+
+        var items = rows.Select(x => new StatisticEventTimelineDto
+        {
+            Id = x.Id,
+            Moment = x.Moment,
+            StatisticId = x.StatisticId,
+            StatisticName = x.StatisticName,
+            RosterId = x.RosterId,
+            TournamentRosterId = x.TournamentRosterId,
+            MatchId = x.MatchId,
+            TournamentId = x.TournamentId,
+            SchoolId = x.SchoolId,
+            SchoolName = x.SchoolName,
+            StudentName = BuildFullName(x.FirstName, x.MiddleName, x.LastName, x.MaternalName)
+        }).ToList();
 
         return Result<List<StatisticEventTimelineDto>>.Success(items);
     }
@@ -141,7 +154,7 @@ public class StatisticEventQueries(CoreDbContext db)
                 x.Roster.Match.ParticipationB.TournamentId == tid);
         }
 
-        var grouped = await query
+        var groupedRows = await query
             .GroupBy(x => new
             {
                 TournamentRosterId = x.Roster.TournamentRosterId,
@@ -152,26 +165,36 @@ public class StatisticEventQueries(CoreDbContext db)
                 SchoolId = x.Roster.TournamentRoster.SchoolId,
                 SchoolName = x.Roster.TournamentRoster.SchoolTable.Name
             })
-            .Select(g => new StatisticEventRankingDto
+            .Select(g => new
             {
-                TournamentRosterId = g.Key.TournamentRosterId,
-                StudentName = string.Join(" ",
-                    new[]
-                    {
-                        g.Key.StudentFirstName,
-                        g.Key.StudentMiddleName,
-                        g.Key.StudentLastName,
-                        g.Key.StudentMaternalName
-                    }
-                    .Where(s => !string.IsNullOrWhiteSpace(s))),
+                g.Key.TournamentRosterId,
+                g.Key.StudentFirstName,
+                g.Key.StudentMiddleName,
+                g.Key.StudentLastName,
+                g.Key.StudentMaternalName,
                 SchoolId = g.Key.SchoolId,
                 SchoolName = g.Key.SchoolName,
                 Count = g.Count()
             })
-            .OrderByDescending(x => x.Count)
-            .ThenBy(x => x.StudentName)
             .Take(safeTop)
             .ToListAsync(ct);
+
+        var grouped = groupedRows
+            .Select(x => new StatisticEventRankingDto
+            {
+                TournamentRosterId = x.TournamentRosterId,
+                StudentName = BuildFullName(
+                    x.StudentFirstName,
+                    x.StudentMiddleName,
+                    x.StudentLastName,
+                    x.StudentMaternalName),
+                SchoolId = x.SchoolId,
+                SchoolName = x.SchoolName,
+                Count = x.Count
+            })
+            .OrderByDescending(x => x.Count)
+            .ThenBy(x => x.StudentName)
+            .ToList();
 
         return Result<List<StatisticEventRankingDto>>.Success(grouped);
     }

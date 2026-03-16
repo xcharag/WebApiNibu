@@ -16,7 +16,6 @@ public static class SelectedOptionMapper
         OptionId = dto.OptionId,
         UserId = dto.UserId,
         Option = null!,
-        User = null!,
         Active = true
     };
 
