@@ -17,6 +17,6 @@ public class SelectedOption : BaseEntity
     [Required] public int OptionId { get; set; }
     public required Option Option { get; set; }
     
-    [Required] public int UserId { get; set; }
-    public required Users User { get; set; }
+    public int? UserId { get; set; }
+    public Users? User { get; set; }
 }

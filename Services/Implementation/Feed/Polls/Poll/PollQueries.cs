@@ -8,6 +8,9 @@ namespace WebApiNibu.Services.Implementation.Feed.Polls.Poll;
 
 public class PollQueries(CoreDbContext db)
 {
+    private static string BuildFullName(params string?[] parts)
+        => string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
+
     private sealed class UserRankingState
     {
         public required int UserId { get; init; }
@@ -111,7 +114,7 @@ public class PollQueries(CoreDbContext db)
 
         var selectedQuery = db.SelectedOptions
             .AsNoTracking()
-            .Where(x => x.Active && x.Option.Active && x.Option.Poll.Active)
+            .Where(x => x.Active && x.UserId.HasValue && x.Option.Active && x.Option.Poll.Active)
             .AsQueryable();
 
         if (tournamentId.HasValue)
@@ -123,14 +126,10 @@ public class PollQueries(CoreDbContext db)
                 PollId = x.Option.PollId,
                 UserId = x.UserId,
                 IsCorrect = x.Option.Correct,
-                UserName = string.Join(" ",
-                    new[]
-                    {
-                        x.User.PersonTable.FirstName,
-                        x.User.PersonTable.MiddleName,
-                        x.User.PersonTable.PaternalSurname,
-                        x.User.PersonTable.MaternalSurname
-                    }.Where(s => !string.IsNullOrWhiteSpace(s))),
+                FirstName = x.User.PersonTable.FirstName,
+                MiddleName = x.User.PersonTable.MiddleName,
+                PaternalSurname = x.User.PersonTable.PaternalSurname,
+                MaternalSurname = x.User.PersonTable.MaternalSurname,
                 FallbackName = x.User.Name
             })
             .ToListAsync(ct);
@@ -143,20 +142,30 @@ public class PollQueries(CoreDbContext db)
                 g.Key.UserId,
                 g.Key.PollId,
                 IsCorrect = g.Any(x => x.IsCorrect),
-                Name = g.Select(x => string.IsNullOrWhiteSpace(x.UserName) ? x.FallbackName : x.UserName)
-                    .FirstOrDefault() ?? $"Usuario {g.Key.UserId}"
+                Name = g.Select(x =>
+                        BuildFullName(
+                            x.FirstName,
+                            x.MiddleName,
+                            x.PaternalSurname,
+                            x.MaternalSurname))
+                    .FirstOrDefault(name => !string.IsNullOrWhiteSpace(name))
+                    ?? g.Select(x => x.FallbackName).FirstOrDefault()
+                    ?? $"Usuario {g.Key.UserId}"
             });
 
         foreach (var row in byUserPoll)
         {
-            if (!users.TryGetValue(row.UserId, out var state))
+            if (!row.UserId.HasValue)
+                continue;
+
+            if (!users.TryGetValue(row.UserId.Value, out var state))
             {
                 state = new UserRankingState
                 {
-                    UserId = row.UserId,
+                    UserId = row.UserId.Value,
                     Name = row.Name
                 };
-                users[row.UserId] = state;
+                users[row.UserId.Value] = state;
             }
             state.PollResult[row.PollId] = row.IsCorrect;
             if (row.IsCorrect) state.Correct += 1;

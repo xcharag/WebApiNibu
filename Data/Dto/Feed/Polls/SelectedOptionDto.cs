@@ -10,7 +10,7 @@ public class SelectedOptionReadDto
 
     public int OptionId { get; set; }
 
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
 
 }
 
@@ -24,7 +24,7 @@ public class SelectedOptionUpdateDto
 
     public int OptionId { get; set; }
 
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
 }
 
 public class SelectedOptionCreateDto
@@ -36,5 +36,5 @@ public class SelectedOptionCreateDto
 
     public int OptionId { get; set; }
 
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
 }

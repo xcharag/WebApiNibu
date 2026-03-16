@@ -39,14 +39,14 @@ public class SelectedOptionCommands(IBaseCrud<Data.Entity.Feed.Polls.SelectedOpt
             : Result<bool>.Failure($"SelectedOption with id {id} not found");
     }
 
-    private async Task<Result<bool>> ValidateForeignKeysAsync(int optionId, int userId, CancellationToken ct)
+    private async Task<Result<bool>> ValidateForeignKeysAsync(int optionId, int? userId, CancellationToken ct)
     {
         var errors = new List<string>();
 
         if (!await db.Options.AnyAsync(o => o.Id == optionId, ct))
             errors.Add($"OptionId ({optionId}) not found");
 
-        if (!await db.Users.AnyAsync(u => u.Id == userId, ct))
+        if (userId.HasValue && !await db.Users.AnyAsync(u => u.Id == userId.Value, ct))
             errors.Add($"UserId ({userId}) not found");
 
         return errors.Count > 0
